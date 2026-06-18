@@ -7,7 +7,7 @@
 - **框架**: VitePress 1.6 + Vue 3.5
 - **主题**: 自定义暗色科幻风（网格背景、玻璃拟态、霓虹渐变）
 - **部署**: GitHub Actions → GitHub Pages
-- **域名**: [www.liushuxiu.com](https://www.liushuxiu.com)
+- **域名**: [000902.icu](https://000902.icu)
 
 ## 快速开始
 
@@ -55,10 +55,14 @@ blog/
 
 推送到 `main` 分支自动触发 GitHub Actions 构建并部署到 Pages。
 
-自定义域名已在 `public/CNAME` 中配置为 `www.liushuxiu.com`，需在 DNS 管理中添加：
+自定义域名已在 `public/CNAME` 中配置为 `000902.icu`，需在 DNS 管理中添加：
 
 ```
-CNAME  www → zhou0928.github.io
+@  A      → 185.199.108.153
+@  A      → 185.199.109.153
+@  A      → 185.199.110.153
+@  A      → 185.199.111.153
+www CNAME → zhou0928.github.io
 ```
 
-然后在仓库 Settings → Pages → Custom domain 填入 `www.liushuxiu.com`。
+然后在仓库 Settings → Pages → Custom domain 填入 `000902.icu`。

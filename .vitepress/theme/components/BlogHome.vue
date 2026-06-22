@@ -5,7 +5,7 @@ import { data as posts } from '../../posts.data.js'
 
 const router = useRouter()
 const { isDark } = useData()
-const latestPosts = posts.slice(0, 6)
+const latestPosts = posts.slice(0, 7)
 
 // 打字机效果
 const typedText = ref('')
@@ -365,18 +365,46 @@ function goToPost(url: string) {
       </div>
     </div>
   </section>
+
+  <!-- ====== 关于 ====== -->
+  <section class="section about-section scroll-reveal">
+    <div class="about-card">
+      <div class="about-content">
+        <span class="section-tag">About</span>
+        <h3 class="about-title">关于我</h3>
+        <p class="about-text">
+          专注工单流程系统开发，4 年前端经验，累计 4,700+ Git 提交。
+          热爱用代码解决实际问题，相信技术能让工作更高效。
+        </p>
+        <a href="/about" class="about-link">了解更多 →</a>
+      </div>
+      <div class="about-visual">
+        <div class="about-avatar">Z</div>
+        <div class="about-stats">
+          <div class="about-stat">
+            <span class="about-stat-num">4</span>
+            <span class="about-stat-label">年经验</span>
+          </div>
+          <div class="about-stat">
+            <span class="about-stat-num">24+</span>
+            <span class="about-stat-label">项目</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </template>
 
 <style scoped>
 /* ==================== Hero ==================== */
 .hero {
   position: relative;
-  min-height: 100vh;
+  min-height: 85vh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: 6rem 1.5rem 4rem;
+  padding: 5rem 1.5rem 3rem;
 }
 
 .hero-orb {
@@ -645,7 +673,7 @@ function goToPost(url: string) {
 .section {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 4rem 1.5rem 6rem;
+  padding: 2rem 1.5rem 4rem;
 }
 
 .section-header {
@@ -860,6 +888,96 @@ function goToPost(url: string) {
   font-weight: 500;
 }
 
+/* ==================== About ==================== */
+.about-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 3rem;
+  padding: 2.5rem;
+  border-radius: 16px;
+  border: 1px solid var(--vp-c-border);
+  background: var(--vp-c-bg);
+  transition: all 0.3s;
+}
+
+.about-card:hover {
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 10px 30px rgba(0, 229, 255, 0.08);
+}
+
+.about-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.about-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--vp-c-text-1);
+}
+
+.about-text {
+  font-size: 0.95rem;
+  color: var(--vp-c-text-2);
+  line-height: 1.7;
+}
+
+.about-link {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--vp-c-brand-1);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.about-link:hover {
+  transform: translateX(4px);
+}
+
+.about-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.about-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--vp-c-brand-1), #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+}
+
+.about-stats {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.about-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.about-stat-num {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--vp-c-text-1);
+}
+
+.about-stat-label {
+  font-size: 0.75rem;
+  color: var(--vp-c-text-3);
+}
+
 /* ==================== Responsive ==================== */
 @media (max-width: 900px) {
   .posts-grid { grid-template-columns: repeat(2, 1fr); }
@@ -877,6 +995,8 @@ function goToPost(url: string) {
   .hero-name { font-size: 3rem; }
   .posts-grid { grid-template-columns: 1fr; }
   .tech-grid { grid-template-columns: repeat(3, 1fr); }
+  .about-card { grid-template-columns: 1fr; gap: 2rem; }
+  .about-visual { flex-direction: row; justify-content: center; }
 }
 
 @media (max-width: 480px) {

@@ -37,8 +37,15 @@ function goToPost(url: string) {
 // 观察新的 post-item 元素
 function observePostItems() {
   nextTick(() => {
-    document.querySelectorAll('.post-item').forEach(el => {
-      if (observer) observer.observe(el)
+    const items = document.querySelectorAll('.post-item')
+    items.forEach((el) => {
+      // 立即检查是否在视口内
+      const rect = el.getBoundingClientRect()
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        el.classList.add('revealed')
+      } else if (observer) {
+        observer.observe(el)
+      }
     })
   })
 }
@@ -57,15 +64,16 @@ onMounted(() => {
         }
       })
     },
-    { threshold: 0.1 }
+    { threshold: 0.05, rootMargin: '50px 0px' }
   )
-  // 观察所有需要滚动动画的元素
-  document.querySelectorAll('.scroll-reveal, .scroll-reveal-scale, .post-item').forEach(el => observer!.observe(el))
   
   // 立即显示页面顶部元素
   document.querySelectorAll('.archive-page > .page-title, .archive-page > .search-box, .archive-page > .tag-filter').forEach(el => {
     el.classList.add('revealed')
   })
+  
+  // 初始观察文章列表
+  observePostItems()
 })
 </script>
 

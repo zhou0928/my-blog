@@ -1,14 +1,16 @@
 /* ====================================
-   VitePress 自定义主题 v2
-   支持亮色/暗色切换
+   VitePress 自定义主题 v3
+   亮色/暗色两套完整样式 + i18n
    ==================================== */
 
-/* --- 亮色模式变量 --- */
+/* ========================
+   亮色模式（默认）
+   ======================== */
 :root {
   --vp-c-brand-1: #0891b2;
   --vp-c-brand-2: #0e7490;
   --vp-c-brand-3: #155e75;
-  --vp-c-brand-soft: rgba(8, 145, 178, 0.14);
+  --vp-c-brand-soft: rgba(8, 145, 178, 0.1);
 
   --vp-c-bg: #ffffff;
   --vp-c-bg-alt: #f8fafc;
@@ -28,14 +30,103 @@
 
   --vp-font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --vp-font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
-
-  /* 亮色模式下的品牌色（保持辨识度） */
-  --blog-accent: #0891b2;
-  --blog-accent-light: rgba(8, 145, 178, 0.1);
-  --blog-accent-border: rgba(8, 145, 178, 0.2);
 }
 
-/* --- 暗色模式变量 --- */
+/* --- 亮色模式全局样式 --- */
+body {
+  background: #ffffff;
+  min-height: 100vh;
+  color: var(--vp-c-text-1);
+}
+
+/* --- 亮色模式导航栏 --- */
+.VPNav {
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid var(--vp-c-border) !important;
+}
+
+.VPNavBar .title a {
+  color: var(--vp-c-brand-1);
+}
+
+/* --- 亮色模式链接 --- */
+.vp-doc a {
+  color: var(--vp-c-brand-1);
+  border-bottom: 1px solid rgba(8, 145, 178, 0.2);
+}
+
+.vp-doc a:hover {
+  color: #7c3aed;
+  border-bottom-color: rgba(124, 58, 237, 0.4);
+}
+
+/* --- 亮色模式标题 --- */
+.vp-doc h1 {
+  color: var(--vp-c-text-1);
+}
+
+/* --- 亮色模式代码块 --- */
+.vp-doc div[class*='language-'] {
+  border: 1px solid var(--vp-c-border);
+  border-radius: 12px;
+  background: var(--vp-c-bg-alt) !important;
+}
+
+/* --- 亮色模式按钮 --- */
+.VPButton.brand {
+  background: var(--vp-c-brand-1) !important;
+  color: #fff !important;
+  border: none !important;
+}
+
+.VPButton.brand:hover {
+  background: var(--vp-c-brand-2) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.3);
+}
+
+.VPButton.alt {
+  border: 1px solid var(--vp-c-border) !important;
+  background: var(--vp-c-bg-soft) !important;
+}
+
+.VPButton.alt:hover {
+  border-color: var(--vp-c-brand-1) !important;
+  background: var(--vp-c-brand-soft) !important;
+}
+
+/* --- 亮色模式卡片 --- */
+.VPFeature {
+  border: 1px solid var(--vp-c-border) !important;
+  border-radius: 16px !important;
+  background: #fff !important;
+  transition: all 0.3s ease !important;
+}
+
+.VPFeature:hover {
+  border-color: var(--vp-c-brand-1) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+/* --- 亮色模式页脚 --- */
+.VPFooter {
+  border-top: 1px solid var(--vp-c-border) !important;
+}
+
+/* --- 亮色模式滚动条 --- */
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ========================
+   暗色模式
+   ======================== */
 .dark {
   --vp-c-brand-1: #00e5ff;
   --vp-c-brand-2: #00c4db;
@@ -57,13 +148,9 @@
 
   --vp-c-mute: rgba(56, 189, 248, 0.06);
   --vp-c-mute-hover: rgba(56, 189, 248, 0.1);
-
-  --blog-accent: #00e5ff;
-  --blog-accent-light: rgba(0, 229, 255, 0.1);
-  --blog-accent-border: rgba(0, 229, 255, 0.2);
 }
 
-/* --- 暗色模式专属样式 --- */
+/* --- 暗色模式全局样式 --- */
 .dark body {
   background: linear-gradient(135deg, #080c18 0%, #0a1025 50%, #0c1220 100%);
   background-attachment: fixed;
@@ -81,7 +168,7 @@
   z-index: 0;
 }
 
-/* --- 粒子星空背景（仅暗色） --- */
+/* --- 暗色模式粒子背景 --- */
 .dark #particles-canvas {
   position: fixed;
   inset: 0;
@@ -89,32 +176,32 @@
   pointer-events: none;
 }
 
-/* --- 导航栏 --- */
+/* --- 暗色模式导航栏 --- */
 .dark .VPNav {
-  background: rgba(8, 12, 24, 0.8) !important;
+  background: rgba(8, 12, 24, 0.85) !important;
   backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
   border-bottom: 1px solid rgba(56, 189, 248, 0.08) !important;
 }
 
-/* --- 链接样式 --- */
-.vp-doc a {
-  color: var(--blog-accent);
-  text-decoration: none;
-  transition: all 0.2s;
-  border-bottom: 1px solid var(--blog-accent-border);
+.dark .VPNavBar .title a {
+  background: linear-gradient(135deg, #00e5ff, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.vp-doc a:hover {
+/* --- 暗色模式链接 --- */
+.dark .vp-doc a {
+  color: #00e5ff;
+  border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+}
+
+.dark .vp-doc a:hover {
   color: #a855f7;
   border-bottom-color: rgba(168, 85, 247, 0.4);
 }
 
-/* --- 文章内容区域 --- */
-.vp-doc h1, .vp-doc h2, .vp-doc h3, .vp-doc h4 {
-  letter-spacing: -0.02em;
-}
-
+/* --- 暗色模式标题 --- */
 .dark .vp-doc h1 {
   background: linear-gradient(135deg, #e2e8f0, #00e5ff);
   -webkit-background-clip: text;
@@ -122,145 +209,97 @@
   background-clip: text;
 }
 
-/* --- 代码块风格 --- */
-.vp-doc div[class*='language-'] {
-  border: 1px solid var(--vp-c-border);
-  border-radius: 12px;
-}
-
+/* --- 暗色模式代码块 --- */
 .dark .vp-doc div[class*='language-'] {
   background: rgba(8, 12, 24, 0.8) !important;
+  border: 1px solid rgba(56, 189, 248, 0.12);
   box-shadow: 0 0 30px rgba(0, 229, 255, 0.04);
 }
 
-/* --- 按钮样式覆盖 --- */
-.VPButton.brand {
-  border: 1px solid var(--blog-accent-border) !important;
-  transition: all 0.3s ease !important;
-}
-
+/* --- 暗色模式按钮 --- */
 .dark .VPButton.brand {
   background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(168, 85, 247, 0.15)) !important;
+  border: 1px solid rgba(0, 229, 255, 0.3) !important;
   backdrop-filter: blur(10px);
 }
 
 .dark .VPButton.brand:hover {
-  border-color: rgba(0, 229, 255, 0.6) !important;
   background: linear-gradient(135deg, rgba(0, 229, 255, 0.25), rgba(168, 85, 247, 0.25)) !important;
+  border-color: rgba(0, 229, 255, 0.6) !important;
   box-shadow: 0 0 30px rgba(0, 229, 255, 0.15);
-  transform: translateY(-1px);
 }
 
-.VPButton.alt {
-  border: 1px solid var(--vp-c-border) !important;
-  backdrop-filter: blur(10px);
+.dark .VPButton.alt {
+  border: 1px solid rgba(56, 189, 248, 0.2) !important;
+  background: rgba(56, 189, 248, 0.05) !important;
 }
 
-.VPButton.alt:hover {
-  border-color: var(--blog-accent-border) !important;
-  background: var(--blog-accent-light) !important;
+.dark .VPButton.alt:hover {
+  border-color: rgba(56, 189, 248, 0.4) !important;
+  background: rgba(56, 189, 248, 0.1) !important;
 }
 
-/* --- 卡片式环绕效果 --- */
-.VPFeatures .container .items {
-  display: grid;
-  gap: 24px;
-}
-
-.VPFeature {
-  border: 1px solid var(--vp-c-border) !important;
-  border-radius: 16px !important;
-  transition: all 0.3s ease !important;
-}
-
+/* --- 暗色模式卡片 --- */
 .dark .VPFeature {
+  border: 1px solid rgba(56, 189, 248, 0.08) !important;
   background: rgba(16, 24, 48, 0.6) !important;
   backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-}
-
-.VPFeature:hover {
-  border-color: var(--blog-accent-border) !important;
-  transform: translateY(-2px);
 }
 
 .dark .VPFeature:hover {
+  border-color: rgba(0, 229, 255, 0.25) !important;
   box-shadow: 0 0 40px rgba(0, 229, 255, 0.06);
 }
 
-/* --- 页脚 --- */
-.VPFooter {
-  border-top: 1px solid var(--vp-c-border) !important;
-  background: transparent !important;
+/* --- 暗色模式页脚 --- */
+.dark .VPFooter {
+  border-top: 1px solid rgba(56, 189, 248, 0.06) !important;
 }
 
-/* --- 自定义滚动条 --- */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--vp-c-border);
-  border-radius: 3px;
-}
-
+/* --- 暗色模式滚动条 --- */
 .dark ::-webkit-scrollbar-thumb {
   background: rgba(56, 189, 248, 0.15);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--vp-c-text-3);
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
   background: rgba(56, 189, 248, 0.3);
 }
 
-/* --- 淡入动画 --- */
+/* ========================
+   通用样式（两套模式共享）
+   ======================== */
+
+/* --- 动画 --- */
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .fade-in-up {
   animation: fadeInUp 0.6s ease forwards;
 }
 
-/* --- 发光文字（仅暗色） --- */
-.dark .neon-text {
-  text-shadow: 0 0 7px rgba(0, 229, 255, 0.4),
-               0 0 20px rgba(0, 229, 255, 0.2),
-               0 0 40px rgba(0, 229, 255, 0.1);
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
-/* --- 归档列表页 --- */
-.blog-list-page {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem 4rem;
+@keyframes rotateGlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-.blog-list-page h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 2.5rem;
-  background: linear-gradient(135deg, var(--vp-c-text-1), var(--blog-accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
 }
 
-/* ===== 滚动触发动画 ===== */
+@keyframes charReveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- 滚动触发动画 --- */
 .scroll-reveal {
   opacity: 0;
   transform: translateY(40px);
@@ -270,28 +309,6 @@
 .scroll-reveal.revealed {
   opacity: 1;
   transform: translateY(0);
-}
-
-.scroll-reveal-left {
-  opacity: 0;
-  transform: translateX(-40px);
-  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.scroll-reveal-left.revealed {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.scroll-reveal-right {
-  opacity: 0;
-  transform: translateX(40px);
-  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.scroll-reveal-right.revealed {
-  opacity: 1;
-  transform: translateX(0);
 }
 
 .scroll-reveal-scale {
@@ -305,7 +322,6 @@
   transform: scale(1);
 }
 
-/* 交错延迟 */
 .delay-1 { transition-delay: 0.1s; }
 .delay-2 { transition-delay: 0.2s; }
 .delay-3 { transition-delay: 0.3s; }
@@ -313,29 +329,25 @@
 .delay-5 { transition-delay: 0.5s; }
 .delay-6 { transition-delay: 0.6s; }
 
-/* ===== 渐变边框动画 ===== */
-@keyframes borderGlow {
-  0%, 100% {
-    border-color: rgba(0, 229, 255, 0.15);
-    box-shadow: 0 0 15px rgba(0, 229, 255, 0.05);
+/* --- 暗色模式专属动画 --- */
+.dark .neon-text {
+  text-shadow: 0 0 7px rgba(0, 229, 255, 0.4),
+               0 0 20px rgba(0, 229, 255, 0.2),
+               0 0 40px rgba(0, 229, 255, 0.1);
+}
+
+@keyframes neonFlicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    text-shadow: 0 0 7px rgba(0, 229, 255, 0.6), 0 0 20px rgba(0, 229, 255, 0.4);
   }
-  50% {
-    border-color: rgba(168, 85, 247, 0.25);
-    box-shadow: 0 0 25px rgba(168, 85, 247, 0.08);
-  }
+  20%, 24%, 55% { text-shadow: none; }
 }
 
-.glow-border {
-  animation: borderGlow 4s ease-in-out infinite;
+.dark .neon-flicker {
+  animation: neonFlicker 3s infinite;
 }
 
-/* ===== 磁吸按钮效果 ===== */
-.magnetic-btn {
-  position: relative;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* ===== 光标追踪 glow（仅暗色） ===== */
+/* --- 鼠标追踪光效（仅暗色） --- */
 .dark .cursor-glow {
   position: fixed;
   width: 400px;
@@ -348,147 +360,20 @@
   transition: opacity 0.3s;
 }
 
-/* ===== 加载动画 ===== */
-@keyframes pulse-ring {
-  0% {
-    transform: scale(0.8);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(2.5);
-    opacity: 0;
-  }
+/* --- 归档列表页 --- */
+.blog-list-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
 }
 
-.pulse-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--blog-accent);
-  position: relative;
+.blog-list-page h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
 }
 
-.pulse-dot::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: var(--blog-accent);
-  animation: pulse-ring 1.5s ease-out infinite;
-}
-
-/* ===== 文字逐字显示 ===== */
-@keyframes charReveal {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.char-reveal span {
-  display: inline-block;
-  opacity: 0;
-  animation: charReveal 0.5s ease forwards;
-}
-
-/* ===== 浮动动画 ===== */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-.float-animation {
-  animation: float 3s ease-in-out infinite;
-}
-
-/* ===== 旋转光环 ===== */
-@keyframes rotateGlow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.rotate-glow {
-  position: relative;
-}
-
-.rotate-glow::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  background: conic-gradient(from 0deg, #00e5ff, #a855f7, #00e5ff);
-  z-index: -1;
-  animation: rotateGlow 3s linear infinite;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.rotate-glow:hover::before {
-  opacity: 1;
-}
-
-/* ===== 玻璃拟态增强（仅暗色） ===== */
-.dark .glass-card {
-  background: rgba(16, 24, 48, 0.4) !important;
-  backdrop-filter: blur(20px) saturate(1.5) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(1.5) !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
-}
-
-/* ===== 霓虹闪烁（仅暗色） ===== */
-@keyframes neonFlicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-    text-shadow:
-      0 0 7px rgba(0, 229, 255, 0.6),
-      0 0 20px rgba(0, 229, 255, 0.4),
-      0 0 40px rgba(0, 229, 255, 0.2),
-      0 0 80px rgba(0, 229, 255, 0.1);
-  }
-  20%, 24%, 55% {
-    text-shadow: none;
-  }
-}
-
-.dark .neon-flicker {
-  animation: neonFlicker 3s infinite;
-}
-
-/* ===== 波纹点击效果 ===== */
-@keyframes ripple {
-  to {
-    transform: scale(4);
-    opacity: 0;
-  }
-}
-
-.ripple-effect {
-  position: relative;
-  overflow: hidden;
-}
-
-.ripple-effect .ripple {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(0, 229, 255, 0.3);
-  transform: scale(0);
-  animation: ripple 0.6s linear;
-  pointer-events: none;
-}
-
-/* ===== 进度条动画 ===== */
-@keyframes progressFill {
-  from { width: 0; }
-}
-
-.progress-bar {
-  height: 3px;
-  background: linear-gradient(90deg, var(--blog-accent), #a855f7);
-  border-radius: 2px;
-  animation: progressFill 1.5s ease forwards;
-}
-
-/* ===== 响应式 ===== */
+/* --- 响应式 --- */
 @media (max-width: 768px) {
   .VPFeatures .container .items {
     grid-template-columns: 1fr !important;

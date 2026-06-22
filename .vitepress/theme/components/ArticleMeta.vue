@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useData } from 'vitepress'
+import ViewCount from './ViewCount.vue'
 
 const route = useRoute()
 const { page, lang } = useData()
@@ -46,6 +47,7 @@ onMounted(() => {
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
         {{ wordCount.toLocaleString() }} {{ lang === 'zh-CN' ? '字' : 'words' }}
       </span>
+      <ViewCount />
     </div>
     <div class="meta-actions">
       <button class="share-btn" @click="copyLink" :title="lang === 'zh-CN' ? '复制链接' : 'Copy link'">

@@ -172,21 +172,16 @@ onBeforeUnmount(() => {
             :style="{ animationDelay: ((gi * 0.1) + (index * 0.06)) + 's' }"
             @click="goToPost(post.url)"
           >
-            <div class="post-index">{{ String(index + 1).padStart(2, '0') }}</div>
-            <div class="post-body">
-              <div class="post-meta">
-                <time class="post-date">{{ post.date }}</time>
-                <span v-if="post.readTime" class="post-readtime">{{ post.readTime }} {{ isEn ? 'min' : '分钟' }}</span>
-                <span v-if="post.tags?.length" class="post-tags">
-                  <span v-for="tag in post.tags" :key="tag" class="post-tag"># {{ tag }}</span>
-                </span>
-              </div>
-              <h2 class="post-title">{{ post.title }}</h2>
-              <p class="post-excerpt" v-if="post.excerpt">{{ post.excerpt }}</p>
+            <div class="post-header">
+              <span class="post-index">{{ String(index + 1).padStart(2, '0') }}</span>
+              <time class="post-date">{{ post.date }}</time>
+              <span v-if="post.readTime" class="post-readtime">{{ post.readTime }} {{ isEn ? 'min' : '分钟' }}</span>
+              <span v-if="post.tags?.length" class="post-tags">
+                <span v-for="tag in post.tags" :key="tag" class="post-tag"># {{ tag }}</span>
+              </span>
             </div>
-            <div class="post-arrow">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </div>
+            <h2 class="post-title">{{ post.title }}</h2>
+            <p class="post-excerpt" v-if="post.excerpt">{{ post.excerpt }}</p>
           </article>
         </div>
       </div>
@@ -429,9 +424,7 @@ onBeforeUnmount(() => {
 }
 
 .post-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 1.25rem;
+  display: block;
   padding: 1.25rem 1.5rem;
   border-radius: 12px;
   border: 1px solid var(--vp-c-border);
@@ -440,7 +433,6 @@ onBeforeUnmount(() => {
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   animation: fadeInUp 0.5s ease forwards;
   opacity: 0;
-  overflow: hidden;
 }
 
 @keyframes fadeInUp {
@@ -455,33 +447,20 @@ onBeforeUnmount(() => {
   box-shadow: 0 4px 20px rgba(0, 229, 255, 0.08);
 }
 
-.post-index {
-  font-size: 0.8rem;
-  font-weight: 600;
-  font-family: var(--vp-font-family-mono);
-  color: var(--vp-c-text-3);
-  opacity: 0.5;
-  min-width: 28px;
-  flex-shrink: 0;
-  padding-top: 0.15rem;
-}
-
-.post-card:hover .post-index {
-  color: var(--vp-c-brand-1);
-  opacity: 1;
-}
-
-.post-body {
-  flex: 1;
-  min-width: 0;
-}
-
-.post-meta {
+.post-header {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 0.4rem;
   flex-wrap: wrap;
+}
+
+.post-index {
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--vp-font-family-mono);
+  color: var(--vp-c-brand-1);
+  opacity: 0.7;
 }
 
 .post-date {
@@ -514,14 +493,13 @@ onBeforeUnmount(() => {
 }
 
 .post-title {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 600;
   color: var(--vp-c-text-1);
   margin-bottom: 0.3rem;
   line-height: 1.6;
   transition: color 0.3s;
   word-break: break-word;
-  overflow-wrap: break-word;
 }
 
 .post-card:hover .post-title {
@@ -536,20 +514,6 @@ onBeforeUnmount(() => {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-.post-arrow {
-  color: var(--vp-c-text-3);
-  opacity: 0;
-  transform: translateX(-8px);
-  transition: all 0.3s;
-  flex-shrink: 0;
-}
-
-.post-card:hover .post-arrow {
-  opacity: 1;
-  transform: translateX(0);
-  color: var(--vp-c-brand-1);
 }
 
 /* ==================== Empty ==================== */
@@ -592,8 +556,7 @@ onBeforeUnmount(() => {
   .stats-row { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
   .stat-card { padding: 0.75rem 0.5rem; }
   .stat-num { font-size: 1.25rem; }
-  .post-card { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-  .post-index { display: none; }
-  .post-arrow { display: none; }
+  .post-header { gap: 0.5rem; }
+  .post-title { font-size: 1rem; }
 }
 </style>

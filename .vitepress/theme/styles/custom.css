@@ -1,9 +1,42 @@
 /* ====================================
-   暗色科幻风 — VitePress 自定义主题 v2
+   VitePress 自定义主题 v2
+   支持亮色/暗色切换
    ==================================== */
 
-/* --- CSS 变量覆盖 --- */
+/* --- 亮色模式变量 --- */
 :root {
+  --vp-c-brand-1: #0891b2;
+  --vp-c-brand-2: #0e7490;
+  --vp-c-brand-3: #155e75;
+  --vp-c-brand-soft: rgba(8, 145, 178, 0.14);
+
+  --vp-c-bg: #ffffff;
+  --vp-c-bg-alt: #f8fafc;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #f1f5f9;
+
+  --vp-c-text-1: #1e293b;
+  --vp-c-text-2: #475569;
+  --vp-c-text-3: #94a3b8;
+
+  --vp-c-border: #e2e8f0;
+  --vp-c-divider: #e2e8f0;
+  --vp-c-gutter: #f1f5f9;
+
+  --vp-c-mute: #f1f5f9;
+  --vp-c-mute-hover: #e2e8f0;
+
+  --vp-font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --vp-font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* 亮色模式下的品牌色（保持辨识度） */
+  --blog-accent: #0891b2;
+  --blog-accent-light: rgba(8, 145, 178, 0.1);
+  --blog-accent-border: rgba(8, 145, 178, 0.2);
+}
+
+/* --- 暗色模式变量 --- */
+.dark {
   --vp-c-brand-1: #00e5ff;
   --vp-c-brand-2: #00c4db;
   --vp-c-brand-3: #00a3b8;
@@ -25,18 +58,18 @@
   --vp-c-mute: rgba(56, 189, 248, 0.06);
   --vp-c-mute-hover: rgba(56, 189, 248, 0.1);
 
-  --vp-font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --vp-font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --blog-accent: #00e5ff;
+  --blog-accent-light: rgba(0, 229, 255, 0.1);
+  --blog-accent-border: rgba(0, 229, 255, 0.2);
 }
 
-/* --- 全局背景 + 网格纹理 --- */
-body {
+/* --- 暗色模式专属样式 --- */
+.dark body {
   background: linear-gradient(135deg, #080c18 0%, #0a1025 50%, #0c1220 100%);
   background-attachment: fixed;
-  min-height: 100vh;
 }
 
-body::before {
+.dark body::before {
   content: '';
   position: fixed;
   inset: 0;
@@ -48,13 +81,8 @@ body::before {
   z-index: 0;
 }
 
-#app {
-  position: relative;
-  z-index: 1;
-}
-
-/* --- 粒子星空背景 --- */
-#particles-canvas {
+/* --- 粒子星空背景（仅暗色） --- */
+.dark #particles-canvas {
   position: fixed;
   inset: 0;
   z-index: 0;
@@ -62,36 +90,19 @@ body::before {
 }
 
 /* --- 导航栏 --- */
-.VPNav {
+.dark .VPNav {
   background: rgba(8, 12, 24, 0.8) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border-bottom: 1px solid rgba(56, 189, 248, 0.08) !important;
 }
 
-.VPNavBar {
-  background: transparent !important;
-  backdrop-filter: none !important;
-}
-
-.VPNavBar .title {
-  font-weight: 700;
-  font-size: 1.2rem;
-}
-
-.VPNavBar .title a {
-  background: linear-gradient(135deg, #00e5ff, #a855f7);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* --- 链接 hover 效果 --- */
+/* --- 链接样式 --- */
 .vp-doc a {
-  color: #00e5ff;
+  color: var(--blog-accent);
   text-decoration: none;
   transition: all 0.2s;
-  border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+  border-bottom: 1px solid var(--blog-accent-border);
 }
 
 .vp-doc a:hover {
@@ -104,7 +115,7 @@ body::before {
   letter-spacing: -0.02em;
 }
 
-.vp-doc h1 {
+.dark .vp-doc h1 {
   background: linear-gradient(135deg, #e2e8f0, #00e5ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -113,25 +124,27 @@ body::before {
 
 /* --- 代码块风格 --- */
 .vp-doc div[class*='language-'] {
-  border: 1px solid rgba(56, 189, 248, 0.12);
+  border: 1px solid var(--vp-c-border);
   border-radius: 12px;
+}
+
+.dark .vp-doc div[class*='language-'] {
   background: rgba(8, 12, 24, 0.8) !important;
   box-shadow: 0 0 30px rgba(0, 229, 255, 0.04);
 }
 
-.vp-doc .shiki {
-  background: transparent !important;
-}
-
 /* --- 按钮样式覆盖 --- */
 .VPButton.brand {
-  border: 1px solid rgba(0, 229, 255, 0.3) !important;
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(168, 85, 247, 0.15)) !important;
-  backdrop-filter: blur(10px);
+  border: 1px solid var(--blog-accent-border) !important;
   transition: all 0.3s ease !important;
 }
 
-.VPButton.brand:hover {
+.dark .VPButton.brand {
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(168, 85, 247, 0.15)) !important;
+  backdrop-filter: blur(10px);
+}
+
+.dark .VPButton.brand:hover {
   border-color: rgba(0, 229, 255, 0.6) !important;
   background: linear-gradient(135deg, rgba(0, 229, 255, 0.25), rgba(168, 85, 247, 0.25)) !important;
   box-shadow: 0 0 30px rgba(0, 229, 255, 0.15);
@@ -139,14 +152,13 @@ body::before {
 }
 
 .VPButton.alt {
-  border: 1px solid rgba(56, 189, 248, 0.2) !important;
-  background: rgba(56, 189, 248, 0.05) !important;
+  border: 1px solid var(--vp-c-border) !important;
   backdrop-filter: blur(10px);
 }
 
 .VPButton.alt:hover {
-  border-color: rgba(56, 189, 248, 0.4) !important;
-  background: rgba(56, 189, 248, 0.1) !important;
+  border-color: var(--blog-accent-border) !important;
+  background: var(--blog-accent-light) !important;
 }
 
 /* --- 卡片式环绕效果 --- */
@@ -156,23 +168,29 @@ body::before {
 }
 
 .VPFeature {
-  border: 1px solid rgba(56, 189, 248, 0.08) !important;
+  border: 1px solid var(--vp-c-border) !important;
   border-radius: 16px !important;
-  background: rgba(16, 24, 48, 0.6) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
   transition: all 0.3s ease !important;
 }
 
+.dark .VPFeature {
+  background: rgba(16, 24, 48, 0.6) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
 .VPFeature:hover {
-  border-color: rgba(0, 229, 255, 0.25) !important;
-  box-shadow: 0 0 40px rgba(0, 229, 255, 0.06);
+  border-color: var(--blog-accent-border) !important;
   transform: translateY(-2px);
+}
+
+.dark .VPFeature:hover {
+  box-shadow: 0 0 40px rgba(0, 229, 255, 0.06);
 }
 
 /* --- 页脚 --- */
 .VPFooter {
-  border-top: 1px solid rgba(56, 189, 248, 0.06) !important;
+  border-top: 1px solid var(--vp-c-border) !important;
   background: transparent !important;
 }
 
@@ -186,11 +204,19 @@ body::before {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(56, 189, 248, 0.15);
+  background: var(--vp-c-border);
   border-radius: 3px;
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.15);
+}
+
 ::-webkit-scrollbar-thumb:hover {
+  background: var(--vp-c-text-3);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
   background: rgba(56, 189, 248, 0.3);
 }
 
@@ -210,8 +236,8 @@ body::before {
   animation: fadeInUp 0.6s ease forwards;
 }
 
-/* --- 发光文字 --- */
-.neon-text {
+/* --- 发光文字（仅暗色） --- */
+.dark .neon-text {
   text-shadow: 0 0 7px rgba(0, 229, 255, 0.4),
                0 0 20px rgba(0, 229, 255, 0.2),
                0 0 40px rgba(0, 229, 255, 0.1);
@@ -228,13 +254,13 @@ body::before {
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 2.5rem;
-  background: linear-gradient(135deg, #e2e8f0, #00e5ff);
+  background: linear-gradient(135deg, var(--vp-c-text-1), var(--blog-accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* ===== 新增：滚动触发动画 ===== */
+/* ===== 滚动触发动画 ===== */
 .scroll-reveal {
   opacity: 0;
   transform: translateY(40px);
@@ -287,7 +313,7 @@ body::before {
 .delay-5 { transition-delay: 0.5s; }
 .delay-6 { transition-delay: 0.6s; }
 
-/* ===== 新增：渐变边框动画 ===== */
+/* ===== 渐变边框动画 ===== */
 @keyframes borderGlow {
   0%, 100% {
     border-color: rgba(0, 229, 255, 0.15);
@@ -303,14 +329,14 @@ body::before {
   animation: borderGlow 4s ease-in-out infinite;
 }
 
-/* ===== 新增：磁吸按钮效果 ===== */
+/* ===== 磁吸按钮效果 ===== */
 .magnetic-btn {
   position: relative;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ===== 新增：光标追踪 glow ===== */
-.cursor-glow {
+/* ===== 光标追踪 glow（仅暗色） ===== */
+.dark .cursor-glow {
   position: fixed;
   width: 400px;
   height: 400px;
@@ -322,7 +348,7 @@ body::before {
   transition: opacity 0.3s;
 }
 
-/* ===== 新增：加载动画 ===== */
+/* ===== 加载动画 ===== */
 @keyframes pulse-ring {
   0% {
     transform: scale(0.8);
@@ -338,7 +364,7 @@ body::before {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #00e5ff;
+  background: var(--blog-accent);
   position: relative;
 }
 
@@ -347,11 +373,11 @@ body::before {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: #00e5ff;
+  background: var(--blog-accent);
   animation: pulse-ring 1.5s ease-out infinite;
 }
 
-/* ===== 新增：文字逐字显示 ===== */
+/* ===== 文字逐字显示 ===== */
 @keyframes charReveal {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -363,7 +389,7 @@ body::before {
   animation: charReveal 0.5s ease forwards;
 }
 
-/* ===== 新增：浮动动画 ===== */
+/* ===== 浮动动画 ===== */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
@@ -373,7 +399,7 @@ body::before {
   animation: float 3s ease-in-out infinite;
 }
 
-/* ===== 新增：旋转光环 ===== */
+/* ===== 旋转光环 ===== */
 @keyframes rotateGlow {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -399,8 +425,8 @@ body::before {
   opacity: 1;
 }
 
-/* ===== 新增：玻璃拟态增强 ===== */
-.glass-card {
+/* ===== 玻璃拟态增强（仅暗色） ===== */
+.dark .glass-card {
   background: rgba(16, 24, 48, 0.4) !important;
   backdrop-filter: blur(20px) saturate(1.5) !important;
   -webkit-backdrop-filter: blur(20px) saturate(1.5) !important;
@@ -410,7 +436,7 @@ body::before {
     inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
 }
 
-/* ===== 新增：霓虹闪烁 ===== */
+/* ===== 霓虹闪烁（仅暗色） ===== */
 @keyframes neonFlicker {
   0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
     text-shadow:
@@ -424,11 +450,11 @@ body::before {
   }
 }
 
-.neon-flicker {
+.dark .neon-flicker {
   animation: neonFlicker 3s infinite;
 }
 
-/* ===== 新增：波纹点击效果 ===== */
+/* ===== 波纹点击效果 ===== */
 @keyframes ripple {
   to {
     transform: scale(4);
@@ -450,18 +476,19 @@ body::before {
   pointer-events: none;
 }
 
-/* ===== 新增：进度条动画 ===== */
+/* ===== 进度条动画 ===== */
 @keyframes progressFill {
   from { width: 0; }
 }
 
 .progress-bar {
   height: 3px;
-  background: linear-gradient(90deg, #00e5ff, #a855f7);
+  background: linear-gradient(90deg, var(--blog-accent), #a855f7);
   border-radius: 2px;
   animation: progressFill 1.5s ease forwards;
 }
 
+/* ===== 响应式 ===== */
 @media (max-width: 768px) {
   .VPFeatures .container .items {
     grid-template-columns: 1fr !important;

@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vitepress'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useRouter, useData } from 'vitepress'
 import { data as posts } from '../../posts.data.js'
 
 const router = useRouter()
+const { isDark } = useData()
 const latestPosts = posts.slice(0, 6)
 
 // 打字机效果
@@ -26,10 +27,28 @@ onMounted(() => {
     typedText.value = phrases[0]
   } else {
     typeEffect()
-    initParticles()
+    if (isDark.value) initParticles()
     initScrollReveal()
     initCursorGlow()
     initCardTilt()
+  }
+})
+
+// 监听暗色模式变化，控制粒子显示
+import { watch } from 'vue'
+watch(isDark, (dark) => {
+  if (dark) {
+    initParticles()
+  } else {
+    if (animationId) {
+      cancelAnimationFrame(animationId)
+      animationId = null
+    }
+    const canvas = canvasRef.value
+    if (canvas) {
+      const ctx = canvas.getContext('2d')
+      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height)
+    }
   }
 })
 
@@ -154,7 +173,9 @@ function initScrollReveal() {
 // 鼠标追踪光效
 function initCursorGlow() {
   document.addEventListener('mousemove', (e) => {
-    cursorGlow.value = { x: e.clientX, y: e.clientY, visible: true }
+    if (isDark.value) {
+      cursorGlow.value = { x: e.clientX, y: e.clientY, visible: true }
+    }
   })
   document.addEventListener('mouseleave', () => {
     cursorGlow.value.visible = false
@@ -195,8 +216,9 @@ function goToPost(url: string) {
   <!-- 粒子背景 -->
   <canvas ref="canvasRef" id="particles-canvas" />
 
-  <!-- 鼠标追踪光效 -->
+  <!-- 鼠标追踪光效（仅暗色模式） -->
   <div
+    v-if="isDark"
     class="cursor-glow"
     :style="{
       left: cursorGlow.x + 'px',

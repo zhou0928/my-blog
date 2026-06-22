@@ -59,20 +59,7 @@ layout: page
 
 <div class="about-section">
   <h2>📊 Git Contributions</h2>
-  <div class="git-stats">
-    <div class="stat-item">
-      <span class="stat-number">4,700+</span>
-      <span class="stat-label">Commits</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-number">24+</span>
-      <span class="stat-label">Repositories</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-number">3</span>
-      <span class="stat-label">Git Identities</span>
-    </div>
-  </div>
+  <GitStats />
 </div>
 
 <div class="about-section">
@@ -106,7 +93,7 @@ layout: page
   position: absolute;
   inset: -4px;
   border-radius: 50%;
-  background: conic-gradient(from 0deg, #00e5ff, #a855f7, #00e5ff);
+  background: conic-gradient(from 0deg, var(--blog-accent), var(--blog-accent-2), var(--blog-accent));
   animation: rotateGlow 3s linear infinite;
 }
 
@@ -115,13 +102,13 @@ layout: page
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: linear-gradient(135deg, #0c1225, #101830);
+  background: var(--vp-c-bg-alt);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 3rem;
   font-weight: 800;
-  color: #00e5ff;
+  color: var(--blog-accent);
 }
 
 @keyframes rotateGlow {
@@ -133,7 +120,7 @@ layout: page
   font-size: 3rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #e2e8f0, #00e5ff, #a855f7);
+  background: linear-gradient(135deg, var(--blog-gradient-from), var(--blog-accent), var(--blog-accent-2));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -154,7 +141,7 @@ layout: page
   font-weight: 700;
   margin-bottom: 1rem;
   color: var(--vp-c-text-1);
-  background: linear-gradient(135deg, #e2e8f0, #00e5ff);
+  background: linear-gradient(135deg, var(--blog-gradient-from), var(--blog-accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -177,22 +164,22 @@ layout: page
   border-radius: 20px;
   font-size: 0.9rem;
   font-weight: 500;
-  border: 1px solid rgba(56, 189, 248, 0.15);
-  background: rgba(56, 189, 248, 0.05);
+  border: 1px solid var(--blog-card-border);
+  background: var(--blog-tag-bg);
   color: var(--vp-c-text-2);
   transition: all 0.3s;
 }
 
 .tech-tag:hover {
-  border-color: rgba(0, 229, 255, 0.4);
-  color: #00e5ff;
+  border-color: var(--blog-card-border-hover);
+  color: var(--blog-accent);
   transform: translateY(-2px);
 }
 
 .tech-tag.primary {
-  border-color: rgba(0, 229, 255, 0.3);
-  background: rgba(0, 229, 255, 0.1);
-  color: #00e5ff;
+  border-color: var(--blog-accent);
+  background: var(--blog-accent-soft);
+  color: var(--blog-accent);
 }
 
 .project-cards {
@@ -204,15 +191,15 @@ layout: page
 .project-card {
   padding: 1.25rem;
   border-radius: 12px;
-  border: 1px solid rgba(56, 189, 248, 0.08);
-  background: rgba(16, 24, 48, 0.5);
+  border: 1px solid var(--blog-card-border);
+  background: var(--blog-card-bg);
   transition: all 0.3s;
 }
 
 .project-card:hover {
-  border-color: rgba(0, 229, 255, 0.25);
+  border-color: var(--blog-card-border-hover);
   transform: translateY(-3px);
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.06);
+  box-shadow: 0 0 20px var(--blog-accent-glow);
 }
 
 .project-icon {
@@ -233,36 +220,6 @@ layout: page
   line-height: 1.5;
 }
 
-.git-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-}
-
-.stat-item {
-  text-align: center;
-  padding: 1.5rem 1rem;
-  border-radius: 12px;
-  border: 1px solid rgba(56, 189, 248, 0.08);
-  background: rgba(16, 24, 48, 0.5);
-}
-
-.stat-number {
-  display: block;
-  font-size: 2rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, #00e5ff, #a855f7);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 0.25rem;
-}
-
-.stat-label {
-  font-size: 0.85rem;
-  color: var(--vp-c-text-3);
-}
-
 .contact-links {
   display: flex;
   gap: 1rem;
@@ -274,8 +231,8 @@ layout: page
   gap: 0.5rem;
   padding: 0.75rem 1.25rem;
   border-radius: 10px;
-  border: 1px solid rgba(56, 189, 248, 0.15);
-  background: rgba(56, 189, 248, 0.05);
+  border: 1px solid var(--blog-card-border);
+  background: var(--blog-tag-bg);
   color: var(--vp-c-text-1);
   text-decoration: none;
   font-weight: 500;
@@ -283,16 +240,15 @@ layout: page
 }
 
 .contact-link:hover {
-  border-color: rgba(0, 229, 255, 0.4);
-  background: rgba(0, 229, 255, 0.1);
-  color: #00e5ff;
+  border-color: var(--blog-card-border-hover);
+  background: var(--blog-accent-soft);
+  color: var(--blog-accent);
   transform: translateY(-2px);
 }
 
 @media (max-width: 640px) {
   .about-name { font-size: 2rem; }
   .project-cards { grid-template-columns: 1fr; }
-  .git-stats { grid-template-columns: 1fr; }
   .contact-links { flex-direction: column; }
 }
 </style>

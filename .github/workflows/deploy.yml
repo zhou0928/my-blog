@@ -26,6 +26,11 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # 构建时拉取 GitHub 统计数据
+      - name: Fetch GitHub Stats
+        run: node --experimental-strip-types scripts/fetch-github-stats.ts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm run build
       # cleanUrls: true 在 GitHub Pages 上需要为每个 .html 生成同名目录的 index.html
       # 否则直接访问 /blog 这类无扩展名 URL 会 404

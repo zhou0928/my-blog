@@ -5,6 +5,7 @@ export default defineConfig({
   base: '/',
   cleanUrls: true,
   lastUpdated: true,
+  outDir: 'dist',
 
   head: [
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
@@ -14,6 +15,21 @@ export default defineConfig({
       href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap'
     }],
     ['link', { rel: 'icon', href: '/favicon.svg' }],
+    ['meta', { name: 'theme-color', content: '#00e5ff' }],
+    ['meta', { name: 'application-name', content: "Xiaozhou's Blog" }],
+    ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
+    ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' }],
+    // Open Graph
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:title', content: "Xiaozhou's Blog" }],
+    ['meta', { property: 'og:description', content: '工单系统 · 前端工程化 · Vue 生态 · 个人技术博客' }],
+    ['meta', { property: 'og:image', content: '/og-image.png' }],
+    ['meta', { property: 'og:site_name', content: "Xiaozhou's Blog" }],
+    // Twitter Card
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: "Xiaozhou's Blog" }],
+    ['meta', { name: 'twitter:description', content: '工单系统 · 前端工程化 · Vue 生态 · 个人技术博客' }],
+    ['meta', { name: 'twitter:image', content: '/og-image.png' }],
   ],
 
   locales: {
@@ -74,6 +90,13 @@ export default defineConfig({
           }
         }
       }
+    },
+  },
+
+  // 构建优化
+  vite: {
+    build: {
+      chunkSizeWarningLimit: 1000,
     },
   },
 })

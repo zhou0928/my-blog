@@ -2,6 +2,7 @@ import { h } from 'vue'
 import DefaultTheme from 'vitepress/theme'
 import BlogHome from './components/BlogHome.vue'
 import PostList from './components/PostList.vue'
+import BackToTop from './components/BackToTop.vue'
 import './styles/custom.css'
 import './cursor-effects'
 
@@ -14,5 +15,6 @@ export default {
   },
   enhanceApp({ app }) {
     app.component('PostList', PostList)
+    app.component('BackToTop', BackToTop)
   },
 }

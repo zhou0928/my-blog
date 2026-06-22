@@ -130,9 +130,10 @@ layout: page
 }
 
 .about-name {
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 800;
-  margin-bottom: 0.5rem;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
   background: linear-gradient(135deg, #e2e8f0, #00e5ff, #a855f7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

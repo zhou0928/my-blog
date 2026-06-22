@@ -119,8 +119,8 @@ onMounted(() => {
       <article
         v-for="(post, index) in filteredPosts"
         :key="post.url"
-        class="post-item scroll-reveal"
-        :class="'delay-' + ((index % 6) + 1)"
+        class="post-item fade-in-item"
+        :style="{ animationDelay: (index * 0.1) + 's' }"
         @click="goToPost(post.url)"
       >
         <div class="post-item-indicator" />
@@ -261,6 +261,22 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.fade-in-item {
+  animation: fadeInItem 0.5s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInItem {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .post-item {

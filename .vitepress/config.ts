@@ -9,7 +9,6 @@ export default defineConfig({
   lastUpdated: true,
   outDir: 'dist',
 
-  // SEO：生成 sitemap.xml
   sitemap: {
     hostname: SITE_URL,
   },
@@ -29,15 +28,31 @@ export default defineConfig({
     ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' }],
     // Open Graph
     ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { property: 'og:title', content: "Xiaozhou's Blog" }],
+    ['meta', { property: 'og:title', content: "Xiazhou's Blog" }],
     ['meta', { property: 'og:description', content: '工单系统 · 前端工程化 · Vue 生态 · 个人技术博客' }],
     ['meta', { property: 'og:image', content: `${SITE_URL}/favicon.svg` }],
-    ['meta', { property: 'og:site_name', content: "Xiaozhou's Blog" }],
+    ['meta', { property: 'og:site_name', content: "Xiazhou's Blog" }],
     // Twitter Card
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
-    ['meta', { name: 'twitter:title', content: "Xiaozhou's Blog" }],
+    ['meta', { name: 'twitter:title', content: "Xiazhou's Blog" }],
     ['meta', { name: 'twitter:description', content: '工单系统 · 前端工程化 · Vue 生态 · 个人技术博客' }],
     ['meta', { name: 'twitter:image', content: `${SITE_URL}/favicon.svg` }],
+    // Google Analytics — 替换 G-XXXXXXXXXX 为你的 GA4 Measurement ID
+    // ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX' }],
+    // ['script', {}, `window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', 'G-XXXXXXXXXX');`],
+    // JSON-LD 结构化数据
+    ['script', { type: 'application/ld+json' }, JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Blog',
+      name: "Xiazhou's Blog",
+      url: SITE_URL,
+      description: '工单系统 · 前端工程化 · Vue 生态 · 个人技术博客',
+      author: {
+        '@type': 'Person',
+        name: 'Xiazhou',
+        url: 'https://github.com/zhou0928',
+      },
+    })],
   ],
 
   locales: {

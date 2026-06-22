@@ -214,3 +214,56 @@ img[loading="lazy"]:not([src=""]) {
   background: var(--vp-c-bg-soft);
   border-radius: 0 8px 8px 0;
 }
+
+/* medium-zoom */
+.medium-zoom-overlay {
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.85) !important;
+}
+
+.medium-zoom-image {
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.medium-zoom-image--opened {
+  z-index: 1000;
+}
+
+/* TOC 目录高亮跟随 */
+.VPDocOutlineItem .outline-item.active > .outline-link {
+  color: var(--vp-c-brand-1) !important;
+  font-weight: 600;
+}
+
+.VPDocOutlineItem .outline-item.active > .outline-link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--vp-c-brand-1);
+  border-radius: 1px;
+}
+
+.VPDocOutlineItem .outline-link {
+  transition: color 0.2s, font-weight 0.2s;
+}
+
+/* 代码块复制按钮美化 */
+.vp-doc div[class*="language-"] .copy-btn {
+  border-radius: 6px;
+}
+
+.vp-doc div[class*="language-"] .copy-btn:hover {
+  color: var(--vp-c-brand-1) !important;
+}
+
+/* 文章最后更新时间 */
+.last-updated {
+  font-size: 0.8rem;
+  color: var(--vp-c-text-3);
+  margin-top: 1rem;
+  text-align: right;
+}

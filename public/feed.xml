@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Xiaozhou's Blog</title>
+    <link>https://000902.icu</link>
+    <description>工单系统 · 前端工程化 · Vue 生态 · 个人技术博客</description>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 22 Jun 2026 11:43:20 GMT</lastBuildDate>
+    <atom:link href="https://000902.icu/feed.xml" rel="self" type="application/rss+xml"/>
+  <item>
+    <title><![CDATA[前端 SEO 全链路优化：从基础标签到 AI 搜索时代]]></title>
+    <link>https://000902.icu/posts/seo-guide</link>
+    <guid isPermaLink="false">https://000902.icu/posts/seo-guide</guid>
+    <description><![CDATA[从 TDK 标签、语义化 HTML、SSR/SSG 到结构化数据和 AI 搜索优化，一套完整的前端 SEO 实践指南。]]></description>
+    <pubDate>Tue, 23 Jun 2026 00:00:00 GMT</pubDate>
+    <category>前端</category>
+    <category>SEO</category>
+    <category>性能</category>
+  </item>
+  <item>
+    <title><![CDATA[AI 编程实战：Cursor、Claude Code 与 Agent 模式的经验总结]]></title>
+    <link>https://000902.icu/posts/ai-coding</link>
+    <guid isPermaLink="false">https://000902.icu/posts/ai-coding</guid>
+    <description><![CDATA[深度使用 Cursor、Claude Code、Copilot 大半年后，聊聊各种 AI 编程工具的适用场景、工作流和避坑指南。]]></description>
+    <pubDate>Mon, 22 Jun 2026 00:00:00 GMT</pubDate>
+    <category>AI</category>
+    <category>前端</category>
+    <category>效率</category>
+  </item>
+  <item>
+    <title><![CDATA[Vue 3 进阶：Pinia、Composition API 与依赖注入的实战总结]]></title>
+    <link>https://000902.icu/posts/vue-advanced</link>
+    <guid isPermaLink="false">https://000902.icu/posts/vue-advanced</guid>
+    <description><![CDATA[从 Pinia 状态管理到 provide/inject 依赖注入，再到 Composition API 的高级模式——在真实项目里用了一年后的经验沉淀。]]></description>
+    <pubDate>Sun, 21 Jun 2026 00:00:00 GMT</pubDate>
+    <category>Vue</category>
+    <category>前端</category>
+    <category>架构</category>
+  </item>
+  <item>
+    <title><![CDATA[前端工程化：2026 年的构建工具、架构演进与 CI/CD]]></title>
+    <link>https://000902.icu/posts/fe-engineering</link>
+    <guid isPermaLink="false">https://000902.icu/posts/fe-engineering</guid>
+    <description><![CDATA[从构建工具之争到微前端架构，再到 CI/CD 流水线，聊聊我对前端工程化这几年演进的一些观察和实践。]]></description>
+    <pubDate>Sat, 20 Jun 2026 00:00:00 GMT</pubDate>
+    <category>前端</category>
+    <category>工程化</category>
+    <category>架构</category>
+  </item>
+  <item>
+    <title><![CDATA[Hello, World — 我的博客开张了]]></title>
+    <link>https://000902.icu/posts/hello-world</link>
+    <guid isPermaLink="false">https://000902.icu/posts/hello-world</guid>
+    <description><![CDATA[从零搭建了一个科幻风的个人博客，聊聊为什么是现在、为什么是 VitePress。]]></description>
+    <pubDate>Thu, 18 Jun 2026 00:00:00 GMT</pubDate>
+    <category>杂谈</category>
+    <category>前端</category>
+  </item>
+  <item>
+    <title><![CDATA[Vue 3 Composables 设计模式 — 从工单系统实践中总结]]></title>
+    <link>https://000902.icu/posts/vue-composables-patterns</link>
+    <guid isPermaLink="false">https://000902.icu/posts/vue-composables-patterns</guid>
+    <description><![CDATA[在 oneLineCar 工单系统中实践 Composables 设计模式半年后的一些总结和反思。]]></description>
+    <pubDate>Mon, 15 Jun 2026 00:00:00 GMT</pubDate>
+    <category>Vue</category>
+    <category>前端</category>
+    <category>架构</category>
+  </item>
+  <item>
+    <title><![CDATA[工单系统离线重连方案 — IndexedDB + 队列 + WebSocket]]></title>
+    <link>https://000902.icu/posts/work-order-offline</link>
+    <guid isPermaLink="false">https://000902.icu/posts/work-order-offline</guid>
+    <description><![CDATA[oneLineCar 工单系统在网络不稳定场景下的离线数据缓存与自动重连方案。]]></description>
+    <pubDate>Wed, 10 Jun 2026 00:00:00 GMT</pubDate>
+    <category>工单系统</category>
+    <category>前端</category>
+    <category>架构</category>
+  </item>
+  </channel>
+</rss>

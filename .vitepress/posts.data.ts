@@ -38,7 +38,7 @@ export default createContentLoader('posts/*.md', {
   excerpt: 'cursor',
   transform(raw): Post[] {
     return raw
-      .filter(({ frontmatter }) => frontmatter?.title)
+      .filter(({ frontmatter }) => frontmatter?.title && !frontmatter?.draft)
       .map(({ url, frontmatter, excerpt, src }) => {
         const wordCount = countWords(src || '')
         return {

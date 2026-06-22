@@ -1,0 +1,70 @@
+name: Deploy Preview
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      NODE_VERSION: '22'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Fetch GitHub stats
+        run: node --experimental-strip-types scripts/fetch-github-stats.ts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate RSS feed
+        run: node --experimental-strip-types scripts/generate-rss.ts
+
+      - name: Build
+        run: npm run build
+
+      - name: Fix cleanUrls
+        run: |
+          find dist -name "*.html" | while read -r f; do
+            dir="${f%.html}"
+            if [ "$(basename "$f")" = "index.html" ] && [ "$(dirname "$f")" = "$dir" ]; then
+              continue
+            fi
+            mkdir -p "$dir"
+            cp "$f" "$dir/index.html"
+          done
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  preview:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: preview
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy preview
+        id: deployment
+        uses: actions/deploy-pages@v4

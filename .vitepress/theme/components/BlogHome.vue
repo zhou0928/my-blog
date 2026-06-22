@@ -1,53 +1,38 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter, useData } from 'vitepress'
 import { data as posts } from '../../posts.data.js'
 
 const router = useRouter()
 const { isDark } = useData()
-const latestPosts = posts.slice(0, 7)
+const latestPosts = posts.slice(0, 6)
 
-// 打字机效果
-const typedText = ref('')
-const phrases = ['工单系统', 'Vue 生态', '前端工程化', '代码之美']
-const phraseIndex = ref(0)
-const charIndex = ref(0)
-const isDeleting = ref(false)
+// 终端打字效果
+const terminalLines = ref([
+  { type: 'comment', text: '// 关于我' },
+  { type: 'code', text: 'const xiaozhou = {' },
+  { type: 'code', text: '  role: "前端工程师",' },
+  { type: 'code', text: '  focus: "工单流程系统",' },
+  { type: 'code', text: '  commits: 4700,' },
+  { type: 'code', text: '  passion: "用代码解决实际问题"' },
+  { type: 'code', text: '}' },
+])
+const currentLine = ref(0)
+const currentChar = ref(0)
+const showCursor = ref(true)
 
-// 数字滚动
-const commitCount = ref(0)
-const repoCount = ref(0)
-const targetCommits = 4700
-const targetRepos = 24
-
-// 粒子 canvas
+// 粒子
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 let animationId: number | null = null
-let particleResizeHandler: (() => void) | null = null
-
-// 鼠标位置
-const mouseX = ref(0)
-const mouseY = ref(0)
 
 onMounted(() => {
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (prefersReduced) {
-    typedText.value = phrases[0]
-    commitCount.value = targetCommits
-    repoCount.value = targetRepos
-  } else {
-    typeEffect()
-    if (isDark.value) initParticles()
+  if (!prefersReduced) {
+    typeTerminal()
+    initParticles()
     initScrollReveal()
-    initCardTilt()
-    setTimeout(() => {
-      animateCounter(commitCount, targetCommits, 2000)
-      animateCounter(repoCount, targetRepos, 1500)
-    }, 800)
-    
-    // 鼠标追踪
-    document.addEventListener('mousemove', handleMouseMove)
   }
+  setInterval(() => { showCursor.value = !showCursor.value }, 500)
 })
 
 watch(isDark, (dark) => {
@@ -55,62 +40,29 @@ watch(isDark, (dark) => {
   else destroyParticles()
 })
 
-onUnmounted(() => {
-  destroyParticles()
-  document.removeEventListener('mousemove', handleMouseMove)
-})
-
-function handleMouseMove(e: MouseEvent) {
-  mouseX.value = e.clientX
-  mouseY.value = e.clientY
+function typeTerminal() {
+  if (currentLine.value >= terminalLines.value.length) {
+    setTimeout(() => { currentLine.value = 0; currentChar.value = 0; typeTerminal() }, 3000)
+    return
+  }
+  
+  const line = terminalLines.value[currentLine.value]
+  if (currentChar.value < line.text.length) {
+    currentChar.value++
+    setTimeout(typeTerminal, 30 + Math.random() * 50)
+  } else {
+    setTimeout(() => {
+      currentLine.value++
+      currentChar.value = 0
+      typeTerminal()
+    }, 150)
+  }
 }
 
 function destroyParticles() {
-  if (animationId !== null) {
-    cancelAnimationFrame(animationId)
-    animationId = null
-  }
-  if (particleResizeHandler) {
-    window.removeEventListener('resize', particleResizeHandler)
-    particleResizeHandler = null
-  }
+  if (animationId) { cancelAnimationFrame(animationId); animationId = null }
   const canvas = canvasRef.value
-  if (canvas) {
-    const ctx = canvas.getContext('2d')
-    if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height)
-  }
-}
-
-function animateCounter(target: any, end: number, duration: number) {
-  const startTime = Date.now()
-  function update() {
-    const elapsed = Date.now() - startTime
-    const progress = Math.min(elapsed / duration, 1)
-    const eased = 1 - Math.pow(1 - progress, 3)
-    target.value = Math.floor(end * eased)
-    if (progress < 1) requestAnimationFrame(update)
-  }
-  update()
-}
-
-function typeEffect() {
-  const currentPhrase = phrases[phraseIndex.value]
-  const speed = isDeleting.value ? 40 : 80
-  if (!isDeleting.value && charIndex.value < currentPhrase.length) {
-    typedText.value = currentPhrase.substring(0, charIndex.value + 1)
-    charIndex.value++
-    setTimeout(typeEffect, speed)
-  } else if (isDeleting.value && charIndex.value > 0) {
-    typedText.value = currentPhrase.substring(0, charIndex.value - 1)
-    charIndex.value--
-    setTimeout(typeEffect, speed / 2)
-  } else if (!isDeleting.value) {
-    setTimeout(() => { isDeleting.value = true; typeEffect() }, 2000)
-  } else {
-    isDeleting.value = false
-    phraseIndex.value = (phraseIndex.value + 1) % phrases.length
-    setTimeout(typeEffect, 500)
-  }
+  if (canvas) { const ctx = canvas.getContext('2d'); if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height) }
 }
 
 function initParticles() {
@@ -119,30 +71,25 @@ function initParticles() {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
 
-  const resize = () => {
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
-  }
-  resize()
-  particleResizeHandler = resize
-  window.addEventListener('resize', resize)
+  canvas.width = window.innerWidth
+  canvas.height = window.innerHeight
 
   interface Particle {
     x: number; y: number; vx: number; vy: number; size: number; opacity: number; hue: number
   }
 
   const particles: Particle[] = []
-  const count = Math.min(80, Math.floor(window.innerWidth / 15))
+  const count = Math.min(100, Math.floor(window.innerWidth / 12))
 
   for (let i = 0; i < count; i++) {
     particles.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
       size: Math.random() * 2 + 0.5,
-      opacity: Math.random() * 0.5 + 0.2,
-      hue: Math.random() * 60 + 170, // 170-230 = cyan to blue
+      opacity: Math.random() * 0.6 + 0.2,
+      hue: Math.random() * 60 + 170,
     })
   }
 
@@ -157,12 +104,12 @@ function initParticles() {
       if (p.y > canvas.height) p.y = 0
 
       // 发光粒子
-      const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 3)
+      const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 4)
       gradient.addColorStop(0, `hsla(${p.hue}, 100%, 60%, ${p.opacity})`)
       gradient.addColorStop(1, `hsla(${p.hue}, 100%, 60%, 0)`)
       
       ctx.beginPath()
-      ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2)
+      ctx.arc(p.x, p.y, p.size * 4, 0, Math.PI * 2)
       ctx.fillStyle = gradient
       ctx.fill()
 
@@ -171,27 +118,16 @@ function initParticles() {
         const dx = p.x - particles[j].x
         const dy = p.y - particles[j].y
         const dist = Math.sqrt(dx * dx + dy * dy)
-        if (dist < 120) {
+        if (dist < 100) {
           ctx.beginPath()
           ctx.moveTo(p.x, p.y)
           ctx.lineTo(particles[j].x, particles[j].y)
-          ctx.strokeStyle = `hsla(${(p.hue + particles[j].hue) / 2}, 80%, 60%, ${0.15 * (1 - dist / 120)})`
-          ctx.lineWidth = 0.8
+          ctx.strokeStyle = `hsla(${(p.hue + particles[j].hue) / 2}, 80%, 60%, ${0.2 * (1 - dist / 100)})`
+          ctx.lineWidth = 0.6
           ctx.stroke()
         }
       }
     })
-
-    // 鼠标光晕
-    if (isDark.value) {
-      const mouseGradient = ctx.createRadialGradient(mouseX.value, mouseY.value, 0, mouseX.value, mouseY.value, 150)
-      mouseGradient.addColorStop(0, 'rgba(0, 229, 255, 0.08)')
-      mouseGradient.addColorStop(1, 'rgba(0, 229, 255, 0)')
-      ctx.beginPath()
-      ctx.arc(mouseX.value, mouseY.value, 150, 0, Math.PI * 2)
-      ctx.fillStyle = mouseGradient
-      ctx.fill()
-    }
 
     animationId = requestAnimationFrame(draw)
   }
@@ -199,14 +135,6 @@ function initParticles() {
 }
 
 function initScrollReveal() {
-  const elements = document.querySelectorAll('.scroll-reveal')
-  elements.forEach((el) => {
-    const rect = el.getBoundingClientRect()
-    if (rect.top < window.innerHeight && rect.bottom > 0) {
-      el.classList.add('revealed')
-    }
-  })
-  
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -215,29 +143,7 @@ function initScrollReveal() {
     },
     { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
   )
-  elements.forEach((el) => observer.observe(el))
-}
-
-function initCardTilt() {
-  document.querySelectorAll('.post-card').forEach((card) => {
-    card.addEventListener('mousemove', (e) => {
-      const el = e.currentTarget as HTMLElement
-      const rect = el.getBoundingClientRect()
-      const x = e.clientX - rect.left
-      const y = e.clientY - rect.top
-      const centerX = rect.width / 2
-      const centerY = rect.height / 2
-      const rotateX = (y - centerY) / 30
-      const rotateY = (centerX - x) / 30
-      el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`
-      el.style.setProperty('--mouse-x', `${x}px`)
-      el.style.setProperty('--mouse-y', `${y}px`)
-    })
-    card.addEventListener('mouseleave', (e) => {
-      const el = e.currentTarget as HTMLElement
-      el.style.transform = ''
-    })
-  })
+  document.querySelectorAll('.scroll-reveal').forEach((el) => observer.observe(el))
 }
 
 function goToPost(url: string) {
@@ -250,16 +156,12 @@ function goToPost(url: string) {
 
   <!-- ====== Hero ====== -->
   <section class="hero">
-    <!-- 动态光晕 -->
     <div class="hero-orb hero-orb-1" />
     <div class="hero-orb hero-orb-2" />
-    <div class="hero-orb hero-orb-3" />
-    
-    <!-- 网格背景 -->
     <div class="hero-grid" />
 
     <div class="hero-content">
-      <div class="hero-badge">前端工程师</div>
+      <div class="hero-badge">Frontend Engineer</div>
       
       <h1 class="hero-title">
         <span class="hero-name">Xiaozhou</span>
@@ -267,28 +169,25 @@ function goToPost(url: string) {
       
       <p class="hero-subtitle">
         专注于
-        <span class="typed-text">{{ typedText }}</span>
-        <span class="cursor">|</span>
-      </p>
-      
-      <p class="hero-desc">
-        工单流程系统 · 4,700+ Git 提交 · 热爱技术与分享
+        <span class="typed-text">工单流程系统</span>
       </p>
 
-      <div class="hero-stats">
-        <div class="stat">
-          <span class="stat-num">{{ commitCount.toLocaleString() }}+</span>
-          <span class="stat-label">Commits</span>
+      <!-- 终端卡片 -->
+      <div class="terminal-card">
+        <div class="terminal-header">
+          <span class="terminal-dot terminal-dot-red" />
+          <span class="terminal-dot terminal-dot-yellow" />
+          <span class="terminal-dot terminal-dot-green" />
+          <span class="terminal-title">xiaozhou.ts</span>
         </div>
-        <div class="stat-dot" />
-        <div class="stat">
-          <span class="stat-num">{{ repoCount }}+</span>
-          <span class="stat-label">Projects</span>
-        </div>
-        <div class="stat-dot" />
-        <div class="stat">
-          <span class="stat-num">3</span>
-          <span class="stat-label">Years</span>
+        <div class="terminal-body">
+          <div v-for="(line, i) in terminalLines" :key="i" class="terminal-line">
+            <span class="line-number">{{ i + 1 }}</span>
+            <span :class="['line-content', `line-${line.type}`]">
+              {{ i < currentLine ? line.text : (i === currentLine ? line.text.substring(0, currentChar) : '') }}
+            </span>
+            <span v-if="i === currentLine" class="terminal-cursor" :class="{ 'cursor-hidden': !showCursor }">|</span>
+          </div>
         </div>
       </div>
 
@@ -299,16 +198,6 @@ function goToPost(url: string) {
         </a>
         <a href="/about" class="btn btn-ghost">关于我</a>
       </div>
-
-      <div class="hero-social">
-        <a href="https://github.com/zhou0928" target="_blank" class="social-link">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-        </a>
-      </div>
-    </div>
-
-    <div class="scroll-hint">
-      <div class="scroll-line" />
     </div>
   </section>
 
@@ -329,6 +218,7 @@ function goToPost(url: string) {
         @click="goToPost(post.url)"
       >
         <div class="card-shine" />
+        <div class="card-accent" :style="{ background: getAccent(index) }" />
         <div class="card-content">
           <div class="card-meta">
             <time>{{ post.date }}</time>
@@ -345,7 +235,7 @@ function goToPost(url: string) {
 
     <div class="section-more scroll-reveal">
       <a href="/blog" class="more-link">
-        <span>查看全部</span>
+        <span>查看全部文章</span>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
     </div>
@@ -366,94 +256,93 @@ function goToPost(url: string) {
     </div>
   </section>
 
-  <!-- ====== 关于 ====== -->
-  <section class="section about-section scroll-reveal">
-    <div class="about-card">
-      <div class="about-content">
-        <span class="section-tag">About</span>
-        <h3 class="about-title">关于我</h3>
-        <p class="about-text">
-          专注工单流程系统开发，4 年前端经验，累计 4,700+ Git 提交。
-          热爱用代码解决实际问题，相信技术能让工作更高效。
-        </p>
-        <a href="/about" class="about-link">了解更多 →</a>
+  <!-- ====== CTA ====== -->
+  <section class="section cta-section scroll-reveal">
+    <div class="cta-card">
+      <div class="cta-content">
+        <h2 class="cta-title">开始阅读</h2>
+        <p class="cta-desc">探索关于前端工程化、Vue 生态和工单系统的深度文章</p>
+        <a href="/blog" class="btn btn-primary">
+          <span>浏览全部</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
       </div>
-      <div class="about-visual">
-        <div class="about-avatar">Z</div>
-        <div class="about-stats">
-          <div class="about-stat">
-            <span class="about-stat-num">4</span>
-            <span class="about-stat-label">年经验</span>
-          </div>
-          <div class="about-stat">
-            <span class="about-stat-num">24+</span>
-            <span class="about-stat-label">项目</span>
-          </div>
+      <div class="cta-visual">
+        <div class="cta-code">
+          <div class="code-line"><span class="code-kw">const</span> <span class="code-var">blog</span> = <span class="code-str">"Xiaozhou's Blog"</span></div>
+          <div class="code-line"><span class="code-kw">const</span> <span class="code-var">posts</span> = <span class="code-num">{{ posts.length }}</span></div>
+          <div class="code-line"><span class="code-kw">export</span> <span class="code-kw">default</span> {{ '{' }} blog, posts {{ '}' }}</div>
         </div>
       </div>
     </div>
   </section>
 </template>
 
+<script lang="ts">
+const accents = [
+  'linear-gradient(135deg, #00e5ff, #0ea5e9)',
+  'linear-gradient(135deg, #a855f7, #ec4899)',
+  'linear-gradient(135deg, #3b82f6, #06b6d4)',
+  'linear-gradient(135deg, #22c55e, #3b82f6)',
+  'linear-gradient(135deg, #f59e0b, #ef4444)',
+  'linear-gradient(135deg, #ec4899, #a855f7)',
+]
+
+export default {
+  methods: {
+    getAccent(index: number) {
+      return accents[index % accents.length]
+    }
+  }
+}
+</script>
+
 <style scoped>
 /* ==================== Hero ==================== */
 .hero {
   position: relative;
-  min-height: 85vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: 5rem 1.5rem 3rem;
+  padding: 5rem 1.5rem 4rem;
 }
 
 .hero-orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.4;
+  filter: blur(100px);
+  opacity: 0.5;
   pointer-events: none;
 }
 
 .hero-orb-1 {
-  width: 500px; height: 500px;
+  width: 600px; height: 600px;
   background: radial-gradient(circle, #00e5ff 0%, transparent 70%);
-  top: -150px; right: -50px;
-  animation: orbFloat 10s ease-in-out infinite alternate;
+  top: -200px; right: -100px;
+  animation: orbFloat 12s ease-in-out infinite alternate;
 }
 
 .hero-orb-2 {
-  width: 400px; height: 400px;
+  width: 500px; height: 500px;
   background: radial-gradient(circle, #a855f7 0%, transparent 70%);
-  bottom: -100px; left: -50px;
-  animation: orbFloat 12s ease-in-out infinite alternate-reverse;
-}
-
-.hero-orb-3 {
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, #3b82f6 0%, transparent 70%);
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  animation: orbPulse 6s ease-in-out infinite;
+  bottom: -150px; left: -100px;
+  animation: orbFloat 15s ease-in-out infinite alternate-reverse;
 }
 
 @keyframes orbFloat {
   0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(30px, -30px) scale(1.1); }
-}
-
-@keyframes orbPulse {
-  0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
-  50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.2); }
+  100% { transform: translate(40px, -40px) scale(1.15); }
 }
 
 .hero-grid {
   position: absolute;
   inset: 0;
   background-image: 
-    linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
-  background-size: 60px 60px;
+    linear-gradient(rgba(0, 229, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 229, 255, 0.04) 1px, transparent 1px);
+  background-size: 50px 50px;
   pointer-events: none;
 }
 
@@ -461,19 +350,20 @@ function goToPost(url: string) {
   position: relative;
   text-align: center;
   z-index: 1;
+  max-width: 700px;
 }
 
 .hero-badge {
   display: inline-block;
-  padding: 0.4rem 1rem;
+  padding: 0.4rem 1.2rem;
   border-radius: 100px;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(168, 85, 247, 0.15));
+  background: rgba(0, 229, 255, 0.1);
   border: 1px solid rgba(0, 229, 255, 0.2);
-  color: var(--vp-c-brand-1);
+  color: #00e5ff;
   margin-bottom: 2rem;
   animation: fadeInDown 0.8s ease forwards;
 }
@@ -484,12 +374,12 @@ function goToPost(url: string) {
 }
 
 .hero-title {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   animation: fadeInUp 0.8s ease 0.1s both;
 }
 
 .hero-name {
-  font-size: 6rem;
+  font-size: 5.5rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1;
@@ -520,78 +410,106 @@ function goToPost(url: string) {
 }
 
 .hero-subtitle {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   color: var(--vp-c-text-2);
-  margin-bottom: 1rem;
+  margin-bottom: 2.5rem;
   animation: fadeInUp 0.8s ease 0.2s both;
 }
 
 .typed-text {
-  color: var(--vp-c-brand-1);
+  color: #00e5ff;
   font-weight: 600;
 }
 
-.cursor {
-  color: var(--vp-c-brand-1);
-  animation: blink 1s step-end infinite;
-  margin-left: 2px;
+/* ==================== Terminal ==================== */
+.terminal-card {
+  max-width: 500px;
+  margin: 0 auto 2.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 229, 255, 0.15);
+  background: rgba(8, 12, 24, 0.9);
+  backdrop-filter: blur(20px);
+  text-align: left;
+  animation: fadeInUp 0.8s ease 0.3s both;
 }
+
+.dark .terminal-card {
+  border-color: rgba(0, 229, 255, 0.2);
+  box-shadow: 0 0 40px rgba(0, 229, 255, 0.08);
+}
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.terminal-dot-red { background: #ff5f57; }
+.terminal-dot-yellow { background: #febc2e; }
+.terminal-dot-green { background: #28c840; }
+
+.terminal-title {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-family: var(--vp-font-family-mono);
+}
+
+.terminal-body {
+  padding: 16px;
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.85rem;
+  line-height: 1.8;
+}
+
+.terminal-line {
+  display: flex;
+  gap: 12px;
+}
+
+.line-number {
+  color: rgba(255, 255, 255, 0.2);
+  min-width: 20px;
+  user-select: none;
+}
+
+.line-content {
+  color: #e2e8f0;
+}
+
+.line-comment { color: #64748b; }
+.line-kw { color: #c084fc; }
+.line-str { color: #34d399; }
+.line-num { color: #f59e0b; }
+
+.terminal-cursor {
+  color: #00e5ff;
+  animation: blink 0.8s step-end infinite;
+}
+
+.cursor-hidden { opacity: 0; }
 
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
 
-.hero-desc {
-  font-size: 1rem;
-  color: var(--vp-c-text-3);
-  margin-bottom: 2.5rem;
-  animation: fadeInUp 0.8s ease 0.3s both;
-}
-
-.hero-stats {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
-  margin-bottom: 2.5rem;
-  animation: fadeInUp 0.8s ease 0.4s both;
-}
-
-.stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.stat-num {
-  font-size: 2.25rem;
-  font-weight: 700;
-  font-family: var(--vp-font-family-mono);
-  color: var(--vp-c-text-1);
-}
-
-.stat-label {
-  font-size: 0.75rem;
-  color: var(--vp-c-text-3);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.stat-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--vp-c-border);
-}
-
+/* ==================== Actions ==================== */
 .hero-actions {
   display: flex;
   gap: 1rem;
   justify-content: center;
-  margin-bottom: 2.5rem;
-  animation: fadeInUp 0.8s ease 0.5s both;
+  animation: fadeInUp 0.8s ease 0.4s both;
 }
 
 .btn {
@@ -613,7 +531,7 @@ function goToPost(url: string) {
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   box-shadow: 0 8px 30px rgba(0, 229, 255, 0.4);
 }
 
@@ -624,49 +542,8 @@ function goToPost(url: string) {
 }
 
 .btn-ghost:hover {
-  border-color: var(--vp-c-brand-1);
-  color: var(--vp-c-brand-1);
-}
-
-.hero-social {
-  animation: fadeInUp 0.8s ease 0.6s both;
-}
-
-.social-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid var(--vp-c-border);
-  color: var(--vp-c-text-2);
-  transition: all 0.3s;
-}
-
-.social-link:hover {
-  border-color: var(--vp-c-brand-1);
-  color: var(--vp-c-brand-1);
-  transform: translateY(-3px);
-}
-
-.scroll-hint {
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.scroll-line {
-  width: 1px;
-  height: 40px;
-  background: linear-gradient(180deg, var(--vp-c-brand-1), transparent);
-  animation: scrollPulse 2s ease-in-out infinite;
-}
-
-@keyframes scrollPulse {
-  0%, 100% { opacity: 0.3; transform: scaleY(1); }
-  50% { opacity: 1; transform: scaleY(1.2); }
+  border-color: #00e5ff;
+  color: #00e5ff;
 }
 
 /* ==================== Section ==================== */
@@ -680,7 +557,7 @@ function goToPost(url: string) {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
 }
 
 .section-tag {
@@ -690,8 +567,8 @@ function goToPost(url: string) {
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  background: var(--vp-c-brand-soft);
-  color: var(--vp-c-brand-1);
+  background: rgba(0, 229, 255, 0.1);
+  color: #00e5ff;
 }
 
 .section-title {
@@ -725,25 +602,29 @@ function goToPost(url: string) {
 }
 
 .post-card:hover {
-  border-color: var(--vp-c-brand-1);
-  box-shadow: 0 20px 40px rgba(0, 229, 255, 0.1);
+  border-color: rgba(0, 229, 255, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 229, 255, 0.08);
+  transform: translateY(-6px);
 }
 
 .card-shine {
   position: absolute;
   inset: 0;
-  background: radial-gradient(300px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 229, 255, 0.1), transparent 50%);
+  background: radial-gradient(300px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 229, 255, 0.12), transparent 50%);
   opacity: 0;
   transition: opacity 0.3s;
   pointer-events: none;
 }
 
-.post-card:hover .card-shine {
-  opacity: 1;
+.post-card:hover .card-shine { opacity: 1; }
+
+.card-accent {
+  height: 4px;
+  opacity: 0.8;
 }
 
 .card-content {
-  padding: 1.5rem;
+  padding: 1.25rem 1.5rem 1.5rem;
   position: relative;
   z-index: 1;
 }
@@ -763,8 +644,8 @@ function goToPost(url: string) {
   border-radius: 4px;
   font-size: 0.7rem;
   font-weight: 500;
-  background: var(--vp-c-brand-soft);
-  color: var(--vp-c-brand-1);
+  background: rgba(0, 229, 255, 0.1);
+  color: #00e5ff;
 }
 
 .card-title {
@@ -780,9 +661,7 @@ function goToPost(url: string) {
   transition: color 0.3s;
 }
 
-.post-card:hover .card-title {
-  color: var(--vp-c-brand-1);
-}
+.post-card:hover .card-title { color: #00e5ff; }
 
 .card-desc {
   font-size: 0.88rem;
@@ -795,27 +674,22 @@ function goToPost(url: string) {
   margin-bottom: 1rem;
 }
 
-.card-footer {
-  display: flex;
-}
+.card-footer { display: flex; }
 
 .card-link {
   font-size: 0.85rem;
   font-weight: 500;
-  color: var(--vp-c-brand-1);
+  color: #00e5ff;
   opacity: 0;
   transform: translateX(-8px);
   transition: all 0.3s;
 }
 
-.post-card:hover .card-link {
-  opacity: 1;
-  transform: translateX(0);
-}
+.post-card:hover .card-link { opacity: 1; transform: translateX(0); }
 
 .section-more {
   text-align: center;
-  margin-top: 3rem;
+  margin-top: 2.5rem;
 }
 
 .more-link {
@@ -826,16 +700,15 @@ function goToPost(url: string) {
   border-radius: 8px;
   font-size: 0.95rem;
   font-weight: 500;
-  color: var(--vp-c-brand-1);
-  border: 1px solid var(--vp-c-border);
+  color: #00e5ff;
+  border: 1px solid rgba(0, 229, 255, 0.2);
   text-decoration: none;
   transition: all 0.3s;
 }
 
 .more-link:hover {
-  border-color: var(--vp-c-brand-1);
-  background: var(--vp-c-brand-soft);
-  transform: translateY(-2px);
+  background: rgba(0, 229, 255, 0.08);
+  border-color: rgba(0, 229, 255, 0.4);
 }
 
 /* ==================== Tech ==================== */
@@ -858,28 +731,28 @@ function goToPost(url: string) {
 }
 
 .tech-card:hover {
-  border-color: var(--vp-c-brand-1);
+  border-color: rgba(0, 229, 255, 0.3);
   transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 10px 30px rgba(0, 229, 255, 0.06);
 }
 
 .tech-icon {
   width: 52px;
   height: 52px;
   border-radius: 14px;
-  background: var(--vp-c-brand-soft);
+  background: rgba(0, 229, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--vp-c-brand-1);
+  color: #00e5ff;
   transition: all 0.3s;
 }
 
 .tech-card:hover .tech-icon {
   transform: scale(1.1) rotate(5deg);
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.25);
 }
 
 .tech-card span {
@@ -888,115 +761,83 @@ function goToPost(url: string) {
   font-weight: 500;
 }
 
-/* ==================== About ==================== */
-.about-card {
+/* ==================== CTA ==================== */
+.cta-card {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr 1fr;
   gap: 3rem;
-  padding: 2.5rem;
-  border-radius: 16px;
+  padding: 3rem;
+  border-radius: 20px;
   border: 1px solid var(--vp-c-border);
-  background: var(--vp-c-bg);
-  transition: all 0.3s;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.03) 0%, rgba(168, 85, 247, 0.03) 100%);
 }
 
-.about-card:hover {
-  border-color: var(--vp-c-brand-1);
-  box-shadow: 0 10px 30px rgba(0, 229, 255, 0.08);
+.dark .cta-card {
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.06) 0%, rgba(168, 85, 247, 0.06) 100%);
 }
 
-.about-content {
+.cta-content {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 1rem;
 }
 
-.about-title {
-  font-size: 1.5rem;
-  font-weight: 700;
+.cta-title {
+  font-size: 2rem;
+  font-weight: 800;
   color: var(--vp-c-text-1);
 }
 
-.about-text {
-  font-size: 0.95rem;
-  color: var(--vp-c-text-2);
-  line-height: 1.7;
+.cta-desc {
+  font-size: 1rem;
+  color: var(--vp-c-text-3);
+  line-height: 1.6;
 }
 
-.about-link {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--vp-c-brand-1);
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-.about-link:hover {
-  transform: translateX(4px);
-}
-
-.about-visual {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.about-avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--vp-c-brand-1), #a855f7);
+.cta-visual {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
-  font-weight: 800;
-  color: white;
 }
 
-.about-stats {
+.cta-code {
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: rgba(8, 12, 24, 0.9);
+  border: 1px solid rgba(0, 229, 255, 0.15);
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.85rem;
+  line-height: 2;
+}
+
+.code-line {
   display: flex;
-  gap: 1.5rem;
+  gap: 8px;
 }
 
-.about-stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.2rem;
-}
-
-.about-stat-num {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--vp-c-text-1);
-}
-
-.about-stat-label {
-  font-size: 0.75rem;
-  color: var(--vp-c-text-3);
-}
+.code-kw { color: #c084fc; }
+.code-var { color: #e2e8f0; }
+.code-str { color: #34d399; }
+.code-num { color: #f59e0b; }
 
 /* ==================== Responsive ==================== */
 @media (max-width: 900px) {
   .posts-grid { grid-template-columns: repeat(2, 1fr); }
   .tech-grid { grid-template-columns: repeat(3, 1fr); }
+  .cta-card { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 768px) {
-  .hero-name { font-size: 4rem; }
-  .hero-subtitle { font-size: 1.2rem; }
-  .stat-num { font-size: 1.75rem; }
-  .scroll-hint { display: none; }
+  .hero-name { font-size: 3.5rem; }
+  .hero-subtitle { font-size: 1.1rem; }
+  .terminal-card { margin-left: 0; margin-right: 0; }
 }
 
 @media (max-width: 640px) {
-  .hero-name { font-size: 3rem; }
+  .hero-name { font-size: 2.8rem; }
   .posts-grid { grid-template-columns: 1fr; }
   .tech-grid { grid-template-columns: repeat(3, 1fr); }
-  .about-card { grid-template-columns: 1fr; gap: 2rem; }
-  .about-visual { flex-direction: row; justify-content: center; }
 }
 
 @media (max-width: 480px) {

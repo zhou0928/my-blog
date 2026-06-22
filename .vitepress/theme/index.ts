@@ -5,6 +5,8 @@ import BlogHome from './components/BlogHome.vue'
 import PostList from './components/PostList.vue'
 import GitStats from './components/GitStats.vue'
 import BackToTop from './components/BackToTop.vue'
+import NotFound from './components/NotFound.vue'
+import ArticleMeta from './components/ArticleMeta.vue'
 import { initCursorEffects, destroyCursorEffects } from './cursor-effects'
 import './styles/custom.css'
 
@@ -17,8 +19,8 @@ export default {
     }
     return h(DefaultTheme.Layout, null, {
       'home-features-after': () => h(BlogHome),
-      // 404 页面：VitePress 在找不到页面时渲染 not-found slot
-      'not-found': () => h(BackToTop),
+      'not-found': () => h(NotFound),
+      'doc-before': () => h(ArticleMeta),
     })
   },
   enhanceApp({ app }) {

@@ -161,3 +161,56 @@ body {
 @media (max-width: 768px) {
   #particles-canvas { display: none; }
 }
+
+/* 图片懒加载 */
+img {
+  transition: opacity 0.3s ease;
+}
+
+img[loading="lazy"] {
+  opacity: 0;
+}
+
+img[loading="lazy"].loaded,
+img[loading="lazy"]:not([src=""]) {
+  opacity: 1;
+}
+
+/* 确保暗亮模式切换按钮可见 */
+.VPColorModeButton {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* 文章内图片圆角 + 阴影 */
+.vp-doc img {
+  border-radius: 8px;
+  border: 1px solid var(--vp-c-border);
+}
+
+.dark .vp-doc img {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* 代码块优化 */
+.vp-doc div[class*="language-"] {
+  border-radius: 10px;
+  border: 1px solid var(--vp-c-border);
+}
+
+/* 表格样式 */
+.vp-doc table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.vp-doc th {
+  background: var(--vp-c-bg-soft);
+}
+
+/* 引用块样式 */
+.vp-doc blockquote {
+  border-left: 3px solid var(--vp-c-brand-1);
+  background: var(--vp-c-bg-soft);
+  border-radius: 0 8px 8px 0;
+}

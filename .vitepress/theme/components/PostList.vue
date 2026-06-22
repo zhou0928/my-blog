@@ -35,6 +35,16 @@ const filteredPosts = computed(() => {
   return result
 })
 
+const groupedPosts = computed(() => {
+  const groups: Record<string, typeof filteredPosts.value> = {}
+  for (const post of filteredPosts.value) {
+    const year = new Date(post.date).getFullYear().toString()
+    if (!groups[year]) groups[year] = []
+    groups[year].push(post)
+  }
+  return Object.entries(groups).sort(([a], [b]) => Number(b) - Number(a))
+})
+
 const postStats = computed(() => ({
   total: posts.value.length,
   tags: allTags.value.length,
@@ -148,28 +158,39 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- 文章列表 -->
-    <div class="posts-list" v-if="filteredPosts.length > 0">
-      <article
-        v-for="(post, index) in filteredPosts"
-        :key="post.url"
-        class="post-card"
-        :style="{ animationDelay: (index * 0.08) + 's' }"
-        @click="goToPost(post.url)"
-      >
-        <div class="post-index">{{ String(index + 1).padStart(2, '0') }}</div>
-        <div class="post-body">
-          <div class="post-meta">
-            <time class="post-date">{{ post.date }}</time>
-            <span v-if="post.tags?.length" class="post-tag">{{ post.tags[0] }}</span>
-          </div>
-          <h2 class="post-title">{{ post.title }}</h2>
-          <p class="post-excerpt" v-if="post.excerpt">{{ post.excerpt }}</p>
+    <template v-if="filteredPosts.length > 0">
+      <div v-for="([year, yearPosts], gi) in groupedPosts" :key="year" class="year-group">
+        <h2 class="year-heading">
+          <span class="year-label">{{ year }}</span>
+          <span class="year-count">{{ yearPosts.length }} {{ isEn ? 'posts' : '篇' }}</span>
+        </h2>
+        <div class="posts-list">
+          <article
+            v-for="(post, index) in yearPosts"
+            :key="post.url"
+            class="post-card"
+            :style="{ animationDelay: ((gi * 0.1) + (index * 0.06)) + 's' }"
+            @click="goToPost(post.url)"
+          >
+            <div class="post-index">{{ String(index + 1).padStart(2, '0') }}</div>
+            <div class="post-body">
+              <div class="post-meta">
+                <time class="post-date">{{ post.date }}</time>
+                <span v-if="post.readTime" class="post-readtime">{{ post.readTime }} {{ isEn ? 'min' : '分钟' }}</span>
+                <span v-if="post.tags?.length" class="post-tags">
+                  <span v-for="tag in post.tags" :key="tag" class="post-tag"># {{ tag }}</span>
+                </span>
+              </div>
+              <h2 class="post-title">{{ post.title }}</h2>
+              <p class="post-excerpt" v-if="post.excerpt">{{ post.excerpt }}</p>
+            </div>
+            <div class="post-arrow">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+          </article>
         </div>
-        <div class="post-arrow">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
-      </article>
-    </div>
+      </div>
+    </template>
 
     <!-- 空状态 -->
     <div v-else class="empty-state">
@@ -371,6 +392,35 @@ onBeforeUnmount(() => {
   color: var(--vp-c-text-3);
 }
 
+/* ==================== Year Groups ==================== */
+.year-group {
+  margin-bottom: 2rem;
+}
+
+.year-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--vp-c-border);
+}
+
+.year-label {
+  font-size: 1.75rem;
+  font-weight: 800;
+  font-family: var(--vp-font-family-mono);
+  background: linear-gradient(135deg, var(--vp-c-text-1), var(--vp-c-brand-1));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.year-count {
+  font-size: 0.8rem;
+  color: var(--vp-c-text-3);
+}
+
 /* ==================== Post Cards ==================== */
 .posts-list {
   display: flex;
@@ -428,12 +478,27 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 0.4rem;
+  flex-wrap: wrap;
 }
 
 .post-date {
   font-size: 0.8rem;
   color: var(--vp-c-text-3);
   font-family: var(--vp-font-family-mono);
+}
+
+.post-readtime {
+  font-size: 0.75rem;
+  color: var(--vp-c-text-3);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  background: var(--vp-c-bg-soft);
+}
+
+.post-tags {
+  display: inline-flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
 }
 
 .post-tag {

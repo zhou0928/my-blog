@@ -149,6 +149,18 @@ function initScrollReveal() {
 function goToPost(url: string) {
   router.go(url)
 }
+const accents = [
+  'linear-gradient(135deg, #00e5ff, #0ea5e9)',
+  'linear-gradient(135deg, #a855f7, #ec4899)',
+  'linear-gradient(135deg, #3b82f6, #06b6d4)',
+  'linear-gradient(135deg, #22c55e, #3b82f6)',
+  'linear-gradient(135deg, #f59e0b, #ef4444)',
+  'linear-gradient(135deg, #ec4899, #a855f7)',
+]
+
+function getAccent(index: number) {
+  return accents[index % accents.length]
+}
 </script>
 
 <template>
@@ -222,7 +234,10 @@ function goToPost(url: string) {
         <div class="card-content">
           <div class="card-meta">
             <time>{{ post.date }}</time>
-            <span v-if="post.tags?.length" class="card-tag">{{ post.tags[0] }}</span>
+            <span v-if="post.readTime" class="card-readtime">{{ post.readTime }} min</span>
+            <span v-if="post.tags?.length" class="card-tags">
+              <span v-for="tag in post.tags.slice(0, 2)" :key="tag" class="card-tag">{{ tag }}</span>
+            </span>
           </div>
           <h3 class="card-title">{{ post.title }}</h3>
           <p class="card-desc">{{ post.excerpt }}</p>
@@ -277,25 +292,6 @@ function goToPost(url: string) {
     </div>
   </section>
 </template>
-
-<script lang="ts">
-const accents = [
-  'linear-gradient(135deg, #00e5ff, #0ea5e9)',
-  'linear-gradient(135deg, #a855f7, #ec4899)',
-  'linear-gradient(135deg, #3b82f6, #06b6d4)',
-  'linear-gradient(135deg, #22c55e, #3b82f6)',
-  'linear-gradient(135deg, #f59e0b, #ef4444)',
-  'linear-gradient(135deg, #ec4899, #a855f7)',
-]
-
-export default {
-  methods: {
-    getAccent(index: number) {
-      return accents[index % accents.length]
-    }
-  }
-}
-</script>
 
 <style scoped>
 /* ==================== Hero ==================== */
@@ -637,6 +633,19 @@ export default {
   font-size: 0.8rem;
   color: var(--vp-c-text-3);
   font-family: var(--vp-font-family-mono);
+}
+
+.card-readtime {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-3);
+}
+
+.card-tags {
+  display: inline-flex;
+  gap: 0.3rem;
 }
 
 .card-tag {

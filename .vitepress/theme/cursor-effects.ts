@@ -116,25 +116,29 @@ export function initCursorEffects(): void {
   cleanups.push(() => document.removeEventListener('click', handleClick))
 
   // ========== 鼠标悬停链接/按钮效果 ==========
-  const interactiveElements = document.querySelectorAll('a, button, .post-card, .tech-item')
+  let currentInteractiveEls: Element[] = []
   const enterHandlers = new Map<Element, () => void>()
   const leaveHandlers = new Map<Element, () => void>()
 
-  interactiveElements.forEach((el) => {
-    const onEnter = () => {
-      paperPlane.style.transform = 'translate(-50%, -50%) scale(1.3)'
-    }
-    const onLeave = () => {
-      paperPlane.style.transform = 'translate(-50%, -50%) scale(1)'
-    }
-    el.addEventListener('mouseenter', onEnter)
-    el.addEventListener('mouseleave', onLeave)
-    enterHandlers.set(el, onEnter)
-    leaveHandlers.set(el, onLeave)
-  })
+  function bindInteractiveElements() {
+    unbindInteractiveElements()
+    currentInteractiveEls = document.querySelectorAll('a, button, .post-card, .tech-item')
+    currentInteractiveEls.forEach((el) => {
+      const onEnter = () => {
+        paperPlane.style.transform = 'translate(-50%, -50%) scale(1.3)'
+      }
+      const onLeave = () => {
+        paperPlane.style.transform = 'translate(-50%, -50%) scale(1)'
+      }
+      el.addEventListener('mouseenter', onEnter)
+      el.addEventListener('mouseleave', onLeave)
+      enterHandlers.set(el, onEnter)
+      leaveHandlers.set(el, onLeave)
+    })
+  }
 
-  cleanups.push(() => {
-    interactiveElements.forEach((el) => {
+  function unbindInteractiveElements() {
+    currentInteractiveEls.forEach((el) => {
       const onEnter = enterHandlers.get(el)
       const onLeave = leaveHandlers.get(el)
       if (onEnter) el.removeEventListener('mouseenter', onEnter)
@@ -142,7 +146,16 @@ export function initCursorEffects(): void {
     })
     enterHandlers.clear()
     leaveHandlers.clear()
+  }
+
+  bindInteractiveElements()
+
+  // SPA 路由切换后重新绑定
+  const routeObserver = new MutationObserver(() => {
+    bindInteractiveElements()
   })
+  routeObserver.observe(document.body, { childList: true, subtree: true })
+  cleanups.push(() => { routeObserver.disconnect(); unbindInteractiveElements() })
 }
 
 export function destroyCursorEffects(): void {

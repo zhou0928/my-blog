@@ -22,6 +22,7 @@ export default defineConfig({
       href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap'
     }],
     ['link', { rel: 'icon', href: '/favicon.svg' }],
+    ['link', { rel: 'alternate', type: 'application/rss+xml', title: "Xiaozhou's Blog RSS", href: '/feed.xml' }],
     ['meta', { name: 'theme-color', content: '#00e5ff' }],
     ['meta', { name: 'application-name', content: "Xiaozhou's Blog" }],
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
@@ -49,6 +50,7 @@ export default defineConfig({
           { text: '首页', link: '/' },
           { text: '归档', link: '/blog' },
           { text: '关于', link: '/about' },
+          { text: 'RSS', link: '/feed.xml' },
         ],
         search: {
           provider: 'local',
@@ -101,6 +103,16 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/zhou0928' },
     ],
+
+    outline: {
+      level: [2, 3],
+      label: '目录',
+    },
+
+    docFooter: {
+      prev: '上一篇',
+      next: '下一篇',
+    },
   },
 
   // 构建优化

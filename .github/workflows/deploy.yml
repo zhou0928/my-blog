@@ -31,6 +31,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Fetch GitHub stats
+        run: node --experimental-strip-types scripts/fetch-github-stats.ts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate RSS feed
+        run: node --experimental-strip-types scripts/generate-rss.ts
+
       - name: Build
         run: npm run build
 

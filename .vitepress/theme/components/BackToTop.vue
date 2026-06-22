@@ -1,8 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useRoute } from 'vitepress'
 
+const route = useRoute()
 const showBackToTop = ref(false)
 const scrollProgress = ref(0)
+
+const isArticlePage = computed(() => {
+  const path = route.path
+  return path.includes('/posts/') || path.includes('/en/posts/')
+})
 
 function handleScroll() {
   const scrollTop = window.scrollY
@@ -26,7 +33,7 @@ onUnmounted(() => {
 
 <template>
   <!-- 滚动进度条 -->
-  <div class="scroll-progress" :style="{ width: scrollProgress + '%' }" />
+  <div class="scroll-progress" :class="{ 'is-article': isArticlePage }" :style="{ width: scrollProgress + '%' }" />
   
   <!-- 回到顶部按钮 -->
   <Transition name="fade">
@@ -47,6 +54,12 @@ onUnmounted(() => {
   background: linear-gradient(90deg, #00e5ff, #a855f7);
   z-index: 9999;
   transition: width 0.1s ease-out;
+}
+
+.scroll-progress.is-article {
+  height: 4px;
+  background: linear-gradient(90deg, #00e5ff, #a855f7, #ec4899);
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
 }
 
 .back-to-top {

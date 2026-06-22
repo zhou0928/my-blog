@@ -430,7 +430,7 @@ onBeforeUnmount(() => {
 
 .post-card {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1.25rem;
   padding: 1.25rem 1.5rem;
   border-radius: 12px;
@@ -440,6 +440,7 @@ onBeforeUnmount(() => {
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   animation: fadeInUp 0.5s ease forwards;
   opacity: 0;
+  overflow: hidden;
 }
 
 @keyframes fadeInUp {
@@ -461,6 +462,8 @@ onBeforeUnmount(() => {
   color: var(--vp-c-text-3);
   opacity: 0.5;
   min-width: 28px;
+  flex-shrink: 0;
+  padding-top: 0.15rem;
 }
 
 .post-card:hover .post-index {
@@ -515,8 +518,10 @@ onBeforeUnmount(() => {
   font-weight: 600;
   color: var(--vp-c-text-1);
   margin-bottom: 0.3rem;
-  line-height: 1.4;
+  line-height: 1.6;
   transition: color 0.3s;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .post-card:hover .post-title {
@@ -526,9 +531,9 @@ onBeforeUnmount(() => {
 .post-excerpt {
   font-size: 0.85rem;
   color: var(--vp-c-text-3);
-  line-height: 1.5;
+  line-height: 1.6;
   display: -webkit-box;
-  -webkit-line-clamp: 1;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

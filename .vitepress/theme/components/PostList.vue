@@ -119,23 +119,23 @@ onMounted(() => {
 .archive-page {
   max-width: 780px;
   margin: 0 auto;
-  padding: 4rem 1.5rem 6rem;
-  min-height: 80vh;
+  padding: 6rem 1.5rem 8rem;
+  min-height: 90vh;
 }
 
 .page-title {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 2.8rem;
-  font-weight: 700;
-  margin-bottom: 2.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--vp-c-border);
+  gap: 1rem;
+  font-size: 3.2rem;
+  font-weight: 800;
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid var(--vp-c-border);
 }
 
 .title-icon {
-  font-size: 2rem;
+  font-size: 2.5rem;
 }
 
 .title-text {
@@ -146,10 +146,10 @@ onMounted(() => {
 }
 
 .title-count {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 600;
-  padding: 0.3rem 1rem;
-  border-radius: 20px;
+  padding: 0.4rem 1.2rem;
+  border-radius: 24px;
   background: rgba(0, 229, 255, 0.1);
   color: #00e5ff;
   border: 1px solid rgba(0, 229, 255, 0.2);
@@ -158,7 +158,7 @@ onMounted(() => {
 /* --- 搜索框 --- */
 .search-box {
   position: relative;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .search-icon {
@@ -196,10 +196,10 @@ onMounted(() => {
 .tag-filter {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 2.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(56, 189, 248, 0.08);
+  gap: 0.6rem;
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--vp-c-border);
 }
 
 .tag-chip {

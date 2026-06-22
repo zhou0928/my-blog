@@ -1,5 +1,5 @@
 /* ====================================
-   暗色科幻风 — VitePress 自定义主题
+   暗色科幻风 — VitePress 自定义主题 v2
    ==================================== */
 
 /* --- CSS 变量覆盖 --- */
@@ -51,6 +51,14 @@ body::before {
 #app {
   position: relative;
   z-index: 1;
+}
+
+/* --- 粒子星空背景 --- */
+#particles-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
 
 /* --- 导航栏 --- */
@@ -190,7 +198,7 @@ body::before {
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -224,6 +232,234 @@ body::before {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* ===== 新增：滚动触发动画 ===== */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-reveal-left.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scroll-reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-reveal-right.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scroll-reveal-scale {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-reveal-scale.revealed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* 交错延迟 */
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
+.delay-4 { transition-delay: 0.4s; }
+.delay-5 { transition-delay: 0.5s; }
+.delay-6 { transition-delay: 0.6s; }
+
+/* ===== 新增：渐变边框动画 ===== */
+@keyframes borderGlow {
+  0%, 100% {
+    border-color: rgba(0, 229, 255, 0.15);
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.05);
+  }
+  50% {
+    border-color: rgba(168, 85, 247, 0.25);
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.08);
+  }
+}
+
+.glow-border {
+  animation: borderGlow 4s ease-in-out infinite;
+}
+
+/* ===== 新增：磁吸按钮效果 ===== */
+.magnetic-btn {
+  position: relative;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===== 新增：光标追踪 glow ===== */
+.cursor-glow {
+  position: fixed;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s;
+}
+
+/* ===== 新增：加载动画 ===== */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+.pulse-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #00e5ff;
+  position: relative;
+}
+
+.pulse-dot::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #00e5ff;
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+
+/* ===== 新增：文字逐字显示 ===== */
+@keyframes charReveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.char-reveal span {
+  display: inline-block;
+  opacity: 0;
+  animation: charReveal 0.5s ease forwards;
+}
+
+/* ===== 新增：浮动动画 ===== */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ===== 新增：旋转光环 ===== */
+@keyframes rotateGlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.rotate-glow {
+  position: relative;
+}
+
+.rotate-glow::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(from 0deg, #00e5ff, #a855f7, #00e5ff);
+  z-index: -1;
+  animation: rotateGlow 3s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.rotate-glow:hover::before {
+  opacity: 1;
+}
+
+/* ===== 新增：玻璃拟态增强 ===== */
+.glass-card {
+  background: rgba(16, 24, 48, 0.4) !important;
+  backdrop-filter: blur(20px) saturate(1.5) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(1.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+/* ===== 新增：霓虹闪烁 ===== */
+@keyframes neonFlicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    text-shadow:
+      0 0 7px rgba(0, 229, 255, 0.6),
+      0 0 20px rgba(0, 229, 255, 0.4),
+      0 0 40px rgba(0, 229, 255, 0.2),
+      0 0 80px rgba(0, 229, 255, 0.1);
+  }
+  20%, 24%, 55% {
+    text-shadow: none;
+  }
+}
+
+.neon-flicker {
+  animation: neonFlicker 3s infinite;
+}
+
+/* ===== 新增：波纹点击效果 ===== */
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect .ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(0, 229, 255, 0.3);
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+  pointer-events: none;
+}
+
+/* ===== 新增：进度条动画 ===== */
+@keyframes progressFill {
+  from { width: 0; }
+}
+
+.progress-bar {
+  height: 3px;
+  background: linear-gradient(90deg, #00e5ff, #a855f7);
+  border-radius: 2px;
+  animation: progressFill 1.5s ease forwards;
 }
 
 @media (max-width: 768px) {

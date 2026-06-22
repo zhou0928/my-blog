@@ -2,46 +2,297 @@
 layout: page
 ---
 
-# 关于我
+<div class="about-hero">
+  <div class="about-avatar">
+    <div class="avatar-ring" />
+    <div class="avatar-inner">Z</div>
+  </div>
+  <h1 class="about-name neon-text">Xiaozhou</h1>
+  <p class="about-role">前端工程师 · 工单系统架构</p>
+</div>
 
-<p class="about-greeting">👋 你好，我是 Xiaozhou</p>
+<div class="about-section">
+  <h2>👋 你好</h2>
+  <p>一名专注于 <strong>工单流程系统</strong> 和 <strong>前端工程化</strong> 的 Web 前端开发者。</p>
+  <p>热衷于用代码解决实际问题，相信技术的力量能让工作更高效。</p>
+</div>
 
-一名专注于 **工单流程系统** 和 **前端工程化** 的 Web 前端开发者。
+<div class="about-section">
+  <h2>💻 技术栈</h2>
+  <div class="tech-tags">
+    <span class="tech-tag primary">Vue 3</span>
+    <span class="tech-tag">TypeScript</span>
+    <span class="tech-tag">Vite</span>
+    <span class="tech-tag">Element Plus</span>
+    <span class="tech-tag">Pinia</span>
+    <span class="tech-tag">Node.js</span>
+    <span class="tech-tag">Docker</span>
+    <span class="tech-tag">Git</span>
+  </div>
+</div>
 
-### 💻 技术栈
+<div class="about-section">
+  <h2>🚀 项目经验</h2>
+  <div class="project-cards">
+    <div class="project-card">
+      <div class="project-icon">🚗</div>
+      <h3>oneLineCar 工单系统</h3>
+      <p>工单全流程管理平台核心开发，前车查找、离线重连、Excel 百万级导出</p>
+    </div>
+    <div class="project-card">
+      <div class="project-icon">🏢</div>
+      <h3>管局 OA</h3>
+      <p>4个子仓库，2,000+ commits 的 OA 全流程系统</p>
+    </div>
+    <div class="project-card">
+      <div class="project-icon">🏗️</div>
+      <h3>总部智慧楼宇</h3>
+      <p>IoT 告警、视频监控、GIS 大屏可视化</p>
+    </div>
+    <div class="project-card">
+      <div class="project-icon">🛒</div>
+      <h3>小b三平台</h3>
+      <p>零售端/运营端/供应商端三端分离架构</p>
+    </div>
+  </div>
+</div>
 
-- **框架:** Vue 3 (Composition API) / Nuxt
-- **生态:** Element Plus / Ant Design Vue / Pinia / Vue Router
-- **工具链:** Vite / Webpack / TypeScript / ESLint
-- **后端:** Node.js / Express / Prisma / MongoDB
-- **基础设施:** Git / CI-CD / Docker / Nginx
+<div class="about-section">
+  <h2>📊 Git 贡献</h2>
+  <div class="git-stats">
+    <div class="stat-item">
+      <span class="stat-number">4,700+</span>
+      <span class="stat-label">Commits</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">24+</span>
+      <span class="stat-label">项目仓库</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">3</span>
+      <span class="stat-label">Git 身份</span>
+    </div>
+  </div>
+</div>
 
-### 🚀 项目经验
+<div class="about-section">
+  <h2>📮 联系我</h2>
+  <div class="contact-links">
+    <a href="https://github.com/zhou0928" class="contact-link" target="_blank">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      GitHub
+    </a>
+    <a href="https://www.liushuxiu.com" class="contact-link" target="_blank">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      网站
+    </a>
+  </div>
+</div>
 
-- **oneLineCar 工单系统** — 工单全流程管理平台核心开发，前车查找、离线重连、Excel 百万级导出
-- **管局OA** — 4个子仓库，2,000+ commits 的 OA 全流程系统
-- **总部智慧楼宇** — IoT告警、视频监控、GIS大屏可视化
-- **小b三平台** — 零售端/运营端/供应商端三端分离架构
-- **铁塔能源 ETC** — xiaozhou 身份主导，275+ commits
+<style>
+.about-hero {
+  text-align: center;
+  padding: 3rem 0 2rem;
+}
 
-### 📊 Git 贡献
+.about-avatar {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1.5rem;
+}
 
-累计 **4,700+ commits**，活跃于 24+ 项目仓库.
+.avatar-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #00e5ff, #a855f7, #00e5ff);
+  animation: rotateGlow 3s linear infinite;
+}
 
-- `zhouhailong` — 1,944  commits
-- `周海龙` — 1,644 commits
-- `xiaozhou` — 1,204 commits
+.avatar-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0c1225, #101830);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: 800;
+  color: #00e5ff;
+}
 
-### 📮 联系我
+@keyframes rotateGlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 
-- GitHub: [zhou0928](https://github.com/zhou0928)
-- 网站: [liushuxiu.com](https://www.liushuxiu.com)
+.about-name {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #e2e8f0, #00e5ff, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-<style scoped>
-.about-greeting {
+.about-role {
+  font-size: 1.1rem;
+  color: var(--vp-c-text-2);
+}
+
+.about-section {
+  max-width: 780px;
+  margin: 0 auto 3rem;
+}
+
+.about-section h2 {
   font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
   color: var(--vp-c-text-1);
+  background: linear-gradient(135deg, #e2e8f0, #00e5ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.about-section p {
+  color: var(--vp-c-text-2);
+  line-height: 1.8;
+  margin-bottom: 0.5rem;
+}
+
+.tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tech-tag {
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  background: rgba(56, 189, 248, 0.05);
+  color: var(--vp-c-text-2);
+  transition: all 0.3s;
+}
+
+.tech-tag:hover {
+  border-color: rgba(0, 229, 255, 0.4);
+  color: #00e5ff;
+  transform: translateY(-2px);
+}
+
+.tech-tag.primary {
+  border-color: rgba(0, 229, 255, 0.3);
+  background: rgba(0, 229, 255, 0.1);
+  color: #00e5ff;
+}
+
+.project-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.project-card {
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.08);
+  background: rgba(16, 24, 48, 0.5);
+  transition: all 0.3s;
+}
+
+.project-card:hover {
+  border-color: rgba(0, 229, 255, 0.25);
+  transform: translateY(-3px);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.06);
+}
+
+.project-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.project-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  margin-bottom: 0.5rem;
+}
+
+.project-card p {
+  font-size: 0.85rem;
+  color: var(--vp-c-text-3);
+  line-height: 1.5;
+}
+
+.git-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.08);
+  background: rgba(16, 24, 48, 0.5);
+}
+
+.stat-number {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #00e5ff, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--vp-c-text-3);
+}
+
+.contact-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  background: rgba(56, 189, 248, 0.05);
+  color: var(--vp-c-text-1);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.contact-link:hover {
+  border-color: rgba(0, 229, 255, 0.4);
+  background: rgba(0, 229, 255, 0.1);
+  color: #00e5ff;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 640px) {
+  .about-name { font-size: 2rem; }
+  .project-cards { grid-template-columns: 1fr; }
+  .git-stats { grid-template-columns: 1fr; }
+  .contact-links { flex-direction: column; }
 }
 </style>

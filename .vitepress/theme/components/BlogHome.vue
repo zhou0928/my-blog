@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useRouter, useData } from 'vitepress'
 import { data as posts } from '../../posts.data.js'
 
@@ -23,12 +23,10 @@ const targetRepos = 24
 // 粒子 canvas
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 let animationId: number | null = null
+let particleResizeHandler: (() => void) | null = null
 
 // 鼠标追踪
 const cursorGlow = ref({ x: 0, y: 0, visible: false })
-
-// 页面加载进度
-const loadProgress = ref(0)
 
 onMounted(() => {
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -37,14 +35,11 @@ onMounted(() => {
     commitCount.value = targetCommits
     repoCount.value = targetRepos
   } else {
-    // 加载进度条
-    simulateLoadProgress()
     typeEffect()
     if (isDark.value) initParticles()
     initScrollReveal()
     initCursorGlow()
     initCardTilt()
-    // 数字滚动
     setTimeout(() => {
       animateCounter(commitCount, targetCommits, 2000)
       animateCounter(repoCount, targetRepos, 1500)
@@ -52,49 +47,42 @@ onMounted(() => {
   }
 })
 
-// 监听暗色模式变化
 watch(isDark, (dark) => {
   if (dark) {
     initParticles()
   } else {
-    if (animationId) {
-      cancelAnimationFrame(animationId)
-      animationId = null
-    }
-    const canvas = canvasRef.value
-    if (canvas) {
-      const ctx = canvas.getContext('2d')
-      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height)
-    }
+    destroyParticles()
   }
 })
 
 onUnmounted(() => {
-  if (animationId) cancelAnimationFrame(animationId)
+  destroyParticles()
 })
 
-// 模拟加载进度
-function simulateLoadProgress() {
-  loadProgress.value = 0
-  const interval = setInterval(() => {
-    if (loadProgress.value < 100) {
-      loadProgress.value += Math.random() * 15
-      if (loadProgress.value > 100) loadProgress.value = 100
-    } else {
-      clearInterval(interval)
-    }
-  }, 100)
+function destroyParticles() {
+  if (animationId !== null) {
+    cancelAnimationFrame(animationId)
+    animationId = null
+  }
+  if (particleResizeHandler) {
+    window.removeEventListener('resize', particleResizeHandler)
+    particleResizeHandler = null
+  }
+  const canvas = canvasRef.value
+  if (canvas) {
+    const ctx = canvas.getContext('2d')
+    if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height)
+  }
 }
 
 // 数字滚动动画
 function animateCounter(target: any, end: number, duration: number) {
-  const start = 0
   const startTime = Date.now()
   function update() {
     const elapsed = Date.now() - startTime
     const progress = Math.min(elapsed / duration, 1)
     const eased = 1 - Math.pow(1 - progress, 3)
-    target.value = Math.floor(start + (end - start) * eased)
+    target.value = Math.floor(end * eased)
     if (progress < 1) requestAnimationFrame(update)
   }
   update()
@@ -134,6 +122,7 @@ function initParticles() {
     canvas.height = window.innerHeight
   }
   resize()
+  particleResizeHandler = resize
   window.addEventListener('resize', resize)
 
   interface Particle {
@@ -141,16 +130,16 @@ function initParticles() {
   }
 
   const particles: Particle[] = []
-  const count = Math.min(80, Math.floor(window.innerWidth / 15))
+  const count = Math.min(60, Math.floor(window.innerWidth / 20))
 
   for (let i = 0; i < count; i++) {
     particles.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      size: Math.random() * 2 + 0.5,
-      opacity: Math.random() * 0.5 + 0.1,
+      vx: (Math.random() - 0.5) * 0.2,
+      vy: (Math.random() - 0.5) * 0.2,
+      size: Math.random() * 1.5 + 0.5,
+      opacity: Math.random() * 0.4 + 0.1,
     })
   }
 
@@ -170,11 +159,11 @@ function initParticles() {
         const dx = p.x - particles[j].x
         const dy = p.y - particles[j].y
         const dist = Math.sqrt(dx * dx + dy * dy)
-        if (dist < 120) {
+        if (dist < 150) {
           ctx.beginPath()
           ctx.moveTo(p.x, p.y)
           ctx.lineTo(particles[j].x, particles[j].y)
-          ctx.strokeStyle = `rgba(0, 229, 255, ${0.08 * (1 - dist / 120)})`
+          ctx.strokeStyle = `rgba(0, 229, 255, ${0.06 * (1 - dist / 150)})`
           ctx.lineWidth = 0.5
           ctx.stroke()
         }
@@ -189,7 +178,6 @@ function initParticles() {
 function initScrollReveal() {
   const elements = document.querySelectorAll('.scroll-reveal, .scroll-reveal-scale')
   
-  // 先检查已经在视口中的元素
   elements.forEach((el) => {
     const rect = el.getBoundingClientRect()
     if (rect.top < window.innerHeight && rect.bottom > 0) {
@@ -197,7 +185,6 @@ function initScrollReveal() {
     }
   })
   
-  // 创建 IntersectionObserver 监听后续滚动
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -206,27 +193,10 @@ function initScrollReveal() {
         }
       })
     },
-    { threshold: 0.05, rootMargin: '50px 0px' }
+    { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
   )
   
   elements.forEach((el) => observer.observe(el))
-  
-  // 备用：滚动事件监听
-  const checkReveal = () => {
-    elements.forEach((el) => {
-      if (!el.classList.contains('revealed')) {
-        const rect = el.getBoundingClientRect()
-        if (rect.top < window.innerHeight + 100) {
-          el.classList.add('revealed')
-        }
-      }
-    })
-  }
-  
-  window.addEventListener('scroll', checkReveal, { passive: true })
-  // 延迟再检查一次
-  setTimeout(checkReveal, 500)
-  setTimeout(checkReveal, 1000)
 }
 
 // 鼠标追踪光效
@@ -247,29 +217,17 @@ function initCardTilt() {
       const y = e.clientY - rect.top
       const centerX = rect.width / 2
       const centerY = rect.height / 2
-      const rotateX = (y - centerY) / 20
-      const rotateY = (centerX - x) / 20
-      el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-3px)`
+      const rotateX = (y - centerY) / 25
+      const rotateY = (centerX - x) / 25
+      el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`
       el.style.setProperty('--mouse-x', `${x}px`)
       el.style.setProperty('--mouse-y', `${y}px`)
     })
     card.addEventListener('mouseleave', (e) => {
       const el = e.currentTarget as HTMLElement
-      el.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)'
+      el.style.transform = 'perspective(800px) rotateX(0) rotateY(0) translateY(0)'
     })
   })
-}
-
-// 涟漪点击效果
-function createRipple(e: MouseEvent) {
-  const el = e.currentTarget as HTMLElement
-  const ripple = document.createElement('span')
-  ripple.classList.add('ripple')
-  const rect = el.getBoundingClientRect()
-  ripple.style.left = `${e.clientX - rect.left}px`
-  ripple.style.top = `${e.clientY - rect.top}px`
-  el.appendChild(ripple)
-  setTimeout(() => ripple.remove(), 600)
 }
 
 function goToPost(url: string) {
@@ -278,9 +236,6 @@ function goToPost(url: string) {
 </script>
 
 <template>
-  <!-- 加载进度条 -->
-  <div class="loading-bar" :style="{ width: loadProgress + '%' }" v-if="loadProgress < 100" />
-
   <!-- 粒子背景 -->
   <canvas ref="canvasRef" id="particles-canvas" />
 
@@ -291,56 +246,43 @@ function goToPost(url: string) {
   <section class="hero-section">
     <div class="hero-glow hero-glow-1" />
     <div class="hero-glow hero-glow-2" />
-    <div class="hero-glow hero-glow-3" />
 
     <div class="hero-content">
-      <p class="hero-greeting fade-in-up">你好，我是</p>
-      <h1 class="hero-name neon-text">
+      <p class="hero-greeting">你好，我是</p>
+      <h1 class="hero-name">
         <span class="name-gradient">Xiaozhou</span>
       </h1>
-      <p class="hero-tagline fade-in-up" style="animation-delay: 0.2s">
+      <p class="hero-tagline">
         专注于
         <span class="typed-wrapper">
-          <span class="typed-text neon-flicker">{{ typedText }}</span>
+          <span class="typed-text">{{ typedText }}</span>
           <span class="cursor" :class="{ 'cursor-hidden': !typedText }">|</span>
         </span>
       </p>
-      <p class="hero-desc fade-in-up" style="animation-delay: 0.4s">
+      <p class="hero-desc">
         工单流程系统前端开发者 · 热爱技术与分享
       </p>
 
       <!-- 数字统计 -->
-      <div class="hero-stats fade-in-up" style="animation-delay: 0.5s">
+      <div class="hero-stats">
         <div class="stat-item">
           <span class="stat-number">{{ commitCount.toLocaleString() }}+</span>
-          <span class="stat-label">Git Commits</span>
+          <span class="stat-label">Commits</span>
         </div>
         <div class="stat-divider" />
         <div class="stat-item">
           <span class="stat-number">{{ repoCount }}+</span>
-          <span class="stat-label">项目仓库</span>
-        </div>
-        <div class="stat-divider" />
-        <div class="stat-item">
-          <span class="stat-number">3</span>
-          <span class="stat-label">Git 身份</span>
+          <span class="stat-label">Projects</span>
         </div>
       </div>
 
-      <div class="hero-actions fade-in-up" style="animation-delay: 0.6s">
-        <a href="/blog" class="hero-btn hero-btn-primary magnetic-btn ripple-effect" @click="createRipple">
+      <div class="hero-actions">
+        <a href="/blog" class="hero-btn hero-btn-primary">
           浏览文章
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
-        <a href="/about" class="hero-btn hero-btn-secondary magnetic-btn">
+        <a href="/about" class="hero-btn hero-btn-secondary">
           关于我
-        </a>
-      </div>
-
-      <!-- 社交图标 -->
-      <div class="hero-social fade-in-up" style="animation-delay: 0.8s">
-        <a href="https://github.com/zhou0928" target="_blank" class="social-icon social-bounce">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
         </a>
       </div>
     </div>
@@ -364,13 +306,13 @@ function goToPost(url: string) {
       <article
         v-for="(post, index) in latestPosts"
         :key="post.url"
-        class="post-card scroll-reveal-scale"
-        :class="'delay-' + (index + 1)"
+        class="post-card scroll-reveal"
+        :style="{ transitionDelay: (index * 0.1) + 's' }"
         @click="goToPost(post.url)"
       >
-        <div class="post-card-glow" />
-        <div class="post-card-border" />
-        <div class="post-card-body">
+        <!-- 渐变背景装饰 -->
+        <div class="post-card-bg" :style="{ background: getCardGradient(index) }" />
+        <div class="post-card-content">
           <div class="post-meta">
             <time class="post-date">{{ post.date }}</time>
             <span v-if="post.tags?.length" class="post-tags">
@@ -379,16 +321,18 @@ function goToPost(url: string) {
           </div>
           <h3 class="post-title">{{ post.title }}</h3>
           <p class="post-excerpt">{{ post.excerpt }}</p>
-          <div class="post-read-more">
-            <span>阅读全文</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <div class="post-footer">
+            <span class="read-more">
+              阅读全文
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </span>
           </div>
         </div>
       </article>
     </div>
 
     <div class="section-footer scroll-reveal">
-      <a href="/blog" class="view-all-link magnetic-btn ripple-effect" @click="createRipple">
+      <a href="/blog" class="view-all-link">
         查看全部文章
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
@@ -402,37 +346,39 @@ function goToPost(url: string) {
       <div class="section-line" />
     </div>
     <div class="tech-grid">
-      <div class="tech-item" v-for="(tech, i) in ['Vue 3', 'TypeScript', 'Vite', 'Node.js', 'Git', 'CSS']" :key="tech" :class="'delay-' + (i + 1)">
-        <div class="tech-icon tech-icon-spin">{{ tech.charAt(0) }}</div>
-        <span>{{ tech }}</span>
+      <div class="tech-item" v-for="(tech, i) in ['Vue 3', 'TypeScript', 'Vite', 'Node.js', 'Git', 'CSS']" :key="tech" :style="{ transitionDelay: (i * 0.08) + 's' }">
+        <div class="tech-icon">{{ tech.charAt(0) }}</div>
+        <span class="tech-name">{{ tech }}</span>
       </div>
     </div>
   </section>
 </template>
 
+<script lang="ts">
+// 卡片渐变色
+const gradients = [
+  'linear-gradient(135deg, rgba(0, 229, 255, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%)',
+  'linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(236, 72, 153, 0.08) 100%)',
+  'linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%)',
+  'linear-gradient(135deg, rgba(34, 197, 94, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%)',
+  'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(239, 68, 68, 0.08) 100%)',
+  'linear-gradient(135deg, rgba(236, 72, 153, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%)',
+]
+
+export default {
+  methods: {
+    getCardGradient(index: number) {
+      return gradients[index % gradients.length]
+    }
+  }
+}
+</script>
+
 <style scoped>
-/* ========== 加载进度条 ========== */
-.loading-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #00e5ff, #a855f7, #00e5ff);
-  background-size: 200% 100%;
-  animation: loadingGradient 1s linear infinite;
-  z-index: 9999;
-  transition: width 0.3s ease;
-}
-
-@keyframes loadingGradient {
-  0% { background-position: 0% 0%; }
-  100% { background-position: 200% 0%; }
-}
-
 /* ========== Hero Section ========== */
 .hero-section {
   position: relative;
-  min-height: 90vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -443,71 +389,61 @@ function goToPost(url: string) {
 .hero-glow {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.15;
+  filter: blur(100px);
+  opacity: 0.12;
   pointer-events: none;
 }
 
 .hero-glow-1 {
   width: 600px; height: 600px;
-  background: radial-gradient(circle, #00e5ff 0%, transparent 70%);
+  background: #00e5ff;
   top: -200px; right: -100px;
-  animation: glowFloat 8s ease-in-out infinite alternate;
+  animation: glowFloat 12s ease-in-out infinite alternate;
 }
 
 .hero-glow-2 {
   width: 500px; height: 500px;
-  background: radial-gradient(circle, #a855f7 0%, transparent 70%);
+  background: #a855f7;
   bottom: -150px; left: -100px;
-  animation: glowFloat 10s ease-in-out infinite alternate-reverse;
-}
-
-.hero-glow-3 {
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, #00e5ff 0%, transparent 70%);
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  animation: glowPulse 4s ease-in-out infinite;
+  animation: glowFloat 15s ease-in-out infinite alternate-reverse;
 }
 
 @keyframes glowFloat {
   0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(30px, -30px) scale(1.1); }
-}
-
-@keyframes glowPulse {
-  0%, 100% { opacity: 0.08; transform: translate(-50%, -50%) scale(1); }
-  50% { opacity: 0.15; transform: translate(-50%, -50%) scale(1.2); }
+  100% { transform: translate(40px, -40px) scale(1.1); }
 }
 
 .hero-content {
   position: relative;
   text-align: center;
-  max-width: 700px;
+  max-width: 680px;
   z-index: 1;
 }
 
 .hero-greeting {
   font-size: 1.1rem;
   color: var(--vp-c-text-2);
-  margin-bottom: 0.5rem;
-  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
 }
 
 .hero-name {
-  font-size: 4.5rem;
+  font-size: 5rem;
   font-weight: 800;
   line-height: 1.1;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
 }
 
 .name-gradient {
-  background: linear-gradient(135deg, #e2e8f0 0%, #00e5ff 40%, #a855f7 80%);
+  background: linear-gradient(135deg, #e2e8f0 0%, #00e5ff 50%, #a855f7 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   background-size: 200% 200%;
-  animation: gradientShift 5s ease infinite;
+  animation: gradientShift 6s ease infinite;
 }
 
 @keyframes gradientShift {
@@ -516,9 +452,10 @@ function goToPost(url: string) {
 }
 
 .hero-tagline {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   color: var(--vp-c-text-2);
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
+  font-weight: 400;
 }
 
 .typed-wrapper {
@@ -528,16 +465,15 @@ function goToPost(url: string) {
 }
 
 .typed-text {
-  color: #00e5ff;
+  color: var(--vp-c-brand-1);
   font-weight: 600;
 }
 
 .cursor {
   display: inline-block;
-  color: #00e5ff;
+  color: var(--vp-c-brand-1);
   font-weight: 300;
-  animation: blink 0.8s step-end infinite;
-  text-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
+  animation: blink 1s step-end infinite;
 }
 
 .cursor-hidden { opacity: 0; }
@@ -550,7 +486,8 @@ function goToPost(url: string) {
 .hero-desc {
   font-size: 1rem;
   color: var(--vp-c-text-3);
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
 }
 
 /* ========== 数字统计 ========== */
@@ -558,79 +495,37 @@ function goToPost(url: string) {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
-  padding: 1.25rem 2rem;
-  border-radius: 16px;
-  background: rgba(16, 24, 48, 0.4);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(56, 189, 248, 0.1);
+  gap: 2.5rem;
+  margin-bottom: 2.5rem;
 }
 
 .stat-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.3rem;
 }
 
 .stat-number {
-  font-size: 1.75rem;
-  font-weight: 800;
+  font-size: 2rem;
+  font-weight: 700;
   font-family: var(--vp-font-family-mono);
-  background: linear-gradient(135deg, #00e5ff, #a855f7);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--vp-c-text-1);
+  letter-spacing: -0.02em;
 }
 
 .stat-label {
   font-size: 0.8rem;
   color: var(--vp-c-text-3);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
+  font-weight: 500;
 }
 
 .stat-divider {
   width: 1px;
   height: 40px;
-  background: linear-gradient(180deg, transparent, rgba(0, 229, 255, 0.3), transparent);
-}
-
-/* ========== 社交图标 ========== */
-.hero-social {
-  margin-top: 1.5rem;
-}
-
-.social-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  background: rgba(56, 189, 248, 0.05);
-  color: var(--vp-c-text-2);
-  transition: all 0.3s;
-  text-decoration: none;
-}
-
-.social-icon:hover {
-  border-color: rgba(0, 229, 255, 0.5);
-  color: #00e5ff;
-  background: rgba(0, 229, 255, 0.1);
-  transform: translateY(-3px);
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.15);
-}
-
-.social-bounce:hover {
-  animation: socialBounce 0.5s ease;
-}
-
-@keyframes socialBounce {
-  0%, 100% { transform: translateY(-3px); }
-  50% { transform: translateY(-8px) scale(1.1); }
+  background: var(--vp-c-border);
 }
 
 /* ========== 按钮 ========== */
@@ -645,63 +540,61 @@ function goToPost(url: string) {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.75rem;
-  border-radius: 12px;
+  padding: 0.875rem 2rem;
+  border-radius: 10px;
   font-size: 1rem;
   font-weight: 600;
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
 }
 
 .hero-btn-primary {
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(168, 85, 247, 0.15));
-  border: 1px solid rgba(0, 229, 255, 0.3);
-  color: #00e5ff;
+  background: var(--vp-c-brand-1);
+  color: white;
+  box-shadow: 0 4px 14px rgba(0, 229, 255, 0.25);
 }
 
 .hero-btn-primary:hover {
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.25), rgba(168, 85, 247, 0.25));
-  border-color: rgba(0, 229, 255, 0.6);
-  box-shadow: 0 0 40px rgba(0, 229, 255, 0.2), 0 0 80px rgba(0, 229, 255, 0.1);
-  transform: translateY(-3px) scale(1.02);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 229, 255, 0.35);
 }
 
 .hero-btn-secondary {
-  background: rgba(56, 189, 248, 0.05);
-  border: 1px solid rgba(56, 189, 248, 0.2);
+  background: transparent;
+  border: 1px solid var(--vp-c-border);
   color: var(--vp-c-text-1);
 }
 
 .hero-btn-secondary:hover {
-  border-color: rgba(56, 189, 248, 0.4);
-  background: rgba(56, 189, 248, 0.1);
-  transform: translateY(-3px);
+  border-color: var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1);
+  transform: translateY(-2px);
 }
 
 /* ========== 滚动提示 ========== */
 .scroll-indicator {
   position: absolute;
-  bottom: 2rem;
+  bottom: 2.5rem;
   left: 50%;
   transform: translateX(-50%);
-  animation: float 2s ease-in-out infinite;
+  animation: float 2.5s ease-in-out infinite;
 }
 
 .scroll-mouse {
-  width: 24px; height: 38px;
-  border: 2px solid rgba(0, 229, 255, 0.3);
-  border-radius: 12px;
+  width: 26px; height: 40px;
+  border: 2px solid var(--vp-c-border);
+  border-radius: 13px;
   display: flex;
   justify-content: center;
-  padding-top: 6px;
+  padding-top: 8px;
 }
 
 .scroll-wheel {
   width: 4px; height: 8px;
-  background: #00e5ff;
+  background: var(--vp-c-brand-1);
   border-radius: 2px;
-  animation: scrollDown 1.5s ease-in-out infinite;
+  animation: scrollDown 1.8s ease-in-out infinite;
 }
 
 @keyframes scrollDown {
@@ -711,96 +604,79 @@ function goToPost(url: string) {
 
 @keyframes float {
   0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(-8px); }
+  50% { transform: translateX(-50%) translateY(-10px); }
 }
 
 /* ========== 文章卡片 ========== */
 .latest-posts {
-  max-width: 960px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 3rem 1.5rem 5rem;
+  padding: 4rem 1.5rem 6rem;
 }
 
 .section-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 2.5rem;
+  gap: 1.25rem;
+  margin-bottom: 3rem;
 }
 
 .section-title {
   font-size: 1.75rem;
   font-weight: 700;
   white-space: nowrap;
-  height: 2.2rem;
-  line-height: 2.2rem;
-  background: linear-gradient(135deg, #e2e8f0, #00e5ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--vp-c-text-1);
 }
 
 .section-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, rgba(0, 229, 255, 0.3), transparent);
+  background: linear-gradient(90deg, var(--vp-c-border), transparent);
 }
 
 .posts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
 }
 
 .post-card {
   position: relative;
   border-radius: 16px;
-  border: 1px solid rgba(56, 189, 248, 0.08);
-  background: rgba(16, 24, 48, 0.5);
-  backdrop-filter: blur(12px);
+  border: 1px solid var(--vp-c-border);
+  background: var(--vp-c-bg);
   overflow: hidden;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  transform-style: preserve-3d;
 }
 
 .post-card:hover {
-  border-color: rgba(0, 229, 255, 0.25);
-  box-shadow: 0 0 40px rgba(0, 229, 255, 0.08), 0 20px 60px rgba(0, 0, 0, 0.3);
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
 }
 
-.post-card-glow {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 229, 255, 0.08), transparent);
-  transition: opacity 0.3s;
+.dark .post-card {
+  background: rgba(16, 24, 48, 0.6);
+  border-color: rgba(56, 189, 248, 0.08);
 }
 
-.post-card:hover .post-card-glow { opacity: 1; }
-
-.post-card-border {
-  position: absolute;
-  inset: 0;
-  border-radius: 16px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s;
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(168, 85, 247, 0.2));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  padding: 1px;
+.dark .post-card:hover {
+  border-color: rgba(0, 229, 255, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
-.post-card:hover .post-card-border { opacity: 1; }
+.post-card-bg {
+  height: 120px;
+  opacity: 0.8;
+}
 
-.post-card-body {
-  padding: 1.5rem;
-  position: relative;
-  z-index: 1;
+.dark .post-card-bg {
+  opacity: 1;
+}
+
+.post-card-content {
+  padding: 1.25rem 1.5rem 1.5rem;
 }
 
 .post-meta {
@@ -808,31 +684,33 @@ function goToPost(url: string) {
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 0.75rem;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
 }
 
 .post-date {
   color: var(--vp-c-text-3);
-  white-space: nowrap;
   font-family: var(--vp-font-family-mono);
+  font-weight: 500;
 }
 
-.post-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.post-tags {
+  display: flex;
+  gap: 0.4rem;
+}
 
 .post-tag {
   padding: 0.15rem 0.5rem;
   border-radius: 4px;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 500;
-  background: rgba(0, 229, 255, 0.08);
-  color: #00e5ff;
-  border: 1px solid rgba(0, 229, 255, 0.12);
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
 }
 
 .post-title {
   font-size: 1.1rem;
   font-weight: 600;
-  line-height: 1.4;
+  line-height: 1.5;
   margin-bottom: 0.5rem;
   color: var(--vp-c-text-1);
   display: -webkit-box;
@@ -842,7 +720,9 @@ function goToPost(url: string) {
   transition: color 0.3s;
 }
 
-.post-card:hover .post-title { color: #00e5ff; }
+.post-card:hover .post-title {
+  color: var(--vp-c-brand-1);
+}
 
 .post-excerpt {
   font-size: 0.88rem;
@@ -855,57 +735,63 @@ function goToPost(url: string) {
   margin-bottom: 1rem;
 }
 
-.post-read-more {
+.post-footer {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+}
+
+.read-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
   font-size: 0.85rem;
-  color: #00e5ff;
+  font-weight: 500;
+  color: var(--vp-c-brand-1);
   opacity: 0;
-  transform: translateY(5px);
+  transform: translateX(-8px);
   transition: all 0.3s;
 }
 
-.post-card:hover .post-read-more { opacity: 1; transform: translateY(0); }
+.post-card:hover .read-more {
+  opacity: 1;
+  transform: translateX(0);
+}
 
 .section-footer {
   text-align: center;
-  margin-top: 2.5rem;
+  margin-top: 3rem;
 }
 
 .view-all-link {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  color: #00e5ff;
+  color: var(--vp-c-brand-1);
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 500;
-  padding: 0.5rem 1rem;
+  padding: 0.625rem 1.25rem;
   border-radius: 8px;
-  transition: all 0.2s;
-  border: 1px solid rgba(0, 229, 255, 0.15);
-  position: relative;
-  overflow: hidden;
+  border: 1px solid var(--vp-c-border);
+  transition: all 0.3s;
 }
 
 .view-all-link:hover {
-  background: rgba(0, 229, 255, 0.06);
-  border-color: rgba(0, 229, 255, 0.3);
-  transform: translateY(-1px);
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
+  border-color: var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+  transform: translateY(-2px);
 }
 
 /* ========== 技术栈 ========== */
 .tech-stack {
-  max-width: 960px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 2rem 1.5rem 5rem;
+  padding: 2rem 1.5rem 6rem;
 }
 
 .tech-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  grid-template-columns: repeat(6, 1fr);
   gap: 1rem;
 }
 
@@ -913,62 +799,75 @@ function goToPost(url: string) {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  padding: 1.25rem 1rem;
+  gap: 0.75rem;
+  padding: 1.5rem 1rem;
   border-radius: 12px;
-  border: 1px solid rgba(56, 189, 248, 0.08);
-  background: rgba(16, 24, 48, 0.4);
+  border: 1px solid var(--vp-c-border);
+  background: var(--vp-c-bg);
   transition: all 0.3s;
   cursor: default;
 }
 
 .tech-item:hover {
-  border-color: rgba(0, 229, 255, 0.25);
-  transform: translateY(-3px);
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.06);
+  border-color: var(--vp-c-brand-1);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+}
+
+.dark .tech-item {
+  background: rgba(16, 24, 48, 0.5);
 }
 
 .tech-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(168, 85, 247, 0.15));
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--vp-c-brand-soft);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: #00e5ff;
+  color: var(--vp-c-brand-1);
   transition: all 0.3s;
 }
 
 .tech-item:hover .tech-icon {
-  transform: scale(1.15) rotate(5deg);
-  box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+  transform: scale(1.1) rotate(3deg);
 }
 
-.tech-item span {
+.tech-name {
   font-size: 0.85rem;
   color: var(--vp-c-text-2);
   font-weight: 500;
 }
 
 /* ========== 响应式 ========== */
+@media (max-width: 900px) {
+  .posts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .tech-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
-  .hero-name { font-size: 3rem; }
-  .hero-tagline { font-size: 1.2rem; }
-  .hero-section { min-height: 80vh; padding-top: 5rem; }
+  .hero-name { font-size: 3.5rem; }
+  .hero-tagline { font-size: 1.15rem; }
+  .hero-section { min-height: 85vh; padding-top: 5rem; }
+  .stat-number { font-size: 1.5rem; }
+  .scroll-indicator { display: none; }
+}
+
+@media (max-width: 640px) {
+  .hero-name { font-size: 2.8rem; }
   .posts-grid { grid-template-columns: 1fr; }
   .tech-grid { grid-template-columns: repeat(3, 1fr); }
-  .scroll-indicator { display: none; }
-  .hero-stats { gap: 1rem; padding: 1rem 1.5rem; }
-  .stat-number { font-size: 1.25rem; }
+  .hero-stats { gap: 1.5rem; }
 }
 
 @media (max-width: 480px) {
-  .hero-name { font-size: 2.4rem; }
   .tech-grid { grid-template-columns: repeat(2, 1fr); }
-  .hero-stats { flex-direction: column; gap: 0.75rem; }
-  .stat-divider { width: 40px; height: 1px; }
 }
 </style>

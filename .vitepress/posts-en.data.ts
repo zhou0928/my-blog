@@ -17,14 +17,14 @@ export { data }
 function formatDate(dateStr: string): string {
   if (!dateStr) return ''
   const date = new Date(dateStr)
-  if (isNaN(date.getTime())) return dateStr
+  if (Number.isNaN(date.getTime())) return dateStr
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
   const day = String(date.getDate()).padStart(2, '0')
   return `${year}-${month}-${day}`
 }
 
-export default createContentLoader('posts/*.md', {
+export default createContentLoader('en/posts/*.md', {
   includeSrc: false,
   render: false,
   excerpt: 'cursor',
@@ -34,13 +34,11 @@ export default createContentLoader('posts/*.md', {
       .map(({ url, frontmatter, excerpt }) => ({
         title: frontmatter.title || '',
         url,
-        // 缺省给一个可排序的占位，避免 new Date('') 得到 Invalid Date 导致排序错乱
         date: formatDate(frontmatter.date || '1970-01-01'),
         tags: frontmatter.tags || [],
         excerpt: excerpt?.trim() || frontmatter.description || '',
         cover: frontmatter.cover || undefined,
       }))
-      // 双重保险：过滤掉仍然无法解析的日期
       .filter((p) => !Number.isNaN(new Date(p.date).getTime()))
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   },

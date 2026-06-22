@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, nextTick } from 'vue'
-import { data as posts } from '../../posts.data.js'
-import { useRouter } from 'vitepress'
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
+import { useRouter, useData } from 'vitepress'
+import { data as postsZh } from '../../posts.data.js'
+import { data as postsEn } from '../../posts-en.data.js'
 
 const router = useRouter()
+const { localeIndex } = useData()
+
+const isEn = computed(() => localeIndex.value === 'en')
+
+// 按当前 locale 选择对应文章数据源
+const posts = computed(() => (isEn.value ? postsEn : postsZh))
+
 const activeTag = ref<string | null>(null)
 const searchQuery = ref('')
 
@@ -11,20 +19,21 @@ let observer: IntersectionObserver | null = null
 
 const allTags = computed(() => {
   const set = new Set<string>()
-  posts.forEach(p => p.tags?.forEach(t => set.add(t)))
+  posts.value.forEach((p) => p.tags?.forEach((t) => set.add(t)))
   return Array.from(set).sort()
 })
 
 const filteredPosts = computed(() => {
-  let result = posts
+  let result = posts.value
   if (activeTag.value) {
-    result = result.filter(p => p.tags?.includes(activeTag.value!))
+    result = result.filter((p) => p.tags?.includes(activeTag.value!))
   }
   if (searchQuery.value.trim()) {
     const q = searchQuery.value.toLowerCase()
-    result = result.filter(p =>
-      p.title.toLowerCase().includes(q) ||
-      p.excerpt?.toLowerCase().includes(q)
+    result = result.filter(
+      (p) =>
+        p.title.toLowerCase().includes(q) ||
+        p.excerpt?.toLowerCase().includes(q)
     )
   }
   return result
@@ -51,7 +60,7 @@ function observePostItems() {
 }
 
 // 监听过滤结果变化，重新观察
-watch([activeTag, searchQuery], () => {
+watch([activeTag, searchQuery, posts], () => {
   observePostItems()
 })
 
@@ -66,14 +75,21 @@ onMounted(() => {
     },
     { threshold: 0.05, rootMargin: '50px 0px' }
   )
-  
+
   // 立即显示页面顶部元素
-  document.querySelectorAll('.archive-page > .page-title, .archive-page > .search-box, .archive-page > .tag-filter').forEach(el => {
-    el.classList.add('revealed')
-  })
-  
+  document
+    .querySelectorAll('.archive-page > .page-title, .archive-page > .search-box, .archive-page > .tag-filter')
+    .forEach((el) => {
+      el.classList.add('revealed')
+    })
+
   // 初始观察文章列表
   observePostItems()
+})
+
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  observer = null
 })
 </script>
 
@@ -81,7 +97,7 @@ onMounted(() => {
   <div class="archive-page">
     <h1 class="page-title">
       <span class="title-icon">📚</span>
-      <span class="title-text">全部文章</span>
+      <span class="title-text">{{ isEn ? 'All Posts' : '全部文章' }}</span>
       <span class="title-count">{{ filteredPosts.length }}</span>
     </h1>
 
@@ -93,7 +109,7 @@ onMounted(() => {
       <input
         v-model="searchQuery"
         type="text"
-        placeholder="搜索文章..."
+        :placeholder="isEn ? 'Search posts...' : '搜索文章...'"
         class="search-input"
       />
     </div>
@@ -104,7 +120,7 @@ onMounted(() => {
         class="tag-chip"
         :class="{ 'tag-active': activeTag === null }"
         @click="activeTag = null"
-      >全部</button>
+      >{{ isEn ? 'All' : '全部' }}</button>
       <button
         v-for="tag in allTags"
         :key="tag"
@@ -140,7 +156,7 @@ onMounted(() => {
 
     <div v-else class="empty-state">
       <div class="empty-icon">🔍</div>
-      <p>没有找到匹配的文章</p>
+      <p>{{ isEn ? 'No matching posts found' : '没有找到匹配的文章' }}</p>
     </div>
   </div>
 </template>
@@ -169,7 +185,7 @@ onMounted(() => {
 }
 
 .title-text {
-  background: linear-gradient(135deg, var(--vp-c-text-1), var(--vp-c-brand-1));
+  background: linear-gradient(135deg, var(--blog-gradient-from), var(--blog-accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -181,8 +197,8 @@ onMounted(() => {
   padding: 0.4rem 1.2rem;
   border-radius: 24px;
   background: var(--vp-c-brand-soft);
-  color: var(--vp-c-brand-1);
-  border: 1px solid var(--vp-c-brand-soft);
+  color: var(--blog-accent);
+  border: 1px solid var(--blog-tag-border);
 }
 
 /* --- 搜索框 --- */
@@ -217,8 +233,8 @@ onMounted(() => {
 }
 
 .search-input:focus {
-  border-color: var(--vp-c-brand-1);
-  box-shadow: 0 0 0 3px var(--vp-c-brand-soft);
+  border-color: var(--blog-accent);
+  box-shadow: 0 0 0 3px var(--blog-accent-soft);
 }
 
 /* --- 标签过滤器 --- */
@@ -244,16 +260,16 @@ onMounted(() => {
 }
 
 .tag-chip:hover {
-  border-color: var(--vp-c-brand-1);
-  color: var(--vp-c-brand-1);
-  background: var(--vp-c-brand-soft);
+  border-color: var(--blog-accent);
+  color: var(--blog-accent);
+  background: var(--blog-accent-soft);
   transform: translateY(-1px);
 }
 
 .tag-active {
-  border-color: var(--vp-c-brand-1) !important;
-  background: var(--vp-c-brand-soft) !important;
-  color: var(--vp-c-brand-1) !important;
+  border-color: var(--blog-accent) !important;
+  background: var(--blog-accent-soft) !important;
+  color: var(--blog-accent) !important;
 }
 
 /* --- 文章列表项 --- */
@@ -298,15 +314,15 @@ onMounted(() => {
   top: 0;
   bottom: 0;
   width: 3px;
-  background: linear-gradient(180deg, #00e5ff, #a855f7);
+  background: linear-gradient(180deg, var(--blog-accent), var(--blog-accent-2));
   opacity: 0;
   transition: opacity 0.3s;
   border-radius: 0 2px 2px 0;
 }
 
 .post-item:hover {
-  background: rgba(16, 24, 48, 0.5);
-  border-color: rgba(56, 189, 248, 0.08);
+  background: var(--blog-card-bg);
+  border-color: var(--blog-card-border);
   transform: translateX(6px);
 }
 
@@ -338,7 +354,7 @@ onMounted(() => {
 }
 
 .post-item:hover .post-item-title {
-  color: #00e5ff;
+  color: var(--blog-accent);
 }
 
 .post-item-excerpt {
@@ -360,12 +376,12 @@ onMounted(() => {
 
 .post-item-tag {
   font-size: 0.78rem;
-  color: #a855f7;
+  color: var(--blog-accent-2);
   transition: color 0.2s;
 }
 
 .post-item:hover .post-item-tag {
-  color: #c084fc;
+  filter: brightness(1.15);
 }
 
 .post-item-arrow {
@@ -380,7 +396,7 @@ onMounted(() => {
 .post-item:hover .post-item-arrow {
   opacity: 1;
   transform: translateX(0);
-  color: #00e5ff;
+  color: var(--blog-accent);
 }
 
 /* --- 空状态 --- */

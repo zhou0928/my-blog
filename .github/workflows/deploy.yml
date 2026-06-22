@@ -27,6 +27,19 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      # cleanUrls: true 在 GitHub Pages 上需要为每个 .html 生成同名目录的 index.html
+      # 否则直接访问 /blog 这类无扩展名 URL 会 404
+      - name: Fix cleanUrls for GitHub Pages
+        run: |
+          find .vitepress/dist -name "*.html" | while read -r f; do
+            dir="${f%.html}"
+            # 跳过已经是目录的 index.html（避免无意义的自我复制）
+            if [ "$(basename "$f")" = "index.html" ] && [ "$(dirname "$f")" = "$dir" ]; then
+              continue
+            fi
+            mkdir -p "$dir"
+            cp "$f" "$dir/index.html"
+          done
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
         with:

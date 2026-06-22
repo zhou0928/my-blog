@@ -1,11 +1,18 @@
 import { defineConfig } from 'vitepress'
 
+const SITE_URL = 'https://000902.icu'
+
 export default defineConfig({
   title: "Xiaozhou's Blog",
   base: '/',
   cleanUrls: true,
   lastUpdated: true,
   outDir: 'dist',
+
+  // SEO：生成 sitemap.xml
+  sitemap: {
+    hostname: SITE_URL,
+  },
 
   head: [
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
@@ -23,13 +30,13 @@ export default defineConfig({
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: "Xiaozhou's Blog" }],
     ['meta', { property: 'og:description', content: '工单系统 · 前端工程化 · Vue 生态 · 个人技术博客' }],
-    ['meta', { property: 'og:image', content: '/og-image.png' }],
+    ['meta', { property: 'og:image', content: `${SITE_URL}/favicon.svg` }],
     ['meta', { property: 'og:site_name', content: "Xiaozhou's Blog" }],
     // Twitter Card
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ['meta', { name: 'twitter:title', content: "Xiaozhou's Blog" }],
     ['meta', { name: 'twitter:description', content: '工单系统 · 前端工程化 · Vue 生态 · 个人技术博客' }],
-    ['meta', { name: 'twitter:image', content: '/og-image.png' }],
+    ['meta', { name: 'twitter:image', content: `${SITE_URL}/favicon.svg` }],
   ],
 
   locales: {
@@ -43,6 +50,21 @@ export default defineConfig({
           { text: '归档', link: '/blog' },
           { text: '关于', link: '/about' },
         ],
+        search: {
+          provider: 'local',
+          options: {
+            translations: {
+              button: { buttonText: '搜索文档', buttonAriaLabel: '搜索' },
+              modal: {
+                displayDetails: '显示详情',
+                resetButtonTitle: '清除查询条件',
+                backButtonTitle: '返回',
+                noResultsText: '无法找到相关结果',
+                footer: { selectText: '选择', navigateText: '切换', closeText: '关闭' }
+              }
+            }
+          }
+        },
         footer: {
           message: 'Built with VitePress · 遨游星河',
           copyright: '© 2026 Xiaozhou',
@@ -60,6 +82,10 @@ export default defineConfig({
           { text: 'Archive', link: '/en/blog' },
           { text: 'About', link: '/en/about' },
         ],
+        // 英文站使用 VitePress 本地搜索的默认英文文案
+        search: {
+          provider: 'local',
+        },
         footer: {
           message: 'Built with VitePress · Explore the Galaxy',
           copyright: '© 2026 Xiaozhou',
@@ -75,22 +101,6 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/zhou0928' },
     ],
-
-    search: {
-      provider: 'local',
-      options: {
-        translations: {
-          button: { buttonText: '搜索文档', buttonAriaLabel: '搜索' },
-          modal: {
-            displayDetails: '显示详情',
-            resetButtonTitle: '清除查询条件',
-            backButtonTitle: '返回',
-            noResultsText: '无法找到相关结果',
-            footer: { selectText: '选择', navigateText: '切换', closeText: '关闭' }
-          }
-        }
-      }
-    },
   },
 
   // 构建优化

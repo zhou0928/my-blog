@@ -187,15 +187,46 @@ function initParticles() {
 
 // 滚动触发动画
 function initScrollReveal() {
+  const elements = document.querySelectorAll('.scroll-reveal, .scroll-reveal-scale')
+  
+  // 先检查已经在视口中的元素
+  elements.forEach((el) => {
+    const rect = el.getBoundingClientRect()
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      el.classList.add('revealed')
+    }
+  })
+  
+  // 创建 IntersectionObserver 监听后续滚动
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) entry.target.classList.add('revealed')
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed')
+        }
       })
     },
-    { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    { threshold: 0.05, rootMargin: '50px 0px' }
   )
-  document.querySelectorAll('.scroll-reveal, .scroll-reveal-scale').forEach((el) => observer.observe(el))
+  
+  elements.forEach((el) => observer.observe(el))
+  
+  // 备用：滚动事件监听
+  const checkReveal = () => {
+    elements.forEach((el) => {
+      if (!el.classList.contains('revealed')) {
+        const rect = el.getBoundingClientRect()
+        if (rect.top < window.innerHeight + 100) {
+          el.classList.add('revealed')
+        }
+      }
+    })
+  }
+  
+  window.addEventListener('scroll', checkReveal, { passive: true })
+  // 延迟再检查一次
+  setTimeout(checkReveal, 500)
+  setTimeout(checkReveal, 1000)
 }
 
 // 鼠标追踪光效

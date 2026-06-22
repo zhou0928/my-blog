@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { data as posts } from '../../posts.data.js'
 import { useRouter } from 'vitepress'
 
 const router = useRouter()
 const activeTag = ref<string | null>(null)
 const searchQuery = ref('')
+
+let observer: IntersectionObserver | null = null
 
 const allTags = computed(() => {
   const set = new Set<string>()
@@ -32,8 +34,22 @@ function goToPost(url: string) {
   router.go(url)
 }
 
+// 观察新的 post-item 元素
+function observePostItems() {
+  nextTick(() => {
+    document.querySelectorAll('.post-item').forEach(el => {
+      if (observer) observer.observe(el)
+    })
+  })
+}
+
+// 监听过滤结果变化，重新观察
+watch([activeTag, searchQuery], () => {
+  observePostItems()
+})
+
 onMounted(() => {
-  const observer = new IntersectionObserver(
+  observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -44,7 +60,7 @@ onMounted(() => {
     { threshold: 0.1 }
   )
   // 观察所有需要滚动动画的元素
-  document.querySelectorAll('.scroll-reveal, .scroll-reveal-scale, .post-item').forEach(el => observer.observe(el))
+  document.querySelectorAll('.scroll-reveal, .scroll-reveal-scale, .post-item').forEach(el => observer!.observe(el))
   
   // 立即显示页面顶部元素
   document.querySelectorAll('.archive-page > .page-title, .archive-page > .search-box, .archive-page > .tag-filter').forEach(el => {

@@ -425,7 +425,7 @@ onBeforeUnmount(() => {
 
 .post-card {
   display: block;
-  padding: 1.25rem 1.5rem;
+  padding: 1.5rem 1.75rem;
   border-radius: 12px;
   border: 1px solid var(--vp-c-border);
   background: var(--vp-c-bg);
@@ -451,7 +451,7 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.6rem;
   flex-wrap: wrap;
 }
 
@@ -493,11 +493,11 @@ onBeforeUnmount(() => {
 }
 
 .post-title {
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   font-weight: 600;
   color: var(--vp-c-text-1);
-  margin-bottom: 0.3rem;
-  line-height: 1.6;
+  margin-bottom: 0.5rem;
+  line-height: 1.8;
   transition: color 0.3s;
   word-break: break-word;
 }
@@ -507,9 +507,9 @@ onBeforeUnmount(() => {
 }
 
 .post-excerpt {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--vp-c-text-3);
-  line-height: 1.6;
+  line-height: 1.8;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;

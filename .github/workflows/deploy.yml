@@ -1,11 +1,8 @@
-# GitHub Pages 部署工作流
-
 name: Deploy VitePress site to Pages
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -19,16 +16,25 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      NODE_VERSION: '22'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
-      - run: npm ci
-      - run: npm run build
-      # cleanUrls: true 在 GitHub Pages 上需要为每个 .html 生成同名目录的 index.html
-      - name: Fix cleanUrls for GitHub Pages
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Fix cleanUrls
         run: |
           find .vitepress/dist -name "*.html" | while read -r f; do
             dir="${f%.html}"
@@ -38,8 +44,9 @@ jobs:
             mkdir -p "$dir"
             cp "$f" "$dir/index.html"
           done
-      - uses: actions/configure-pages@v4
-      - uses: actions/upload-pages-artifact@v3
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: .vitepress/dist
 
@@ -50,5 +57,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - id: deployment
+      - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4

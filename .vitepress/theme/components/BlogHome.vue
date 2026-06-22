@@ -562,6 +562,8 @@ function goToPost(url: string) {
   font-size: 1.75rem;
   font-weight: 700;
   white-space: nowrap;
+  height: 2.2rem;
+  line-height: 2.2rem;
   background: linear-gradient(135deg, #e2e8f0, #00e5ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

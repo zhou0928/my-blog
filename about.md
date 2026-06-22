@@ -133,6 +133,7 @@ layout: page
   font-size: 3.5rem;
   font-weight: 800;
   line-height: 1.2;
+  height: 4.2rem;
   margin-bottom: 0.75rem;
   background: linear-gradient(135deg, #e2e8f0, #00e5ff, #a855f7);
   -webkit-background-clip: text;

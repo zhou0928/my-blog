@@ -3,6 +3,7 @@ import DefaultTheme from 'vitepress/theme'
 import BlogHome from './components/BlogHome.vue'
 import PostList from './components/PostList.vue'
 import './styles/custom.css'
+import './cursor-effects'
 
 export default {
   extends: DefaultTheme,

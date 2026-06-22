@@ -119,16 +119,19 @@ onMounted(() => {
 .archive-page {
   max-width: 780px;
   margin: 0 auto;
-  padding: 3rem 1.5rem 5rem;
+  padding: 4rem 1.5rem 6rem;
+  min-height: 80vh;
 }
 
 .page-title {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   font-weight: 700;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--vp-c-border);
 }
 
 .title-icon {
@@ -143,9 +146,9 @@ onMounted(() => {
 }
 
 .title-count {
-  font-size: 1rem;
-  font-weight: 500;
-  padding: 0.25rem 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 0.3rem 1rem;
   border-radius: 20px;
   background: rgba(0, 229, 255, 0.1);
   color: #00e5ff;

@@ -1,17 +1,17 @@
 ---
-title: Vue 3 Composables 设计模式 — 从工单系统实践中总结
+title: Vue 3 组合式函数设计模式 — 从工单系统实践中总结
 date: 2026-06-15
 tags: [Vue, 前端, 架构]
-description: 在 oneLineCar 工单系统中实践 Composables 设计模式半年后的一些总结和反思。
+description: 在 oneLineCar 工单系统中实践组合式函数设计模式半年后的一些总结和反思。
 ---
 
-# Vue 3 Composables 设计模式
+# Vue 3 组合式函数设计模式
 
-Composables（组合式函数）是 Vue 3 最核心的设计模式之一。在工单系统里用了大半年，踩了不少坑，分享一下总结。
+组合式函数是 Vue 3 最核心的设计模式之一。在工单系统里用了大半年，踩了不少坑，分享一下总结。
 
-## 什么是 Composables
+## 什么是组合式函数
 
-简单来说，Composables 就是利用 Vue Composition API 封装有状态逻辑的函数：
+简单来说，组合式函数就是利用 Vue 组合式 API 封装有状态逻辑的函数：
 
 ```ts
 // useWorkOrder.ts
@@ -94,13 +94,13 @@ export function useOnlineStatus() {
 
 ## 避坑指南
 
-1. **不要在 composable 里返回 reactive 对象** — 直接用 `ref` 和 `computed` 就好
-2. **善用 `toRefs`** — 从 composable 返回解构时保持响应性
+1. **不要在组合式函数里返回 reactive 对象** — 直接用 `ref` 和 `computed` 就好
+2. **善用 `toRefs`** — 从组合式函数返回解构时保持响应性
 3. **SSR 注意** — `onMounted` 只在客户端执行，服务端渲染时不要做 DOM 操作
 
 ## 总结
 
-好的 Composable 应该满足三点：
+好的组合式函数应该满足三点：
 - **单一职责** — 一个函数只做一件事
 - **可组合** — 像积木一样拼装
 - **易测试** — 不依赖组件实例

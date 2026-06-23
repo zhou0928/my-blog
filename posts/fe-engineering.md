@@ -13,7 +13,7 @@ description: 从构建工具之争到微前端架构，再到 CI/CD 流水线，
 
 先说结论：**Vite 是大多数场景的最优解，但不是唯一解。**
 
-Vite 基于 ESM 的 Dev Server 体验确实是降维打击——冷启动毫秒级、HMR 快到没感觉。2026 年的新项目，除非有特殊需求，否则默认选 Vite 不会错。
+Vite 基于 ESM 的开发服务器体验确实是降维打击——冷启动毫秒级、HMR 快到没感觉。2026 年的新项目，除非有特殊需求，否则默认选 Vite 不会错。
 
 但生产环境打包是另一回事。Vite 底层走 Rollup，大型项目的冷构建速度仍然是痛点。这时候 Rspack（字节开源的 Rust 打包工具）就有自己的生态位了：
 
@@ -35,7 +35,7 @@ Turbopack → 还在路上，潜力大但还没完全兑现
 
 几种主流方案的现状：
 
-**Module Federation（Webpack 5 / Rspack）**
+**模块联邦（Webpack 5 / Rspack）**
 最成熟的方案，共享运行时依赖的机制非常优雅。适合多个独立团队维护的不同模块需要组合成一个应用的场景。
 
 **qiankun / single-spa**
@@ -63,11 +63,11 @@ Turbopack → 还在路上，潜力大但还没完全兑现
 2. **并行执行** — Test 和 Build 没依赖关系就并行跑
 3. **缓存策略** — `node_modules` 和 `.turbo` 缓存能省 70%+ 的时间
 
-**一个关键的决策：pre-commit hooks vs CI**
+**一个关键的决策：提交前钩子 vs 持续集成**
 
-我以前喜欢用 husky + lint-staged，后来发现 team 里总有人 `--no-verify` 跳过。现在我的做法是：
-- pre-commit 只做最轻量的检查（比如格式化）
-- 所有质量检查放 CI，**CI 不过不能合入**
+我以前喜欢用 husky + lint-staged，后来发现团队里总有人 `--no-verify` 跳过。现在我的做法是：
+- 提交前只做最轻量的检查（比如格式化）
+- 所有质量检查放持续集成，**CI 不过不能合入**
 
 ## Monorepo：Turborepo 是目前最省心的选择
 

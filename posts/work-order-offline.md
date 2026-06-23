@@ -128,7 +128,7 @@ function setupReconnect() {
 
 1. **IndexedDB 事务超时** — 批量 put 太多了会挂，改成分批写入，一次 50 条
 2. **队列冲突** — 离线时修改同一条数据两次，重放顺序搞反了。加了个版本号字段做冲突检测
-3. **Service Worker 缓存策略** — STALE_WHILE_REVALIDATE 最合适，先展示旧数据再静默更新
+3. **Service Worker 缓存策略** — 先展示旧数据再静默更新的策略最合适
 
 ## 效果
 

@@ -37,7 +37,7 @@ SEO 这个话题说老很老，说新也很新。基础的东西——TDK 标签
 <meta name="twitter:card" content="summary_large_image">
 ```
 
-这部分就是 **「虽然简单但绝对不能漏」**。建议写一个 `useMeta` 的 composable 统一管理，避免每页手写。
+这部分就是 **「虽然简单但绝对不能漏」**。建议写一个 `useMeta` 的组合式函数统一管理，避免每页手写。
 
 ## 第二层：语义化 HTML（被低估的 SEO 手段）
 
@@ -106,7 +106,7 @@ export default defineNuxtConfig({
 
 ## 第四层：结构化数据（被大多数人忽略的杀手锏）
 
-结构化数据（Structured Data）是很多前端忽略的 SEO 优化点，但它可能是性价比最高的一个——**改几个 JSON-LD 标签，就能让搜索结果页面展现样式完全不同。**
+结构化数据是很多前端忽略的 SEO 优化点，但它可能是性价比最高的一个——**改几个 JSON-LD 标签，就能让搜索结果页面展现样式完全不同。**
 
 一个文章页面的结构化数据示例：
 
@@ -133,13 +133,13 @@ export default defineNuxtConfig({
 
 常见的结构化数据类型：
 
-- **Article / BlogPosting** — 文章类
-- **BreadcrumbList** — 面包屑导航，搜索结果里显示路径
-- **FAQPage** — FAQ 页面，Google 直接展示问答
-- **Product** — 商品页面，显示价格和评分
-- **LocalBusiness** — 本地商家
+- **文章类型** — 文章类
+- **面包屑导航** — 搜索结果里显示路径
+- **常见问题** — Google 直接展示问答
+- **商品页面** — 显示价格和评分
+- **本地商家** — 本地商家
 
-大部分场景，BreadcrumbList 和 Article 的 schema 就够用了。加了之后 Google 搜索结果能多显示几行摘要，点击率提升很明显。
+大部分场景，面包屑导航和文章类型的结构化数据就够用了。加了之后 Google 搜索结果能多显示几行摘要，点击率提升很明显。
 
 ## 第五层：性能 → Core Web Vitals
 

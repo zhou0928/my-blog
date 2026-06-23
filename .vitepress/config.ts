@@ -3,7 +3,7 @@ import { defineConfig } from 'vitepress'
 const SITE_URL = 'https://000902.icu'
 
 export default defineConfig({
-  title: "Xiaozhou's Blog",
+  title: "Xiazhou's Blog",
   base: '/',
   cleanUrls: true,
   lastUpdated: true,
@@ -21,26 +21,29 @@ export default defineConfig({
       href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap'
     }],
     ['link', { rel: 'icon', href: '/favicon.svg' }],
-    ['link', { rel: 'alternate', type: 'application/rss+xml', title: "Xiaozhou's Blog RSS", href: '/feed.xml' }],
+    ['link', { rel: 'alternate', type: 'application/rss+xml', title: "Xiazhou's Blog RSS", href: '/feed.xml' }],
     ['meta', { name: 'theme-color', content: '#00e5ff' }],
-    ['meta', { name: 'application-name', content: "Xiaozhou's Blog" }],
+    ['meta', { name: 'application-name', content: "Xiazhou's Blog" }],
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
     ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' }],
     // Open Graph
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: "Xiazhou's Blog" }],
     ['meta', { property: 'og:description', content: '工单系统 · 前端工程化 · Vue 生态 · 个人技术博客' }],
-    ['meta', { property: 'og:image', content: `${SITE_URL}/favicon.svg` }],
+    ['meta', { property: 'og:image', content: `${SITE_URL}/og-default.svg` }],
+    ['meta', { property: 'og:image:width', content: '1200' }],
+    ['meta', { property: 'og:image:height', content: '630' }],
     ['meta', { property: 'og:site_name', content: "Xiazhou's Blog" }],
+    ['meta', { property: 'og:url', content: SITE_URL }],
     // Twitter Card
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ['meta', { name: 'twitter:title', content: "Xiazhou's Blog" }],
     ['meta', { name: 'twitter:description', content: '工单系统 · 前端工程化 · Vue 生态 · 个人技术博客' }],
-    ['meta', { name: 'twitter:image', content: `${SITE_URL}/favicon.svg` }],
-    // Google Analytics — 替换 G-XXXXXXXXXX 为你的 GA4 Measurement ID
+    ['meta', { name: 'twitter:image', content: `${SITE_URL}/og-default.svg` }],
+    // Google Analytics
     // ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX' }],
     // ['script', {}, `window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', 'G-XXXXXXXXXX');`],
-    // JSON-LD 结构化数据
+    // JSON-LD Blog Schema
     ['script', { type: 'application/ld+json' }, JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'Blog',

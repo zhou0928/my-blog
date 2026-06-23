@@ -14,6 +14,9 @@ import KeyboardShortcuts from './components/KeyboardShortcuts.vue'
 import EmailSubscribe from './components/EmailSubscribe.vue'
 import ViewCount from './components/ViewCount.vue'
 import Projects from './components/Projects.vue'
+import ScrollRestore from './components/ScrollRestore.vue'
+import SeoHead from './components/SeoHead.vue'
+import TranslationLink from './components/TranslationLink.vue'
 import { initCursorEffects, destroyCursorEffects } from './cursor-effects'
 import { initMediumZoom } from './medium-zoom'
 import './styles/custom.css'
@@ -39,7 +42,11 @@ export default {
       'home-features-after': () => h(BlogHome),
       'not-found': () => h(NotFound),
       'layout-top': () => h(KeyboardShortcuts),
-      'doc-before': () => h('div', null, [h(Breadcrumb), h(ArticleMeta)]),
+      'doc-before': () => h('div', null, [
+        h(Breadcrumb),
+        h(ArticleMeta),
+        h(TranslationLink),
+      ]),
       'doc-after': () => h('div', null, [
         h(EmailSubscribe),
         h(RelatedPosts),
@@ -54,5 +61,7 @@ export default {
     app.component('Projects', Projects)
     app.component('ViewCount', ViewCount)
     app.component('KeyboardShortcuts', KeyboardShortcuts)
+    app.component('ScrollRestore', ScrollRestore)
+    app.component('SeoHead', SeoHead)
   },
 }

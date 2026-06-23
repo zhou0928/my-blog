@@ -39,6 +39,9 @@ jobs:
       - name: Generate RSS feed
         run: node --experimental-strip-types scripts/generate-rss.ts
 
+      - name: Generate OG images
+        run: node --experimental-strip-types scripts/generate-og.ts
+
       - name: Build
         run: npm run build
 

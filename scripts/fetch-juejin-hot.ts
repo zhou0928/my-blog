@@ -131,7 +131,7 @@ description: "${post.brief_content.replace(/"/g, '\\"').substring(0, 120)}"
 source: juejin
 source_url: "https://juejin.cn/post/${post.article_id}"
 author: "${post.author_user_info.user_name}"
-draft: true
+draft: false
 ---
 
 # ${post.title}

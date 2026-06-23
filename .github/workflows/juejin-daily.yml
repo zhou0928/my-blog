@@ -4,7 +4,7 @@ on:
   schedule:
     # 每天北京时间上午 10 点（UTC 02:00）
     - cron: '0 2 * * *'
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -23,28 +23,23 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Fetch Juejin hot post
-        id: fetch
+      - name: Fetch and generate post
+        run: node --experimental-strip-types scripts/fetch-juejin-hot.ts
+
+      - name: Generate RSS
+        run: node --experimental-strip-types scripts/generate-rss.ts
+
+      - name: Generate OG images
+        run: node --experimental-strip-types scripts/generate-og.ts
+
+      - name: Commit and push
         run: |
-          node --experimental-strip-types scripts/fetch-juejin-hot.ts 2>&1 | tee /tmp/juejin-output.log
-          echo "status=success" >> $GITHUB_OUTPUT
-
-      - name: Create Pull Request
-        if: steps.fetch.outputs.status == 'success'
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "📝 Auto: daily frontend hot post from Juejin"
-          title: "📝 每日掘金热文自动转载"
-          body: |
-            ## 自动转载掘金前端热门文章
-
-            此 PR 由 GitHub Actions 自动生成，包含今日掘金前端热门文章。
-
-            ### 操作说明
-            1. 检查文章内容是否合适
-            2. 修改 `draft: true` 为 `draft: false` 发布
-            3. 或关闭此 PR 不发布
-          branch: auto/juejin-daily
-          delete-branch: true
-          labels: auto-post
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add posts/
+          if git diff --cached --quiet; then
+            echo "没有新文章，跳过提交"
+          else
+            git commit -m "📝 Auto: daily frontend hot post from Juejin"
+            git push
+          fi

@@ -378,7 +378,8 @@ function getAccent(index: number) {
   font-size: 5.5rem;
   font-weight: 800;
   letter-spacing: -0.03em;
-  line-height: 1;
+  line-height: 1.1;
+  display: inline-block;
   background: linear-gradient(135deg, #ffffff 0%, #00e5ff 50%, #a855f7 100%);
   background-size: 200% 200%;
   -webkit-background-clip: text;
@@ -393,6 +394,7 @@ function getAccent(index: number) {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  display: inline-block;
 }
 
 @keyframes gradientShift {

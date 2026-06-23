@@ -55,7 +55,7 @@ Xiaozhou's Blog 全部已实现功能一览。
 | 相关文章推荐 | `RelatedPosts.vue` | 基于 tag 匹配，底部推荐 3 篇 |
 | 邮件订阅 | `EmailSubscribe.vue` | Buttondown 集成 |
 | 阅读量统计 | `ViewCount.vue` | localStorage 计数，可替换 Umami |
-| 中英文翻译链接 | `TranslationLink.vue` | 文章页 🇨🇳/🇬🇧 互链 |
+| 中英文翻译链接 | 已移除 | ~~文章页 🇨🇳/🇬🇧 互链~~ |
 | 文章最后更新时间 | `LastUpdated.vue` | 显示 VitePress lastUpdated |
 
 ## 🧭 导航与交互
@@ -184,7 +184,6 @@ blog/
 │           ├── Projects.vue        # 项目页
 │           ├── ScrollRestore.vue   # 阅读位置恢复
 │           ├── SeoHead.vue         # SEO注入
-│           ├── TranslationLink.vue # 翻译链接
 │           └── LastUpdated.vue     # 更新时间
 ├── posts/                  # 中文文章
 ├── en/                     # 英文文章

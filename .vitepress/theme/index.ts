@@ -16,7 +16,7 @@ import ViewCount from './components/ViewCount.vue'
 import Projects from './components/Projects.vue'
 import ScrollRestore from './components/ScrollRestore.vue'
 import SeoHead from './components/SeoHead.vue'
-import TranslationLink from './components/TranslationLink.vue'
+// import TranslationLink from './components/TranslationLink.vue'
 import LastUpdated from './components/LastUpdated.vue'
 import { initCursorEffects, destroyCursorEffects } from './cursor-effects'
 import { initVisualEffects, destroyVisualEffects } from './visual-effects'
@@ -51,7 +51,6 @@ export default {
       'doc-before': () => h('div', null, [
         h(Breadcrumb),
         h(ArticleMeta),
-        h(TranslationLink),
       ]),
       'doc-after': () => h('div', null, [
         h(LastUpdated),

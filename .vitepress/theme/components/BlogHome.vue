@@ -173,10 +173,10 @@ function getAccent(index: number) {
     <div class="hero-grid" />
 
     <div class="hero-content">
-      <div class="hero-badge">Frontend Engineer</div>
+      <div class="hero-badge neon-pulse">Frontend Engineer</div>
       
       <h1 class="hero-title">
-        <span class="hero-name">Xiaozhou</span>
+        <span class="hero-name glitch-text" data-text="Xiaozhou">Xiaozhou</span>
       </h1>
       
       <p class="hero-subtitle">
@@ -185,7 +185,7 @@ function getAccent(index: number) {
       </p>
 
       <!-- 终端卡片 -->
-      <div class="terminal-card">
+      <div class="terminal-card scanline">
         <div class="terminal-header">
           <span class="terminal-dot terminal-dot-red" />
           <span class="terminal-dot terminal-dot-yellow" />
@@ -204,7 +204,7 @@ function getAccent(index: number) {
       </div>
 
       <div class="hero-actions">
-        <a href="/blog" class="btn btn-primary">
+        <a href="/blog" class="btn btn-primary ripple-effect">
           <span>浏览文章</span>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>

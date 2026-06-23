@@ -18,6 +18,7 @@ import ScrollRestore from './components/ScrollRestore.vue'
 import SeoHead from './components/SeoHead.vue'
 import TranslationLink from './components/TranslationLink.vue'
 import { initCursorEffects, destroyCursorEffects } from './cursor-effects'
+import { initVisualEffects, destroyVisualEffects } from './visual-effects'
 import { initMediumZoom } from './medium-zoom'
 import './styles/custom.css'
 
@@ -33,10 +34,14 @@ export default {
     if (inBrowser) {
       onMounted(() => {
         initCursorEffects()
+        initVisualEffects()
         initMediumZoom()
         registerSW()
       })
-      onBeforeUnmount(() => destroyCursorEffects())
+      onBeforeUnmount(() => {
+        destroyCursorEffects()
+        destroyVisualEffects()
+      })
     }
     return h(DefaultTheme.Layout, null, {
       'home-features-after': () => h(BlogHome),

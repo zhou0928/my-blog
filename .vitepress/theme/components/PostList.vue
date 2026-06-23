@@ -206,7 +206,7 @@ onBeforeUnmount(() => {
 /* ==================== Hero ==================== */
 .archive-hero {
   position: relative;
-  padding: 5rem 0 3rem;
+  padding: 6rem 0 3rem;
   text-align: center;
   overflow: hidden;
 }
@@ -214,12 +214,12 @@ onBeforeUnmount(() => {
 .hero-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%);
+  background: linear-gradient(180deg, rgba(0, 229, 255, 0.06) 0%, transparent 100%);
   border-radius: 20px;
 }
 
 .dark .hero-bg {
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%);
+  background: linear-gradient(180deg, rgba(0, 229, 255, 0.1) 0%, transparent 100%);
 }
 
 .hero-content {
@@ -229,28 +229,30 @@ onBeforeUnmount(() => {
 
 .hero-tag {
   display: inline-block;
-  padding: 0.35rem 0.9rem;
+  padding: 0.4rem 1rem;
   border-radius: 100px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   background: var(--vp-c-brand-soft);
   color: var(--vp-c-brand-1);
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .hero-title {
-  font-size: 3rem;
+  font-size: 2.75rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   margin-bottom: 0.75rem;
   color: var(--vp-c-text-1);
+  line-height: 1.2;
 }
 
 .hero-subtitle {
   font-size: 1.1rem;
   color: var(--vp-c-text-3);
+  font-weight: 400;
 }
 
 /* ==================== Stats ==================== */
@@ -258,36 +260,39 @@ onBeforeUnmount(() => {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-  margin: 2rem 0;
+  margin: 2.5rem 0;
 }
 
 .stat-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem;
-  padding: 1.25rem;
+  gap: 0.35rem;
+  padding: 1.5rem 1rem;
   border-radius: 12px;
   border: 1px solid var(--vp-c-border);
   background: var(--vp-c-bg);
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .stat-card:hover {
   border-color: var(--vp-c-brand-1);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 229, 255, 0.08);
 }
 
 .stat-num {
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 800;
   font-family: var(--vp-font-family-mono);
-  color: var(--vp-c-text-1);
+  color: var(--vp-c-brand-1);
+  line-height: 1;
 }
 
 .stat-label {
   font-size: 0.8rem;
   color: var(--vp-c-text-3);
+  font-weight: 500;
 }
 
 /* ==================== Search ==================== */
@@ -307,7 +312,7 @@ onBeforeUnmount(() => {
 
 .search-input {
   width: 100%;
-  padding: 0.875rem 5rem 0.875rem 3rem;
+  padding: 0.9rem 5rem 0.9rem 3rem;
   border-radius: 12px;
   border: 1px solid var(--vp-c-border);
   background: var(--vp-c-bg);
@@ -349,7 +354,7 @@ onBeforeUnmount(() => {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.45rem 0.9rem;
+  padding: 0.5rem 1rem;
   border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 500;
@@ -364,6 +369,7 @@ onBeforeUnmount(() => {
   border-color: var(--vp-c-brand-1);
   color: var(--vp-c-brand-1);
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 229, 255, 0.06);
 }
 
 .tag-active {
@@ -386,31 +392,30 @@ onBeforeUnmount(() => {
 
 /* ==================== Year Groups ==================== */
 .year-group {
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .year-heading {
   display: flex;
   align-items: baseline;
   gap: 0.75rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--vp-c-border);
+  border-bottom: 2px solid var(--vp-c-border);
 }
 
 .year-label {
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 800;
   font-family: var(--vp-font-family-mono);
-  background: linear-gradient(135deg, var(--vp-c-text-1), var(--vp-c-brand-1));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--vp-c-brand-1);
+  line-height: 1;
 }
 
 .year-count {
   font-size: 0.8rem;
   color: var(--vp-c-text-3);
+  font-weight: 500;
 }
 
 /* ==================== Post Cards ==================== */

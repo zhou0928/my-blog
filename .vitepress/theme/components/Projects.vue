@@ -96,12 +96,12 @@ const projects = ref([
 .hero-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0, 229, 255, 0.06) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(184, 134, 11, 0.05) 0%, transparent 100%);
   border-radius: 20px;
 }
 
 .dark .hero-bg {
-  background: linear-gradient(180deg, rgba(0, 229, 255, 0.1) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(212, 148, 58, 0.08) 0%, transparent 100%);
 }
 
 .hero-content {
@@ -162,7 +162,7 @@ const projects = ref([
 .project-card:hover {
   border-color: var(--vp-c-brand-1);
   transform: translateX(6px);
-  box-shadow: 0 4px 20px rgba(0, 229, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(184, 134, 11, 0.06);
 }
 
 .project-icon {

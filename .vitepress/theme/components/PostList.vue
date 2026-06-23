@@ -214,12 +214,12 @@ onBeforeUnmount(() => {
 .hero-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0, 229, 255, 0.06) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(184, 134, 11, 0.05) 0%, transparent 100%);
   border-radius: 20px;
 }
 
 .dark .hero-bg {
-  background: linear-gradient(180deg, rgba(0, 229, 255, 0.1) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(212, 148, 58, 0.08) 0%, transparent 100%);
 }
 
 .hero-content {
@@ -242,11 +242,12 @@ onBeforeUnmount(() => {
 
 .hero-title {
   font-size: 2.75rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.02em;
   margin-bottom: 0.75rem;
   color: var(--vp-c-text-1);
   line-height: 1.2;
+  font-family: var(--vp-font-family-heading);
 }
 
 .hero-subtitle {
@@ -270,15 +271,13 @@ onBeforeUnmount(() => {
   gap: 0.35rem;
   padding: 1.5rem 1rem;
   border-radius: 12px;
-  border: 1px solid var(--vp-c-border);
-  background: var(--vp-c-bg);
+  background: var(--vp-c-bg-soft);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .stat-card:hover {
-  border-color: var(--vp-c-brand-1);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0, 229, 255, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(184, 134, 11, 0.06);
 }
 
 .stat-num {
@@ -369,7 +368,7 @@ onBeforeUnmount(() => {
   border-color: var(--vp-c-brand-1);
   color: var(--vp-c-brand-1);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 229, 255, 0.06);
+  box-shadow: 0 4px 12px rgba(184, 134, 11, 0.06);
 }
 
 .tag-active {
@@ -406,8 +405,8 @@ onBeforeUnmount(() => {
 
 .year-label {
   font-size: 2rem;
-  font-weight: 800;
-  font-family: var(--vp-font-family-mono);
+  font-weight: 700;
+  font-family: var(--vp-font-family-heading);
   color: var(--vp-c-brand-1);
   line-height: 1;
 }
@@ -429,8 +428,7 @@ onBeforeUnmount(() => {
   display: block;
   padding: 1.5rem 1.75rem;
   border-radius: 12px;
-  border: 1px solid var(--vp-c-border);
-  background: var(--vp-c-bg);
+  background: var(--vp-c-bg-soft);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   animation: fadeInUp 0.5s ease forwards;
@@ -443,10 +441,9 @@ onBeforeUnmount(() => {
 }
 
 .post-card:hover {
-  border-color: var(--vp-c-brand-1);
   background: var(--vp-c-bg-elv);
-  transform: translateX(6px);
-  box-shadow: 0 4px 20px rgba(0, 229, 255, 0.08);
+  transform: translateX(4px);
+  box-shadow: 0 4px 20px rgba(184, 134, 11, 0.06);
 }
 
 .post-header {

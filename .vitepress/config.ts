@@ -18,11 +18,11 @@ export default defineConfig({
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
     ['link', {
       rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap'
+      href: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap'
     }],
     ['link', { rel: 'icon', href: '/favicon.svg' }],
     ['link', { rel: 'alternate', type: 'application/rss+xml', title: "Xiazhou's Blog RSS", href: '/feed.xml' }],
-    ['meta', { name: 'theme-color', content: '#00e5ff' }],
+    ['meta', { name: 'theme-color', content: '#b8860b' }],
     ['meta', { name: 'application-name', content: "Xiazhou's Blog" }],
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
     ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' }],

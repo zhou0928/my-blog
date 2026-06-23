@@ -39,7 +39,7 @@ function goHome() {
 .not-found-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.03) 0%, rgba(168, 85, 247, 0.03) 100%);
+  background: linear-gradient(135deg, rgba(184, 134, 11, 0.04) 0%, rgba(212, 148, 58, 0.02) 100%);
 }
 
 .not-found-content {
@@ -100,7 +100,7 @@ function goHome() {
 
 .error-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(0, 229, 255, 0.3);
+  box-shadow: 0 8px 30px rgba(184, 134, 11, 0.3);
 }
 
 .not-found-stars {

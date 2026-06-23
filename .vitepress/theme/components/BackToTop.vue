@@ -51,15 +51,15 @@ onUnmounted(() => {
   top: 0;
   left: 0;
   height: 3px;
-  background: linear-gradient(90deg, #00e5ff, #a855f7);
+  background: linear-gradient(90deg, #b8860b, #d4943a);
   z-index: 9999;
   transition: width 0.1s ease-out;
 }
 
 .scroll-progress.is-article {
   height: 4px;
-  background: linear-gradient(90deg, #00e5ff, #a855f7, #ec4899);
-  box-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
+  background: linear-gradient(90deg, #b8860b, #d4943a);
+  box-shadow: 0 0 8px rgba(184, 134, 11, 0.3);
 }
 
 .back-to-top {
@@ -85,11 +85,11 @@ onUnmounted(() => {
   border-color: var(--vp-c-brand-1);
   color: var(--vp-c-brand-1);
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 229, 255, 0.15);
+  box-shadow: 0 8px 20px rgba(184, 134, 11, 0.15);
 }
 
 .dark .back-to-top {
-  background: rgba(16, 24, 48, 0.8);
+  background: rgba(35, 31, 28, 0.8);
   backdrop-filter: blur(10px);
 }
 

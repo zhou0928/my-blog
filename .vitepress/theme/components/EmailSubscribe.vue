@@ -27,13 +27,13 @@
   padding: 2rem;
   border-radius: 16px;
   border: 1px solid var(--vp-c-border);
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.03) 0%, rgba(168, 85, 247, 0.03) 100%);
+  background: linear-gradient(135deg, rgba(184, 134, 11, 0.04) 0%, rgba(212, 148, 58, 0.02) 100%);
   text-align: center;
   margin-top: 2rem;
 }
 
 .dark .email-subscribe {
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.06) 0%, rgba(168, 85, 247, 0.06) 100%);
+  background: linear-gradient(135deg, rgba(184, 134, 11, 0.06) 0%, rgba(212, 148, 58, 0.04) 100%);
 }
 
 .subscribe-icon {

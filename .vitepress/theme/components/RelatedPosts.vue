@@ -103,7 +103,7 @@ function goToPost(url: string) {
 .related-card:hover {
   border-color: var(--vp-c-brand-1);
   transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0, 229, 255, 0.08);
+  box-shadow: 0 8px 24px rgba(184, 134, 11, 0.08);
 }
 
 .related-meta {

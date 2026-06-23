@@ -31,42 +31,41 @@ function goToPost(url: string) {
 <template>
   <!-- ====== Hero ====== -->
   <section class="hero">
-    <div class="hero-orb hero-orb-1" />
-    <div class="hero-orb hero-orb-2" />
-    <div class="hero-grid" />
-
     <div class="hero-content">
-      <div class="hero-badge">Frontend Engineer</div>
+      <div class="hero-accent-bar" />
+
+      <p class="hero-greeting">Hello, I'm</p>
 
       <h1 class="hero-title">
         <span class="hero-name">Xiaozhou</span>
       </h1>
 
       <p class="hero-subtitle">
-        专注于<em>前端工程化</em>与<em>工单系统</em>
+        Writing about <em>frontend engineering</em> and <em>building systems</em>
       </p>
 
       <div class="hero-actions">
         <a href="/blog" class="btn btn-primary">
-          <span>浏览文章</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <span>Read the Blog</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
-        <a href="/about" class="btn btn-ghost">关于我</a>
+        <a href="/about" class="btn btn-ghost">About Me</a>
       </div>
     </div>
 
     <div class="hero-scroll-hint">
       <span>Scroll</span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
     </div>
   </section>
 
   <!-- ====== 文章 ====== -->
   <section class="section" v-if="latestPosts.length > 0">
     <div class="section-header scroll-reveal">
-      <span class="section-tag">Latest</span>
-      <h2 class="section-title">最新文章</h2>
-      <div class="section-line" />
+      <div class="section-title-row">
+        <h2 class="section-title">Latest</h2>
+        <div class="section-line" />
+      </div>
     </div>
 
     <div class="posts-grid">
@@ -77,19 +76,15 @@ function goToPost(url: string) {
         :style="{ transitionDelay: (index * 0.08) + 's' }"
         @click="goToPost(post.url)"
       >
-        <div class="card-shine" />
         <div class="card-content">
           <div class="card-meta">
             <time>{{ post.date }}</time>
-            <span v-if="post.readTime" class="card-readtime">{{ post.readTime }} min</span>
-            <span v-if="post.tags?.length" class="card-tags">
-              <span v-for="tag in post.tags.slice(0, 2)" :key="tag" class="card-tag">{{ tag }}</span>
-            </span>
+            <span v-if="post.readTime" class="card-readtime">{{ post.readTime }} min read</span>
           </div>
           <h3 class="card-title">{{ post.title }}</h3>
           <p class="card-desc">{{ post.excerpt }}</p>
-          <div class="card-footer">
-            <span class="card-link">阅读全文 →</span>
+          <div class="card-tags" v-if="post.tags?.length">
+            <span v-for="tag in post.tags.slice(0, 2)" :key="tag" class="card-tag">{{ tag }}</span>
           </div>
         </div>
       </article>
@@ -97,8 +92,8 @@ function goToPost(url: string) {
 
     <div class="section-more scroll-reveal">
       <a href="/blog" class="more-link">
-        <span>查看全部文章</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <span>View all articles</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
     </div>
   </section>
@@ -106,14 +101,15 @@ function goToPost(url: string) {
   <!-- ====== 技术栈 ====== -->
   <section class="section tech-section scroll-reveal">
     <div class="section-header">
-      <span class="section-tag">Skills</span>
-      <h2 class="section-title">技术栈</h2>
-      <div class="section-line" />
+      <div class="section-title-row">
+        <h2 class="section-title">Skills</h2>
+        <div class="section-line" />
+      </div>
     </div>
     <div class="tech-grid">
-      <div v-for="tech in ['Vue 3', 'TypeScript', 'Vite', 'Node.js', 'Git', 'CSS']" :key="tech" class="tech-card" :style="{ transitionDelay: (0.06 * $index) + 's' }">
-        <div class="tech-icon">{{ tech.charAt(0) }}</div>
-        <span>{{ tech }}</span>
+      <div v-for="tech in ['Vue 3', 'TypeScript', 'Vite', 'Node.js', 'Git', 'CSS']" :key="tech" class="tech-card">
+        <span class="tech-letter">{{ tech.charAt(0) }}</span>
+        <span class="tech-name">{{ tech }}</span>
       </div>
     </div>
   </section>
@@ -122,26 +118,27 @@ function goToPost(url: string) {
   <section class="section cta-section scroll-reveal">
     <div class="cta-card">
       <div class="cta-content">
-        <h2 class="cta-title">开始阅读</h2>
-        <p class="cta-desc">探索关于前端工程化、Vue 生态和工单系统的深度文章</p>
+        <div class="cta-accent-bar" />
+        <h2 class="cta-title">Start Reading</h2>
+        <p class="cta-desc">Explore articles on frontend engineering, Vue ecosystem, and building production systems</p>
         <a href="/blog" class="btn btn-primary">
-          <span>浏览全部</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <span>Browse all</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
       </div>
       <div class="cta-visual">
         <div class="cta-stats">
           <div class="cta-stat">
             <span class="cta-stat-num">{{ posts.length }}</span>
-            <span class="cta-stat-label">文章</span>
+            <span class="cta-stat-label">Articles</span>
           </div>
           <div class="cta-stat">
             <span class="cta-stat-num">{{ [...new Set(posts.flatMap(p => p.tags || []))].length }}</span>
-            <span class="cta-stat-label">标签</span>
+            <span class="cta-stat-label">Topics</span>
           </div>
           <div class="cta-stat">
             <span class="cta-stat-num">{{ posts.reduce((s, p) => s + (p.readTime ? parseInt(p.readTime) : 0), 0) }}</span>
-            <span class="cta-stat-label">分钟阅读</span>
+            <span class="cta-stat-label">Min read</span>
           </div>
         </div>
       </div>
@@ -161,46 +158,9 @@ function goToPost(url: string) {
   padding: 5rem 1.5rem 4rem;
 }
 
-.hero-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.4;
-  pointer-events: none;
-}
-
-.hero-orb-1 {
-  width: 500px; height: 500px;
-  background: radial-gradient(circle, var(--vp-c-brand-1) 0%, transparent 70%);
-  top: -200px; right: -100px;
-  animation: orbFloat 12s ease-in-out infinite alternate;
-}
-
-.hero-orb-2 {
-  width: 400px; height: 400px;
-  background: radial-gradient(circle, #a855f7 0%, transparent 70%);
-  bottom: -150px; left: -100px;
-  animation: orbFloat 15s ease-in-out infinite alternate-reverse;
-}
-
-@keyframes orbFloat {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(30px, -30px) scale(1.1); }
-}
-
-.hero-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(8, 145, 178, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(8, 145, 178, 0.03) 1px, transparent 1px);
-  background-size: 50px 50px;
-  pointer-events: none;
-}
-
 .hero-content {
   position: relative;
-  text-align: center;
+  text-align: left;
   z-index: 1;
   max-width: 640px;
   animation: heroEnter 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -211,51 +171,52 @@ function goToPost(url: string) {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.hero-badge {
-  display: inline-block;
-  padding: 0.35rem 1rem;
-  border-radius: 100px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  background: var(--vp-c-brand-soft);
-  border: 1px solid var(--vp-c-border);
-  color: var(--vp-c-brand-1);
+.hero-accent-bar {
+  width: 48px;
+  height: 3px;
+  background: var(--vp-c-brand-1);
+  border-radius: 2px;
   margin-bottom: 1.5rem;
 }
 
+.hero-greeting {
+  font-size: 1.1rem;
+  color: var(--vp-c-text-3);
+  margin-bottom: 0.5rem;
+  font-family: var(--vp-font-family-mono);
+  letter-spacing: 0.02em;
+}
+
 .hero-title {
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
   line-height: 1.1;
 }
 
 .hero-name {
-  font-size: 5rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  background: linear-gradient(135deg, var(--vp-c-text-1), var(--vp-c-brand-1), #a855f7);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: 4.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--vp-c-text-1);
+  font-family: var(--vp-font-family-heading);
 }
 
 .hero-subtitle {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   color: var(--vp-c-text-2);
-  margin-bottom: 2rem;
-  line-height: 1.6;
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+  max-width: 480px;
 }
 .hero-subtitle em {
   font-style: normal;
   color: var(--vp-c-brand-1);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .hero-actions {
   display: flex;
   gap: 1rem;
-  justify-content: center;
+  align-items: center;
 }
 
 .hero-scroll-hint {
@@ -285,9 +246,9 @@ function goToPost(url: string) {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.8rem 1.6rem;
-  border-radius: 10px;
-  font-size: 0.95rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -296,18 +257,18 @@ function goToPost(url: string) {
 .btn-primary {
   background: var(--vp-c-brand-1);
   color: white !important;
-  box-shadow: 0 4px 16px rgba(8, 145, 178, 0.25);
+  box-shadow: 0 2px 8px rgba(184, 134, 11, 0.2);
 }
 .btn-primary:hover {
   background: var(--vp-c-brand-2);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(8, 145, 178, 0.35);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(184, 134, 11, 0.3);
 }
 
 .btn-ghost {
   background: transparent;
   border: 1px solid var(--vp-c-border);
-  color: var(--vp-c-text-1) !important;
+  color: var(--vp-c-text-2) !important;
 }
 .btn-ghost:hover {
   border-color: var(--vp-c-brand-1);
@@ -322,28 +283,21 @@ function goToPost(url: string) {
 }
 
 .section-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
   margin-bottom: 2.5rem;
 }
 
-.section-tag {
-  padding: 0.25rem 0.7rem;
-  border-radius: 6px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  background: var(--vp-c-brand-soft);
-  color: var(--vp-c-brand-1);
+.section-title-row {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
 }
 
 .section-title {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: 700;
   white-space: nowrap;
   color: var(--vp-c-text-1);
+  font-family: var(--vp-font-family-heading);
 }
 
 .section-line {
@@ -356,39 +310,29 @@ function goToPost(url: string) {
 .posts-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 .post-card {
   position: relative;
   border-radius: var(--c-radius-md);
-  border: 1px solid var(--vp-c-border);
-  background: var(--vp-c-bg);
+  background: var(--vp-c-bg-soft);
   overflow: hidden;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .post-card:hover {
-  border-color: var(--vp-c-brand-1);
-  box-shadow: 0 16px 40px rgba(8, 145, 178, 0.06);
-  transform: translateY(-4px);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(184, 134, 11, 0.06);
 }
 
-.card-shine {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(300px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), var(--vp-c-brand-soft), transparent 50%);
-  opacity: 0;
-  transition: opacity 0.3s;
-  pointer-events: none;
+.dark .post-card:hover {
+  box-shadow: 0 12px 32px rgba(212, 148, 58, 0.08);
 }
-.post-card:hover .card-shine { opacity: 1; }
 
 .card-content {
-  padding: 1.25rem 1.5rem 1.5rem;
-  position: relative;
-  z-index: 1;
+  padding: 1.5rem;
 }
 
 .card-meta {
@@ -396,31 +340,18 @@ function goToPost(url: string) {
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 0.75rem;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--vp-c-text-3);
   font-family: var(--vp-font-family-mono);
 }
 
 .card-readtime {
-  font-size: 0.7rem;
-  padding: 0.1rem 0.4rem;
+  font-size: 0.72rem;
+  padding: 0.1rem 0.45rem;
   border-radius: 4px;
-  background: var(--vp-c-bg-soft);
-  color: var(--vp-c-text-3);
-}
-
-.card-tags {
-  display: inline-flex;
-  gap: 0.3rem;
-}
-
-.card-tag {
-  padding: 0.15rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.7rem;
-  font-weight: 500;
   background: var(--vp-c-brand-soft);
   color: var(--vp-c-brand-1);
+  font-weight: 500;
 }
 
 .card-title {
@@ -441,7 +372,7 @@ function goToPost(url: string) {
 .card-desc {
   font-size: 0.88rem;
   color: var(--vp-c-text-3);
-  line-height: 1.6;
+  line-height: 1.65;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -449,20 +380,19 @@ function goToPost(url: string) {
   margin-bottom: 1rem;
 }
 
-.card-footer {
+.card-tags {
   display: flex;
+  gap: 0.3rem;
 }
 
-.card-link {
-  font-size: 0.85rem;
+.card-tag {
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
   font-weight: 500;
+  background: var(--vp-c-brand-soft);
   color: var(--vp-c-brand-1);
-  opacity: 0;
-  transform: translateX(-8px);
-  transition: all 0.3s;
 }
-
-.post-card:hover .card-link { opacity: 1; transform: translateX(0); }
 
 .section-more {
   text-align: center;
@@ -473,9 +403,9 @@ function goToPost(url: string) {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.7rem 1.5rem;
-  border-radius: 8px;
-  font-size: 0.9rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: 6px;
+  font-size: 0.88rem;
   font-weight: 500;
   color: var(--vp-c-brand-1);
   border: 1px solid var(--vp-c-border);
@@ -499,41 +429,43 @@ function goToPost(url: string) {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1.5rem 1rem;
-  border-radius: 12px;
-  border: 1px solid var(--vp-c-border);
-  background: var(--vp-c-bg);
+  gap: 0.6rem;
+  padding: 1.25rem 1rem;
+  border-radius: var(--c-radius-md);
+  background: var(--vp-c-bg-soft);
   transition: all 0.3s;
 }
 
 .tech-card:hover {
-  border-color: var(--vp-c-brand-1);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(8, 145, 178, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(184, 134, 11, 0.06);
 }
 
-.tech-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+.dark .tech-card:hover {
+  box-shadow: 0 6px 20px rgba(212, 148, 58, 0.08);
+}
+
+.tech-letter {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   background: var(--vp-c-brand-soft);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--vp-c-brand-1);
+  font-family: var(--vp-font-family-heading);
   transition: all 0.3s;
 }
 
-.tech-card:hover .tech-icon {
-  transform: scale(1.08);
-  box-shadow: 0 0 20px rgba(8, 145, 178, 0.15);
+.tech-card:hover .tech-letter {
+  transform: scale(1.05);
 }
 
-.tech-card span {
-  font-size: 0.85rem;
+.tech-name {
+  font-size: 0.82rem;
   color: var(--vp-c-text-2);
   font-weight: 500;
 }
@@ -545,8 +477,7 @@ function goToPost(url: string) {
   gap: 3rem;
   padding: 3rem;
   border-radius: var(--c-radius-xl);
-  border: 1px solid var(--vp-c-border);
-  background: linear-gradient(135deg, var(--vp-c-brand-soft) 0%, rgba(168, 85, 247, 0.04) 100%);
+  background: var(--vp-c-bg-soft);
   align-items: center;
 }
 
@@ -556,16 +487,24 @@ function goToPost(url: string) {
   gap: 1rem;
 }
 
+.cta-accent-bar {
+  width: 40px;
+  height: 3px;
+  background: var(--vp-c-brand-1);
+  border-radius: 2px;
+}
+
 .cta-title {
   font-size: 1.8rem;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--vp-c-text-1);
+  font-family: var(--vp-font-family-heading);
 }
 
 .cta-desc {
   font-size: 1rem;
   color: var(--vp-c-text-3);
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 .cta-visual {
@@ -589,7 +528,7 @@ function goToPost(url: string) {
 
 .cta-stat-num {
   font-size: 2rem;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--vp-c-brand-1);
   font-family: var(--vp-font-family-mono);
   line-height: 1;
@@ -610,12 +549,14 @@ function goToPost(url: string) {
 }
 
 @media (max-width: 768px) {
-  .hero-name { font-size: 3.5rem; }
-  .hero-subtitle { font-size: 1.1rem; }
+  .hero-name { font-size: 3.2rem; }
+  .hero-subtitle { font-size: 1.05rem; }
+  .hero-content { text-align: center; }
+  .hero-actions { justify-content: center; }
 }
 
 @media (max-width: 640px) {
-  .hero-name { font-size: 2.8rem; }
+  .hero-name { font-size: 2.6rem; }
   .posts-grid { grid-template-columns: 1fr; }
   .tech-grid { grid-template-columns: repeat(3, 1fr); }
   .cta-card { padding: 2rem 1.5rem; }

@@ -88,7 +88,7 @@ const projects = ref([
 
 .projects-hero {
   position: relative;
-  padding: 5rem 0 3rem;
+  padding: 6rem 0 3rem;
   text-align: center;
   overflow: hidden;
 }
@@ -96,27 +96,30 @@ const projects = ref([
 .hero-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%);
+  background: linear-gradient(180deg, rgba(0, 229, 255, 0.06) 0%, transparent 100%);
   border-radius: 20px;
 }
 
 .dark .hero-bg {
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%);
+  background: linear-gradient(180deg, rgba(0, 229, 255, 0.1) 0%, transparent 100%);
 }
 
-.hero-content { position: relative; z-index: 1; }
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
 
 .hero-tag {
   display: inline-block;
-  padding: 0.35rem 0.9rem;
+  padding: 0.4rem 1rem;
   border-radius: 100px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   background: var(--vp-c-brand-soft);
   color: var(--vp-c-brand-1);
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .hero-title {
@@ -131,6 +134,7 @@ const projects = ref([
 .hero-subtitle {
   font-size: 1.1rem;
   color: var(--vp-c-text-3);
+  font-weight: 400;
 }
 
 .projects-grid {

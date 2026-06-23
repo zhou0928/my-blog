@@ -155,6 +155,51 @@ SDD 不是让开发变慢，是让「做对」变得可预测。
 
 ---
 
+## 学习路线图
+
+从入门到上手，按顺序来就行：
+
+### 1. 理解概念（30 分钟）
+
+把本文从头读一遍。Vibe Coding vs SDD 的对比、三块 spec 模板、什么时候不该用——这些是地基。
+
+### 2. 上一门课程（2-3 小时）
+
+首选 **DeepLearning.AI + JetBrains** 的免费短课，Paul Everitt 主讲，15 节视频，从 project constitution 到 feature spec 到自动化 skill，全部动手练：
+
+- [Spec-Driven Development with Coding Agents — DeepLearning.AI](https://www.deeplearning.ai/courses/spec-driven-development-with-coding-agents)
+
+备选：
+- [Spec-Driven Development with Claude Code: A Guided Tutorial — DataCamp](https://www.datacamp.com/tutorial/spec-driven-development-with-claude-code) — 文字教程，讲解 Superpowers / Spec Kit / BMAD-METHOD 三个开源方案
+- [Spec-Driven Development: From Vibe-Coding to AI Engineering — Udemy](https://www.udemy.com/course/spec-driven-development-sdd-from-vibe-coding-to-reliable) — 付费，3 小时 45 分，带测验和练习
+
+### 3. 动手练（最重要）
+
+下次有功能需求，直接上手：
+
+1. 在项目里建一个 `spec.md`
+2. 三块写清楚：目标 + 技术约束 + 边界
+3. 丢给 AI，说「按 spec 来」
+
+可以配合开源工具降低门槛：
+
+- **[GitHub Spec Kit](https://github.com/github/spec-kit)** — 四阶段工作流（`/specify` → `/plan` → `/tasks` → 执行），兼容 Copilot、Claude Code、Gemini CLI
+- **[OpenSpec](https://github.com/Fission-AI/OpenSpec)** — 三命令工作流（`/opsx:propose` → `/opsx:apply` → `/opsx:archive`），更轻量
+- **[Awesome Specification Driven Development](https://github.com/aabs/awesome-specification-driven-development)** — 资源合集
+
+两个都是开源的，readme 看了就能上手。
+
+### 4. 进阶阅读
+
+- [Spec-Driven Development (SDD): The Definitive 2026 Guide — BCMS](https://thebcms.com/blog/spec-driven-development)
+- [Spec-Driven Development with AI: Complete Guide — Prommer](https://prommer.net/en/tech/guides/spec-driven-development)
+- [Spec-Driven Development (SDD) Complete Guide 2026 — AI-pedias](https://en.ai-pedias.com/blog/spec-driven-development-guide-2026)
+- [New course! Spec-Driven Development — YouTube](https://www.youtube.com/watch?v=bJ8F43j1Fqw)
+- [OpenSpec Tutorial: Master Spec-Driven Development — QubitTool](https://qubittool.com/blog/openspec-sdd-tutorial)
+- [How Spec-Driven Development Improves AI Coding Quality — Red Hat](https://developers.redhat.com/articles/2025/10/22/how-spec-driven-development-improves-ai-coding-quality)
+
+---
+
 ### 参考资源
 
 - [GitHub Spec Kit](https://github.com/github/spec-kit) — 开源 SDD 工具包

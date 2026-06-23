@@ -56,7 +56,7 @@ Xiaozhou's Blog 全部已实现功能一览。
 | 邮件订阅 | `EmailSubscribe.vue` | Buttondown 集成 |
 | 阅读量统计 | `ViewCount.vue` | localStorage 计数，可替换 Umami |
 | 中英文翻译链接 | `TranslationLink.vue` | 文章页 🇨🇳/🇬🇧 互链 |
-| 文章最后更新时间 | `ArticleMeta.vue` | 显示 VitePress lastUpdated |
+| 文章最后更新时间 | `LastUpdated.vue` | 显示 VitePress lastUpdated |
 
 ## 🧭 导航与交互
 
@@ -189,6 +189,7 @@ blog/
 ├── posts/                  # 中文文章
 ├── en/                     # 英文文章
 ├── public/
+│   ├── CNAME               # 自定义域名
 │   ├── sw.js               # Service Worker
 │   ├── robots.txt          # 爬虫指引
 │   ├── feed.xml            # RSS (构建生成)

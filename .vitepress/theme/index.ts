@@ -18,6 +18,10 @@ import ScrollRestore from './components/ScrollRestore.vue'
 import SeoHead from './components/SeoHead.vue'
 // import TranslationLink from './components/TranslationLink.vue'
 import LastUpdated from './components/LastUpdated.vue'
+import ReadingProgress from './components/ReadingProgress.vue'
+import OgPerArticle from './components/OgPerArticle.vue'
+import ThemePersist from './components/ThemePersist.vue'
+import ErrorMonitor from './components/ErrorMonitor.vue'
 import { initCursorEffects } from './cursor-effects'
 import { initVisualEffects } from './visual-effects'
 import { initMediumZoom } from './medium-zoom'
@@ -46,7 +50,14 @@ export default {
     return h(DefaultTheme.Layout, null, {
       'home-features-after': () => h(BlogHome),
       'not-found': () => h(NotFound),
-      'layout-top': () => h('div', null, [h(KeyboardShortcuts), h(ScrollRestore), h(SeoHead)]),
+      'layout-top': () => h('div', null, [
+        h(KeyboardShortcuts),
+        h(ScrollRestore),
+        h(SeoHead),
+        h(ThemePersist),
+        h(ErrorMonitor),
+        h(OgPerArticle),
+      ]),
       'doc-before': () => h('div', null, [
         h(Breadcrumb),
         h(ArticleMeta),
@@ -57,6 +68,7 @@ export default {
         h(RelatedPosts),
         h(GiscusComments),
       ]),
+      'layout-bottom': () => h(ReadingProgress),
     })
   },
   enhanceApp({ app }) {

@@ -149,6 +149,69 @@ body {
 :focus-visible {
   outline: 2px solid var(--vp-c-brand-1);
   outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* 跳转链接（无障碍） */
+.skip-to-content {
+  position: fixed;
+  top: -100%;
+  left: 0;
+  z-index: 99999;
+  padding: 0.75rem 1.5rem;
+  background: var(--vp-c-brand-1);
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 8px 0;
+  transition: top 0.2s;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+
+/* 增强对比度 */
+.dark {
+  --vp-c-text-1: #f1f5f9;
+  --vp-c-text-2: #cbd5e1;
+  --vp-c-text-3: #94a3b8;
+}
+
+/* 减少动画模式 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .noise-overlay { display: none; }
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  :root {
+    --vp-c-border: #000;
+    --vp-c-text-3: #333;
+  }
+  .dark {
+    --vp-c-border: #fff;
+    --vp-c-text-3: #ccc;
+  }
+}
+
+/* 屏幕阅读器专用 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 /* 打印 */

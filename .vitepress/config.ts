@@ -26,6 +26,10 @@ export default defineConfig({
     ['meta', { name: 'application-name', content: "Xiazhou's Blog" }],
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
     ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' }],
+    // Google Search Console 验证 — 替换 YOUR_VERIFICATION_CODE
+    // ['meta', { name: 'google-site-verification', content: 'YOUR_VERIFICATION_CODE' }],
+    // Accessibility
+    ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1.0' }],
     // Open Graph
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: "Xiazhou's Blog" }],

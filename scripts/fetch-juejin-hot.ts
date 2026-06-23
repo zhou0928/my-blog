@@ -19,6 +19,35 @@ const POSTS_DIR = resolve(__dirname, '..', 'posts')
 // 掘金前端分类 ID：6809637767543259144
 const FRONTEND_CATEGORY = '6809637767543259144'
 
+// ==================== 审核规则 ====================
+const RULES = {
+  // 最低阅读量
+  minViews: 500,
+  // 最低点赞数
+  minLikes: 5,
+  // 最低评论数
+  minComments: 2,
+  // 排除关键词（标题含这些词直接跳过）
+  excludeKeywords: [
+    '外包', '简历', '面试题', '八股文', '打卡', '征文',
+    '送书', '抽奖', '活动', '招聘', '内推',
+  ],
+  // 必须包含关键词（标题或摘要至少命中一个）
+  requireKeywords: [
+    '前端', 'vue', 'react', 'javascript', 'typescript', 'css',
+    'html', 'webpack', 'vite', 'node', 'next', 'nuxt', 'angular',
+    '性能优化', '工程化', '浏览器', 'dom', '小程序', 'flutter',
+    'ai', 'cursor', 'claude', 'copilot', 'agent', 'rag',
+    'docker', 'nginx', 'git', 'ci', 'cd', 'monorepo',
+    'pinia', 'vuex', 'sass', 'tailwind', 'sass', 'less',
+    'typescript', 'esbuild', 'bun', 'deno', 'deno',
+  ],
+  // 标题最小长度（太短的可能是水文）
+  minTitleLength: 8,
+  // 摘要最小长度
+  minBriefLength: 20,
+}
+
 interface JuejinPost {
   article_id: string
   title: string
@@ -91,16 +120,46 @@ async function fetchHotPosts(): Promise<JuejinPost[]> {
 }
 
 function isFrontendRelated(post: JuejinPost): boolean {
-  const keywords = [
-    '前端', 'vue', 'react', 'angular', 'javascript', 'typescript',
-    'css', 'html', 'webpack', 'vite', 'node', 'next', 'nuxt',
-    'sass', 'tailwind', 'flutter', '小程序', 'webpack', 'esbuild',
-    'bun', 'deno', '浏览器', 'dom', '性能优化', '工程化',
-  ]
-
   const tags = (post.tags || []).map(t => t.tag_name || '').join(' ')
   const text = `${post.title} ${post.brief_content || ''} ${tags}`.toLowerCase()
-  return keywords.some(kw => text.includes(kw))
+  return RULES.requireKeywords.some(kw => text.includes(kw))
+}
+
+function passesQualityCheck(post: JuejinPost): { pass: boolean; reason: string } {
+  // 标题长度
+  if (post.title.length < RULES.minTitleLength) {
+    return { pass: false, reason: `标题太短 (${post.title.length} < ${RULES.minTitleLength})` }
+  }
+
+  // 摘要长度
+  if ((post.brief_content || '').length < RULES.minBriefLength) {
+    return { pass: false, reason: `摘要太短` }
+  }
+
+  // 阅读量
+  if (post.view_count < RULES.minViews) {
+    return { pass: false, reason: `阅读量不足 (${post.view_count} < ${RULES.minViews})` }
+  }
+
+  // 点赞数
+  if (post.digg_count < RULES.minLikes) {
+    return { pass: false, reason: `点赞数不足 (${post.digg_count} < ${RULES.minLikes})` }
+  }
+
+  // 评论数
+  if (post.comment_count < RULES.minComments) {
+    return { pass: false, reason: `评论数不足 (${post.comment_count} < ${RULES.minComments})` }
+  }
+
+  // 排除关键词
+  const titleLower = post.title.toLowerCase()
+  for (const kw of RULES.excludeKeywords) {
+    if (titleLower.includes(kw)) {
+      return { pass: false, reason: `标题含排除词: ${kw}` }
+    }
+  }
+
+  return { pass: true, reason: '' }
 }
 
 function generateSlug(title: string): string {
@@ -157,17 +216,29 @@ try {
     console.log(`[juejin] 文章${i + 1}: ${p.title} | 标签: ${(p.tags || []).map(t => t.tag_name).join(', ')}`)
   })
 
-  // 过滤前端相关
+  // 过滤前端相关 + 质量审核
   const frontendPosts = posts.filter(isFrontendRelated)
   console.log(`[juejin] 前端相关文章: ${frontendPosts.length} 篇`)
 
-  if (frontendPosts.length === 0) {
-    console.log('[juejin] 没有找到前端相关文章，跳过')
+  // 逐篇审核
+  const qualifiedPosts: JuejinPost[] = []
+  for (const post of frontendPosts) {
+    const { pass, reason } = passesQualityCheck(post)
+    if (pass) {
+      qualifiedPosts.push(post)
+    } else {
+      console.log(`[juejin] 跳过: ${post.title.substring(0, 30)}... | ${reason}`)
+    }
+  }
+  console.log(`[juejin] 通过审核: ${qualifiedPosts.length} 篇`)
+
+  if (qualifiedPosts.length === 0) {
+    console.log('[juejin] 没有通过审核的文章，跳过')
     process.exit(0)
   }
 
-  // 选择阅读量最高的
-  const selected = frontendPosts.sort((a, b) => (b.view_count || 0) - (a.view_count || 0))[0]
+  // 选阅读量最高的
+  const selected = qualifiedPosts.sort((a, b) => (b.view_count || 0) - (a.view_count || 0))[0]
   console.log(`[juejin] 选择文章: ${selected.title} (阅读 ${selected.view_count})`)
 
   // 检查是否已存在

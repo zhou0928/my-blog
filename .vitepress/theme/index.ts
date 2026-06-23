@@ -18,10 +18,12 @@ import ScrollRestore from './components/ScrollRestore.vue'
 import SeoHead from './components/SeoHead.vue'
 // import TranslationLink from './components/TranslationLink.vue'
 import LastUpdated from './components/LastUpdated.vue'
-import { initCursorEffects, destroyCursorEffects } from './cursor-effects'
-import { initVisualEffects, destroyVisualEffects } from './visual-effects'
+import { initCursorEffects } from './cursor-effects'
+import { initVisualEffects } from './visual-effects'
 import { initMediumZoom } from './medium-zoom'
 import './styles/custom.css'
+
+let effectsInitialized = false
 
 function registerSW() {
   if (inBrowser && 'serviceWorker' in navigator) {
@@ -32,16 +34,13 @@ function registerSW() {
 export default {
   extends: DefaultTheme,
   Layout() {
-    if (inBrowser) {
+    if (inBrowser && !effectsInitialized) {
+      effectsInitialized = true
       onMounted(() => {
         initCursorEffects()
         initVisualEffects()
         initMediumZoom()
         registerSW()
-      })
-      onBeforeUnmount(() => {
-        destroyCursorEffects()
-        destroyVisualEffects()
       })
     }
     return h(DefaultTheme.Layout, null, {

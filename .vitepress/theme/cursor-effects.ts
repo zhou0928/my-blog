@@ -115,47 +115,19 @@ export function initCursorEffects(): void {
   document.addEventListener('click', handleClick)
   cleanups.push(() => document.removeEventListener('click', handleClick))
 
-  // ========== 鼠标悬停链接/按钮效果 ==========
-  let currentInteractiveEls: Element[] = []
-  const enterHandlers = new Map<Element, () => void>()
-  const leaveHandlers = new Map<Element, () => void>()
-
-  function bindInteractiveElements() {
-    unbindInteractiveElements()
-    currentInteractiveEls = document.querySelectorAll('a, button, .post-card, .tech-item')
-    currentInteractiveEls.forEach((el) => {
-      const onEnter = () => {
-        paperPlane.style.transform = 'translate(-50%, -50%) scale(1.3)'
-      }
-      const onLeave = () => {
-        paperPlane.style.transform = 'translate(-50%, -50%) scale(1)'
-      }
-      el.addEventListener('mouseenter', onEnter)
-      el.addEventListener('mouseleave', onLeave)
-      enterHandlers.set(el, onEnter)
-      leaveHandlers.set(el, onLeave)
-    })
-  }
-
-  function unbindInteractiveElements() {
-    currentInteractiveEls.forEach((el) => {
-      const onEnter = enterHandlers.get(el)
-      const onLeave = leaveHandlers.get(el)
-      if (onEnter) el.removeEventListener('mouseenter', onEnter)
-      if (onLeave) el.removeEventListener('mouseleave', onLeave)
-    })
-    enterHandlers.clear()
-    leaveHandlers.clear()
-  }
-
-  bindInteractiveElements()
-
-  // SPA 路由切换后重新绑定
-  const routeObserver = new MutationObserver(() => {
-    bindInteractiveElements()
+  // ========== 鼠标悬停链接/按钮效果（事件委托） ==========
+  document.addEventListener('mouseover', (e) => {
+    const target = (e.target as HTMLElement)?.closest('a, button, .post-card, .tech-item')
+    if (target) {
+      paperPlane.style.transform = 'translate(-50%, -50%) scale(1.3)'
+    }
   })
-  routeObserver.observe(document.body, { childList: true, subtree: true })
-  cleanups.push(() => { routeObserver.disconnect(); unbindInteractiveElements() })
+  document.addEventListener('mouseout', (e) => {
+    const target = (e.target as HTMLElement)?.closest('a, button, .post-card, .tech-item')
+    if (target) {
+      paperPlane.style.transform = 'translate(-50%, -50%) scale(1)'
+    }
+  })
 }
 
 export function destroyCursorEffects(): void {

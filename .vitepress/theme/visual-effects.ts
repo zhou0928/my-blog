@@ -1,8 +1,7 @@
 /**
- * 炫酷视觉特效模块
+ * 视觉特效模块
  * - 3D 倾斜卡片（事件委托）
  * - 磁性按钮（事件委托）
- * - 噪点纹理覆盖
  */
 
 type CleanupFn = () => void
@@ -13,13 +12,7 @@ export function initVisualEffects(): void {
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-  // ========== 噪点纹理覆盖 ==========
-  const noise = document.createElement('div')
-  noise.className = 'noise-overlay'
-  document.body.appendChild(noise)
-  cleanups.push(() => noise.remove())
-
-  // ========== 3D 倾斜卡片（事件委托，不逐个绑定） ==========
+  // ========== 3D 倾斜卡片 ==========
   let activeCard: HTMLElement | null = null
 
   const onCardMove = (e: MouseEvent) => {
@@ -27,9 +20,7 @@ export function initVisualEffects(): void {
     const rect = activeCard.getBoundingClientRect()
     const x = (e.clientX - rect.left) / rect.width
     const y = (e.clientY - rect.top) / rect.height
-    const tiltX = (y - 0.5) * 6
-    const tiltY = (x - 0.5) * -6
-    activeCard.style.transform = `perspective(800px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(-3px)`
+    activeCard.style.transform = `perspective(800px) rotateX(${(y - 0.5) * 6}deg) rotateY(${(x - 0.5) * -6}deg) translateY(-3px)`
     activeCard.style.transition = 'transform 0.1s ease'
 
     const shine = activeCard.querySelector('.card-shine') as HTMLElement
@@ -47,12 +38,11 @@ export function initVisualEffects(): void {
     document.addEventListener('mousemove', onCardMove, { passive: true })
   }
 
-  const onCardLeave = (e: MouseEvent) => {
-    const card = (e.target as HTMLElement)?.closest('.post-card, .project-card, .tech-card, .stat-card') as HTMLElement
-    if (!card || card !== activeCard) return
-    card.style.transform = 'perspective(800px) rotateX(0) rotateY(0) translateY(0)'
-    card.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
-    const shine = card.querySelector('.card-shine') as HTMLElement
+  const onCardLeave = () => {
+    if (!activeCard) return
+    activeCard.style.transform = 'perspective(800px) rotateX(0) rotateY(0) translateY(0)'
+    activeCard.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
+    const shine = activeCard.querySelector('.card-shine') as HTMLElement
     if (shine) shine.style.opacity = '0'
     activeCard = null
     document.removeEventListener('mousemove', onCardMove)
@@ -66,7 +56,7 @@ export function initVisualEffects(): void {
     document.removeEventListener('mousemove', onCardMove)
   })
 
-  // ========== 磁性按钮（事件委托） ==========
+  // ========== 磁性按钮 ==========
   let activeBtn: HTMLElement | null = null
 
   const onBtnMove = (e: MouseEvent) => {
@@ -75,21 +65,20 @@ export function initVisualEffects(): void {
     const x = e.clientX - rect.left - rect.width / 2
     const y = e.clientY - rect.top - rect.height / 2
     activeBtn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`
-    activeBtn.style.transition = 'transform 0.2s ease'
+    activeBtn.style.transition = 'transform 0.15s ease'
   }
 
   const onBtnEnter = (e: MouseEvent) => {
-    const btn = (e.target as HTMLElement)?.closest('.btn, .error-btn, .subscribe-btn') as HTMLElement
+    const btn = (e.target as HTMLElement)?.closest('.btn') as HTMLElement
     if (!btn) return
     activeBtn = btn
     document.addEventListener('mousemove', onBtnMove, { passive: true })
   }
 
-  const onBtnLeave = (e: MouseEvent) => {
-    const btn = (e.target as HTMLElement)?.closest('.btn, .error-btn, .subscribe-btn') as HTMLElement
-    if (!btn || btn !== activeBtn) return
-    btn.style.transform = 'translate(0, 0)'
-    btn.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
+  const onBtnLeave = () => {
+    if (!activeBtn) return
+    activeBtn.style.transform = 'translate(0, 0)'
+    activeBtn.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
     activeBtn = null
     document.removeEventListener('mousemove', onBtnMove)
   }
@@ -104,7 +93,5 @@ export function initVisualEffects(): void {
 }
 
 export function destroyVisualEffects(): void {
-  while (cleanups.length > 0) {
-    cleanups.pop()!()
-  }
+  while (cleanups.length > 0) cleanups.pop()!()
 }

@@ -1,137 +1,80 @@
 /**
- * 鼠标特效模块
- * 包含：纸飞机光标、拖尾粒子、点击爆炸
- * 支持 init / destroy 配对，避免内存泄漏
+ * 精简鼠标效果模块
+ * 仅保留平滑跟随光点和链接悬停放大的效果
  */
 
 type CleanupFn = () => void
-
 const cleanups: CleanupFn[] = []
 
 export function initCursorEffects(): void {
-  destroyCursorEffects() // 幂等：先清理再初始化
+  destroyCursorEffects()
 
-  // 检查是否支持 pointer events（排除触摸设备）
   if (!window.matchMedia('(pointer: fine)').matches) return
-
-  // 检查是否开启减少动画
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-  const isDark = document.documentElement.classList.contains('dark')
+  // ========== 平滑跟随光点 ==========
+  const dot = document.createElement('div')
+  dot.className = 'cursor-dot'
+  Object.assign(dot.style, {
+    position: 'fixed',
+    width: '8px',
+    height: '8px',
+    borderRadius: '50%',
+    background: 'var(--vp-c-brand-1)',
+    pointerEvents: 'none',
+    zIndex: '99999',
+    transform: 'translate(-50%, -50%)',
+    transition: 'opacity 0.3s',
+    opacity: '0.8',
+  })
+  document.body.appendChild(dot)
 
-  // ========== 纸飞机光标 ==========
-  const paperPlane = document.createElement('div')
-  paperPlane.className = 'cursor-paper-plane'
-  paperPlane.innerHTML = `
-    <svg viewBox="0 0 24 24" fill="${isDark ? '#00e5ff' : '#0891b2'}">
-      <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-    </svg>
-  `
-  document.body.appendChild(paperPlane)
+  let mouseX = 0, mouseY = 0
+  let dotX = 0, dotY = 0
 
-  let mouseX = 0
-  let mouseY = 0
-  let planeX = 0
-  let planeY = 0
-
-  const handleMouseMove = (e: MouseEvent) => {
+  const onMove = (e: MouseEvent) => {
     mouseX = e.clientX
     mouseY = e.clientY
   }
-  document.addEventListener('mousemove', handleMouseMove)
-  cleanups.push(() => document.removeEventListener('mousemove', handleMouseMove))
+  document.addEventListener('mousemove', onMove)
+  cleanups.push(() => document.removeEventListener('mousemove', onMove))
 
-  // 纸飞机平滑跟随
-  let planeRaf: number
-  function animatePlane() {
-    const dx = mouseX - planeX
-    const dy = mouseY - planeY
-    planeX += dx * 0.15
-    planeY += dy * 0.15
-
-    const angle = Math.atan2(dy, dx) * (180 / Math.PI) + 45
-
-    paperPlane.style.left = `${planeX}px`
-    paperPlane.style.top = `${planeY}px`
-    paperPlane.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`
-
-    planeRaf = requestAnimationFrame(animatePlane)
+  function animate() {
+    dotX += (mouseX - dotX) * 0.2
+    dotY += (mouseY - dotY) * 0.2
+    dot.style.left = `${dotX}px`
+    dot.style.top = `${dotY}px`
+    raf = requestAnimationFrame(animate)
   }
-  animatePlane()
-  cleanups.push(() => cancelAnimationFrame(planeRaf))
-  cleanups.push(() => paperPlane.remove())
+  let raf = requestAnimationFrame(animate)
+  cleanups.push(() => cancelAnimationFrame(raf))
+  cleanups.push(() => dot.remove())
 
-  // ========== 拖尾粒子 ==========
-  let lastTrailTime = 0
-  const trailColors = isDark
-    ? ['rgba(0, 229, 255, 0.6)', 'rgba(168, 85, 247, 0.6)', 'rgba(99, 102, 241, 0.6)']
-    : ['rgba(8, 145, 178, 0.5)', 'rgba(124, 58, 237, 0.5)', 'rgba(59, 130, 246, 0.5)']
+  // ========== 悬停链接/按钮放大 ==========
+  dot.style.transition = 'width 0.2s, height 0.2s, opacity 0.2s'
 
-  const handleTrailMove = (e: MouseEvent) => {
-    const now = Date.now()
-    if (now - lastTrailTime < 50) return // 节流 50ms
-    lastTrailTime = now
-
-    const trail = document.createElement('div')
-    trail.className = 'cursor-trail'
-    trail.style.left = `${e.clientX}px`
-    trail.style.top = `${e.clientY}px`
-    trail.style.background = trailColors[Math.floor(Math.random() * trailColors.length)]
-    document.body.appendChild(trail)
-
-    setTimeout(() => trail.remove(), 600)
+  const onHover = (e: MouseEvent) => {
+    if ((e.target as HTMLElement)?.closest('a, button, .post-card, .tech-card')) {
+      dot.style.width = '16px'
+      dot.style.height = '16px'
+      dot.style.opacity = '1'
+    }
   }
-  document.addEventListener('mousemove', handleTrailMove)
-  cleanups.push(() => document.removeEventListener('mousemove', handleTrailMove))
-
-  // ========== 点击爆炸效果 ==========
-  const burstColors = isDark
-    ? ['#00e5ff', '#a855f7', '#6366f1', '#22d3ee', '#c084fc']
-    : ['#0891b2', '#7c3aed', '#4f46e5', '#06b6d4', '#a78bfa']
-
-  const handleClick = (e: MouseEvent) => {
-    const burst = document.createElement('div')
-    burst.className = 'cursor-burst'
-    burst.style.left = `${e.clientX}px`
-    burst.style.top = `${e.clientY}px`
-
-    // 生成 8 个粒子
-    for (let i = 0; i < 8; i++) {
-      const particle = document.createElement('div')
-      particle.className = 'cursor-burst-particle'
-      const angle = (i / 8) * Math.PI * 2
-      const distance = 30 + Math.random() * 30
-      const tx = Math.cos(angle) * distance
-      const ty = Math.sin(angle) * distance
-      particle.style.setProperty('--tx', `${tx}px`)
-      particle.style.setProperty('--ty', `${ty}px`)
-      particle.style.background = burstColors[Math.floor(Math.random() * burstColors.length)]
-      burst.appendChild(particle)
+  const onUnhover = (e: MouseEvent) => {
+    if ((e.target as HTMLElement)?.closest('a, button, .post-card, .tech-card')) {
+      dot.style.width = '8px'
+      dot.style.height = '8px'
+      dot.style.opacity = '0.8'
     }
-
-    document.body.appendChild(burst)
-    setTimeout(() => burst.remove(), 600)
   }
-  document.addEventListener('click', handleClick)
-  cleanups.push(() => document.removeEventListener('click', handleClick))
-
-  // ========== 鼠标悬停链接/按钮效果（事件委托） ==========
-  document.addEventListener('mouseover', (e) => {
-    const target = (e.target as HTMLElement)?.closest('a, button, .post-card, .tech-item')
-    if (target) {
-      paperPlane.style.transform = 'translate(-50%, -50%) scale(1.3)'
-    }
-  })
-  document.addEventListener('mouseout', (e) => {
-    const target = (e.target as HTMLElement)?.closest('a, button, .post-card, .tech-item')
-    if (target) {
-      paperPlane.style.transform = 'translate(-50%, -50%) scale(1)'
-    }
+  document.addEventListener('mouseover', onHover)
+  document.addEventListener('mouseout', onUnhover)
+  cleanups.push(() => {
+    document.removeEventListener('mouseover', onHover)
+    document.removeEventListener('mouseout', onUnhover)
   })
 }
 
 export function destroyCursorEffects(): void {
-  while (cleanups.length > 0) {
-    cleanups.pop()!()
-  }
+  while (cleanups.length > 0) cleanups.pop()!()
 }

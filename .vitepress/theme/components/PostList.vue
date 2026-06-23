@@ -245,10 +245,7 @@ onBeforeUnmount(() => {
   font-weight: 800;
   letter-spacing: -0.02em;
   margin-bottom: 0.75rem;
-  background: linear-gradient(135deg, var(--vp-c-text-1), var(--vp-c-brand-1));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--vp-c-text-1);
 }
 
 .hero-subtitle {

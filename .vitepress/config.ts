@@ -92,26 +92,26 @@ export default defineConfig({
         },
       }
     },
-    en: {
-      label: 'English',
-      lang: 'en-US',
-      title: "Xiaozhou's Blog",
-      description: 'Workflow Systems · Frontend Engineering · Vue Ecosystem · Personal Tech Blog',
-      themeConfig: {
-        nav: [
-          { text: 'Home', link: '/en/' },
-          { text: 'Archive', link: '/en/blog' },
-          { text: 'About', link: '/en/about' },
-        ],
-        // 英文站使用 VitePress 本地搜索的默认英文文案
-        search: {
-          provider: 'local',
-        },
-        footer: {
-          message: 'Built with VitePress · Explore the Galaxy',
-          copyright: '© 2026 Xiaozhou',
-        },
-      }
+    // en: {
+    //   label: 'English',
+    //   lang: 'en-US',
+    //   title: "Xiazhou's Blog",
+    //   description: 'Workflow Systems · Frontend Engineering · Vue Ecosystem · Personal Tech Blog',
+    //   themeConfig: {
+    //     nav: [
+    //       { text: 'Home', link: '/en/' },
+    //       { text: 'Archive', link: '/en/blog' },
+    //       { text: 'About', link: '/en/about' },
+    //     ],
+    //     search: {
+    //       provider: 'local',
+    //     },
+    //     footer: {
+    //       message: 'Built with VitePress · Explore the Galaxy',
+    //       copyright: '© 2026 Xiaozhou',
+    //     },
+    //   }
+    // }
     }
   },
 

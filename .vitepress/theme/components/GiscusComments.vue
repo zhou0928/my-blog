@@ -18,10 +18,10 @@ function loadGiscus() {
   script.setAttribute('data-category-id', 'DIC_kwDOS-D9Uc4C_xBn')
   script.setAttribute('data-mapping', 'pathname')
   script.setAttribute('data-strict', '0')
-  script.setAttribute('data-reactions-enabled', '1')
+  script.setAttribute('data-reactions-enabled', '0')
   script.setAttribute('data-emit-metadata', '0')
   script.setAttribute('data-input-position', 'top')
-  script.setAttribute('data-theme', isDark.value ? 'noborder_dark' : 'noborder_light')
+  script.setAttribute('data-theme', isDark.value ? 'gruvbox' : 'gruvbox_light')
   script.setAttribute('data-lang', lang.value === 'en-US' ? 'en' : 'zh-CN')
   script.crossOrigin = 'anonymous'
   script.async = true
@@ -33,7 +33,7 @@ watch(isDark, () => {
   const iframe = document.querySelector('iframe.giscus-frame') as HTMLIFrameElement
   if (iframe) {
     iframe.contentWindow?.postMessage(
-      { giscus: { setConfig: { theme: isDark.value ? 'noborder_dark' : 'noborder_light' } } },
+      { giscus: { setConfig: { theme: isDark.value ? 'gruvbox' : 'gruvbox_light' } } },
       'https://giscus.app'
     )
   }

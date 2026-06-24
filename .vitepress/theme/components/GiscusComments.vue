@@ -21,7 +21,7 @@ function loadGiscus() {
   script.setAttribute('data-reactions-enabled', '1')
   script.setAttribute('data-emit-metadata', '0')
   script.setAttribute('data-input-position', 'top')
-  script.setAttribute('data-theme', isDark.value ? 'dark' : 'light')
+  script.setAttribute('data-theme', isDark.value ? 'noborder_dark' : 'noborder_light')
   script.setAttribute('data-lang', lang.value === 'en-US' ? 'en' : 'zh-CN')
   script.crossOrigin = 'anonymous'
   script.async = true
@@ -33,7 +33,7 @@ watch(isDark, () => {
   const iframe = document.querySelector('iframe.giscus-frame') as HTMLIFrameElement
   if (iframe) {
     iframe.contentWindow?.postMessage(
-      { giscus: { setConfig: { theme: isDark.value ? 'dark' : 'light' } } },
+      { giscus: { setConfig: { theme: isDark.value ? 'noborder_dark' : 'noborder_light' } } },
       'https://giscus.app'
     )
   }
@@ -52,7 +52,6 @@ onMounted(() => {
     <div id="giscus-container" class="giscus-container">
       <div class="giscus-placeholder">
         <p>评论系统加载中...</p>
-        <p class="giscus-hint">需要在 Giscus 配置你的 GitHub 仓库信息</p>
       </div>
     </div>
   </div>

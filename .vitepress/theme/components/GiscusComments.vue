@@ -2,7 +2,7 @@
 import { watch, onMounted } from 'vue'
 import { useData, inBrowser } from 'vitepress'
 
-const { isDark } = useData()
+const { isDark, lang } = useData()
 
 function loadGiscus() {
   if (!inBrowser) return
@@ -22,7 +22,7 @@ function loadGiscus() {
   script.setAttribute('data-emit-metadata', '0')
   script.setAttribute('data-input-position', 'top')
   script.setAttribute('data-theme', isDark.value ? 'dark' : 'light')
-  script.setAttribute('data-lang', 'zh-CN')
+  script.setAttribute('data-lang', lang.value === 'en-US' ? 'en' : 'zh-CN')
   script.crossOrigin = 'anonymous'
   script.async = true
   document.getElementById('giscus-container')?.appendChild(script)

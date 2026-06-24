@@ -13,9 +13,9 @@ function loadGiscus() {
   script.id = 'giscus-script'
   script.src = 'https://giscus.app/client.js'
   script.setAttribute('data-repo', 'zhou0928/my-blog')
-  script.setAttribute('data-repo-id', '')
+  script.setAttribute('data-repo-id', 'R_kgDOS-D9UQ')
   script.setAttribute('data-category', 'Announcements')
-  script.setAttribute('data-category-id', '')
+  script.setAttribute('data-category-id', 'DIC_kwDOS-D9Uc4C_xBn')
   script.setAttribute('data-mapping', 'pathname')
   script.setAttribute('data-strict', '0')
   script.setAttribute('data-reactions-enabled', '1')

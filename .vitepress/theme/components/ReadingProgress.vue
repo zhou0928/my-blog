@@ -82,6 +82,9 @@ watch(() => route.path, () => { progress.value = 0 })
 
 .progress-text {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   font-size: 0.65rem;
   font-weight: 700;
   font-family: var(--vp-font-family-mono);

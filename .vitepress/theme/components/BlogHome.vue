@@ -1,10 +1,51 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vitepress'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vitepress'
 import { data as posts } from '../../posts.data.js'
 
 const router = useRouter()
+const route = useRoute()
 const latestPosts = posts.slice(0, 6)
+
+const isEnglish = computed(() => route.path.startsWith('/en'))
+
+const t = computed(() => isEnglish.value ? en : zh)
+
+const zh = {
+  greeting: '你好，我是',
+  name: 'Xiaozhou',
+  subtitle: ['专注于 ', '前端工程化', ' 和 ', '系统构建'],
+  readBlog: '浏览文章',
+  aboutMe: '关于我',
+  scroll: '向下滚动',
+  sectionLatest: '最新文章',
+  minRead: '分钟阅读',
+  viewAll: '查看全部文章',
+  skills: '技术栈',
+  ctaTitle: '开始阅读',
+  ctaDesc: '探索前端工程化、Vue 生态与系统构建相关文章',
+  browseAll: '浏览全部',
+  articles: '篇文章',
+  topics: '个主题',
+}
+
+const en = {
+  greeting: "Hello, I'm",
+  name: 'Xiaozhou',
+  subtitle: ['Writing about ', 'frontend engineering', ' and ', 'building systems'],
+  readBlog: 'Read the Blog',
+  aboutMe: 'About Me',
+  scroll: 'Scroll',
+  sectionLatest: 'Latest',
+  minRead: 'min read',
+  viewAll: 'View all articles',
+  skills: 'Skills',
+  ctaTitle: 'Start Reading',
+  ctaDesc: 'Explore articles on frontend engineering, Vue ecosystem, and building production systems',
+  browseAll: 'Browse all',
+  articles: 'Articles',
+  topics: 'Topics',
+}
 
 onMounted(() => {
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -34,27 +75,27 @@ function goToPost(url: string) {
     <div class="hero-content">
       <div class="hero-accent-bar" />
 
-      <p class="hero-greeting">Hello, I'm</p>
+      <p class="hero-greeting">{{ t.greeting }}</p>
 
       <h1 class="hero-title">
-        <span class="hero-name">Xiaozhou</span>
+        <span class="hero-name">{{ t.name }}</span>
       </h1>
 
       <p class="hero-subtitle">
-        Writing about <em>frontend engineering</em> and <em>building systems</em>
+        {{ t.subtitle[0] }}<em>{{ t.subtitle[1] }}</em>{{ t.subtitle[2] }}<em>{{ t.subtitle[3] }}</em>
       </p>
 
       <div class="hero-actions">
-        <a href="/blog" class="btn btn-primary">
-          <span>Read the Blog</span>
+        <a :href="isEnglish ? '/en/blog' : '/blog'" class="btn btn-primary">
+          <span>{{ t.readBlog }}</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
-        <a href="/about" class="btn btn-ghost">About Me</a>
+        <a :href="isEnglish ? '/en/about' : '/about'" class="btn btn-ghost">{{ t.aboutMe }}</a>
       </div>
     </div>
 
     <div class="hero-scroll-hint">
-      <span>Scroll</span>
+      <span>{{ t.scroll }}</span>
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
     </div>
   </section>
@@ -63,7 +104,7 @@ function goToPost(url: string) {
   <section class="section" v-if="latestPosts.length > 0">
     <div class="section-header scroll-reveal">
       <div class="section-title-row">
-        <h2 class="section-title">Latest</h2>
+        <h2 class="section-title">{{ t.sectionLatest }}</h2>
         <div class="section-line" />
       </div>
     </div>
@@ -79,7 +120,7 @@ function goToPost(url: string) {
         <div class="card-content">
           <div class="card-meta">
             <time>{{ post.date }}</time>
-            <span v-if="post.readTime" class="card-readtime">{{ post.readTime }} min read</span>
+            <span v-if="post.readTime" class="card-readtime">{{ post.readTime }} {{ t.minRead }}</span>
           </div>
           <h3 class="card-title">{{ post.title }}</h3>
           <p class="card-desc">{{ post.excerpt }}</p>
@@ -91,8 +132,8 @@ function goToPost(url: string) {
     </div>
 
     <div class="section-more scroll-reveal">
-      <a href="/blog" class="more-link">
-        <span>View all articles</span>
+      <a :href="isEnglish ? '/en/blog' : '/blog'" class="more-link">
+        <span>{{ t.viewAll }}</span>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
     </div>
@@ -102,7 +143,7 @@ function goToPost(url: string) {
   <section class="section tech-section scroll-reveal">
     <div class="section-header">
       <div class="section-title-row">
-        <h2 class="section-title">Skills</h2>
+        <h2 class="section-title">{{ t.skills }}</h2>
         <div class="section-line" />
       </div>
     </div>
@@ -119,10 +160,10 @@ function goToPost(url: string) {
     <div class="cta-card">
       <div class="cta-content">
         <div class="cta-accent-bar" />
-        <h2 class="cta-title">Start Reading</h2>
-        <p class="cta-desc">Explore articles on frontend engineering, Vue ecosystem, and building production systems</p>
-        <a href="/blog" class="btn btn-primary">
-          <span>Browse all</span>
+        <h2 class="cta-title">{{ t.ctaTitle }}</h2>
+        <p class="cta-desc">{{ t.ctaDesc }}</p>
+        <a :href="isEnglish ? '/en/blog' : '/blog'" class="btn btn-primary">
+          <span>{{ t.browseAll }}</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
       </div>
@@ -130,15 +171,15 @@ function goToPost(url: string) {
         <div class="cta-stats">
           <div class="cta-stat">
             <span class="cta-stat-num">{{ posts.length }}</span>
-            <span class="cta-stat-label">Articles</span>
+            <span class="cta-stat-label">{{ t.articles }}</span>
           </div>
           <div class="cta-stat">
             <span class="cta-stat-num">{{ [...new Set(posts.flatMap(p => p.tags || []))].length }}</span>
-            <span class="cta-stat-label">Topics</span>
+            <span class="cta-stat-label">{{ t.topics }}</span>
           </div>
           <div class="cta-stat">
             <span class="cta-stat-num">{{ posts.reduce((s, p) => s + (p.readTime ? parseInt(p.readTime) : 0), 0) }}</span>
-            <span class="cta-stat-label">Min read</span>
+            <span class="cta-stat-label">{{ t.minRead }}</span>
           </div>
         </div>
       </div>

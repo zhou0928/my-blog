@@ -21,7 +21,7 @@ function loadGiscus() {
   script.setAttribute('data-reactions-enabled', '0')
   script.setAttribute('data-emit-metadata', '0')
   script.setAttribute('data-input-position', 'top')
-  script.setAttribute('data-theme', isDark.value ? 'gruvbox' : 'gruvbox_light')
+  script.setAttribute('data-theme', isDark.value ? 'transparent_dark' : 'light')
   script.setAttribute('data-lang', lang.value === 'en-US' ? 'en' : 'zh-CN')
   script.crossOrigin = 'anonymous'
   script.async = true
@@ -33,7 +33,7 @@ watch(isDark, () => {
   const iframe = document.querySelector('iframe.giscus-frame') as HTMLIFrameElement
   if (iframe) {
     iframe.contentWindow?.postMessage(
-      { giscus: { setConfig: { theme: isDark.value ? 'gruvbox' : 'gruvbox_light' } } },
+      { giscus: { setConfig: { theme: isDark.value ? 'transparent_dark' : 'light' } } },
       'https://giscus.app'
     )
   }

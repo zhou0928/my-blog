@@ -38,7 +38,7 @@ const crumbs = computed(() => {
   if (parts.length === 0) return []
 
   const isEnglish = parts[0] === 'en'
-  const items: { label: string; link: string }[] = []
+  const items: { label: string; link: string; isLink: boolean }[] = []
 
   for (let i = 0; i < parts.length; i++) {
     const part = parts[i]
@@ -46,20 +46,23 @@ const crumbs = computed(() => {
 
     // 优先级：nav 配置 > 特殊映射 > 页面标题(末级) > URL 解码
     let label: string
+    let isLink = true  // 默认可点击
 
     if (navLabelMap.value[part]) {
       label = navLabelMap.value[part]
     } else if (part === 'en') {
       label = 'English'
     } else if (part === 'posts') {
+      // posts 没有对应的页面，仅作标签展示，不可点击
       label = isEnglish ? 'Posts' : '文章'
+      isLink = false
     } else if (i === parts.length - 1 && page.value?.title) {
       label = page.value.title
     } else {
       label = decodeURIComponent(part).replace(/-/g, ' ')
     }
 
-    items.push({ label, link })
+    items.push({ label, link, isLink })
   }
 
   return items
@@ -74,10 +77,14 @@ const crumbs = computed(() => {
     <template v-for="(crumb, i) in crumbs" :key="crumb.link">
       <span class="crumb-sep">/</span>
       <a
-        v-if="i < crumbs.length - 1"
+        v-if="i < crumbs.length - 1 && crumb.isLink"
         :href="crumb.link"
         class="crumb-link"
       >{{ crumb.label }}</a>
+      <span
+        v-else-if="i < crumbs.length - 1"
+        class="crumb-label"
+      >{{ crumb.label }}</span>
       <span v-else class="crumb-current">{{ crumb.label }}</span>
     </template>
   </nav>
@@ -108,6 +115,10 @@ const crumbs = computed(() => {
 
 .crumb-sep {
   opacity: 0.4;
+}
+
+.crumb-label {
+  color: var(--vp-c-text-3);
 }
 
 .crumb-current {

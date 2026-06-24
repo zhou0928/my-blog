@@ -49,11 +49,7 @@ onMounted(() => {
     <div class="giscus-divider">
       <span>💬 评论区</span>
     </div>
-    <div id="giscus-container" class="giscus-container">
-      <div class="giscus-placeholder">
-        <p>评论系统加载中...</p>
-      </div>
-    </div>
+    <div id="giscus-container" class="giscus-container" />
   </div>
 </template>
 
@@ -88,19 +84,5 @@ onMounted(() => {
 .giscus-container {
   border-radius: 12px;
   overflow: hidden;
-}
-
-.giscus-placeholder {
-  padding: 2rem;
-  text-align: center;
-  border: 1px dashed var(--vp-c-border);
-  border-radius: 12px;
-  color: var(--vp-c-text-3);
-}
-
-.giscus-hint {
-  font-size: 0.8rem;
-  margin-top: 0.5rem;
-  opacity: 0.6;
 }
 </style>

@@ -1,7 +1,7 @@
 ---
 title: " Vue 3 里被严重低估的 API：InjectionKey"
 date: 2026-06-29
-tags: [6809640369764958000, 6809640407484334000, 6809640398105870000]
+tags: [Vue, TypeScript, 前端]
 description: "一、先说个场景 Hello~大家好，我是秋天的一阵风 你肯定写过这种代码： 跑起来没问题，但你把 'theme' 打成 'thme'，TypeScript 一声不吭。等到线上样式崩了你才发现——拼写错"
 source: juejin
 source_url: "https://juejin.cn/post/7654840513968537641"

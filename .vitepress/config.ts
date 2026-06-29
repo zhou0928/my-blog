@@ -71,9 +71,10 @@ export default defineConfig({
         nav: [
           { text: '首页', link: '/' },
           { text: '归档', link: '/blog' },
+          { text: '分类', link: '/categories' },
+          { text: '标签', link: '/tags' },
           { text: '项目', link: '/projects' },
           { text: '关于', link: '/about' },
-          { text: 'RSS', link: '/feed.xml' },
         ],
         search: {
           provider: 'local',
@@ -91,7 +92,7 @@ export default defineConfig({
           }
         },
         footer: {
-          message: 'Built with VitePress · 遨游星河',
+          message: 'Built with VitePress · 小周',
           copyright: '© 2026 Xiaozhou',
         },
       }

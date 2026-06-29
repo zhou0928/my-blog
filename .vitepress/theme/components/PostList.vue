@@ -94,62 +94,29 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="archive-layout">
-    <!-- 左侧标签导航 -->
-    <aside class="tag-sidebar">
-      <nav class="tag-nav">
-        <a
-          class="tag-nav-item"
-          :class="{ active: activeTag === null }"
-          @click.prevent="activeTag = null"
-        >
-          <span class="tag-nav-text">全部</span>
-          <span class="tag-nav-count">{{ posts.length }}</span>
-        </a>
-        <a
-          v-for="tag in allTags"
-          :key="tag"
-          class="tag-nav-item"
-          :class="{ active: activeTag === tag }"
-          @click.prevent="activeTag = tag"
-        >
-          <span class="tag-nav-text">{{ tag }}</span>
-          <span class="tag-nav-count">{{ posts.filter(p => p.tags?.includes(tag)).length }}</span>
-        </a>
-      </nav>
-    </aside>
-
     <!-- 中间内容区 -->
     <main class="content-main">
-      <!-- 搜索框 -->
-      <div class="search-box">
-        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
-        </svg>
-        <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="搜索文章..."
-          class="search-input"
-        />
-      </div>
-
       <!-- 文章列表 -->
       <div class="post-list-container">
         <template v-if="filteredPosts.length > 0">
           <article
             v-for="(post, index) in filteredPosts"
             :key="post.url"
-            class="post-item"
+            class="post-card"
+            :class="{ 'post-card--right': index % 2 === 1 }"
             @click="goToPost(post.url)"
           >
-            <div class="post-meta">
-              <time class="post-date">{{ post.date }}</time>
-              <span v-if="post.readTime" class="post-readtime">{{ post.readTime }} 分钟</span>
+            <div class="post-cover" v-if="post.cover">
+              <img :src="post.cover" :alt="post.title" />
             </div>
-            <h2 class="post-title">{{ post.title }}</h2>
-            <p class="post-excerpt" v-if="post.excerpt">{{ post.excerpt }}</p>
-            <div class="post-tags" v-if="post.tags?.length">
-              <span v-for="tag in post.tags" :key="tag" class="post-tag">{{ tag }}</span>
+            <div class="post-info">
+              <h2 class="post-title">{{ post.title }}</h2>
+              <div class="post-meta">
+                <time class="post-date">{{ post.date }}</time>
+                <span class="post-separator">|</span>
+                <span v-if="post.tags?.length" class="post-categories">{{ post.tags[0] }}</span>
+              </div>
+              <p class="post-excerpt" v-if="post.excerpt">{{ post.excerpt }}</p>
             </div>
           </article>
         </template>
@@ -161,6 +128,67 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </main>
+
+    <!-- 右侧边栏 -->
+    <aside class="aside-content">
+      <!-- 作者信息 -->
+      <div class="card-widget card-info">
+        <div class="avatar-img">
+          <img src="/favicon.svg" alt="avatar" />
+        </div>
+        <div class="author-info-name">Xiaozhou</div>
+        <div class="author-info-description">前端开发 · Vue 生态</div>
+        <div class="site-data">
+          <div class="data-item">
+            <div class="headline">文章</div>
+            <div class="length-num">{{ posts.length }}</div>
+          </div>
+          <div class="data-item">
+            <div class="headline">标签</div>
+            <div class="length-num">{{ allTags.length }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 标签云 -->
+      <div class="card-widget card-tags">
+        <div class="item-headline">
+          <span>标签</span>
+        </div>
+        <div class="card-tag-cloud">
+          <a
+            v-for="tag in allTags"
+            :key="tag"
+            class="tag-item"
+            :class="{ active: activeTag === tag }"
+            @click.prevent="activeTag = activeTag === tag ? null : tag"
+          >
+            {{ tag }}
+            <span class="tag-count">{{ posts.filter(p => p.tags?.includes(tag)).length }}</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 最新文章 -->
+      <div class="card-widget card-recent">
+        <div class="item-headline">
+          <span>最新文章</span>
+        </div>
+        <div class="aside-list">
+          <div
+            v-for="post in posts.slice(0, 5)"
+            :key="post.url"
+            class="aside-list-item"
+            @click="goToPost(post.url)"
+          >
+            <div class="content">
+              <a class="title">{{ post.title }}</a>
+              <time>{{ post.date }}</time>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
   </div>
 </template>
 
@@ -174,176 +202,241 @@ onBeforeUnmount(() => {
   gap: 2rem;
 }
 
-/* ==================== Left Sidebar ==================== */
-.tag-sidebar {
-  width: 160px;
-  flex-shrink: 0;
-  position: sticky;
-  top: 80px;
-  height: fit-content;
-}
-
-.tag-nav {
-  display: flex;
-  flex-direction: column;
-}
-
-.tag-nav-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1rem;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  color: var(--vp-c-text-2);
-  cursor: pointer;
-  transition: all 0.2s;
-  text-decoration: none;
-}
-
-.tag-nav-item:hover {
-  background: var(--vp-c-bg-soft);
-  color: var(--vp-c-text-1);
-}
-
-.tag-nav-item.active {
-  color: var(--vp-c-brand-1);
-  font-weight: 600;
-}
-
-.tag-nav-item.active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  width: 3px;
-  height: 1.5rem;
-  background: var(--vp-c-brand-1);
-  border-radius: 0 2px 2px 0;
-}
-
-.tag-nav-text {
-  flex: 1;
-}
-
-.tag-nav-count {
-  font-size: 0.75rem;
-  padding: 0.1rem 0.4rem;
-  border-radius: 4px;
-  background: var(--vp-c-bg-soft);
-  color: var(--vp-c-text-3);
-}
-
 /* ==================== Content Main ==================== */
 .content-main {
   flex: 1;
   min-width: 0;
 }
 
-/* ==================== Search ==================== */
-.search-box {
-  position: relative;
-  margin-bottom: 1.5rem;
-}
-
-.search-icon {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--vp-c-text-3);
-  pointer-events: none;
-}
-
-.search-input {
-  width: 100%;
-  padding: 0.75rem 1rem 0.75rem 2.75rem;
-  border-radius: 4px;
-  border: 1px solid var(--vp-c-border);
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-1);
-  font-size: 0.9rem;
-  outline: none;
-  transition: all 0.2s;
-}
-
-.search-input::placeholder {
-  color: var(--vp-c-text-3);
-}
-
-.search-input:focus {
-  border-color: var(--vp-c-brand-1);
-}
-
 /* ==================== Post List ==================== */
 .post-list-container {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 }
 
-.post-item {
-  padding: 1.25rem 1rem;
-  border-bottom: 1px solid var(--vp-c-border);
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.post-item:hover {
-  background: var(--vp-c-bg-soft);
-}
-
-.post-meta {
+.post-card {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.5rem;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e4e6e8;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
-.post-date {
-  font-size: 0.8rem;
-  color: var(--vp-c-text-3);
+.post-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
 }
 
-.post-readtime {
-  font-size: 0.75rem;
-  color: var(--vp-c-text-3);
+.post-card--right {
+  flex-direction: row-reverse;
+}
+
+.post-cover {
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.post-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.post-info {
+  flex: 1;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .post-title {
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--vp-c-text-1);
+  color: #303133;
   margin-bottom: 0.5rem;
-  line-height: 1.6;
+  line-height: 1.5;
   transition: color 0.2s;
 }
 
-.post-item:hover .post-title {
-  color: var(--vp-c-brand-1);
+.post-card:hover .post-title {
+  color: #409eff;
+}
+
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  color: #909399;
+}
+
+.post-separator {
+  color: #dcdfe6;
 }
 
 .post-excerpt {
   font-size: 0.85rem;
-  color: var(--vp-c-text-3);
+  color: #909399;
   line-height: 1.6;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin-bottom: 0.5rem;
 }
 
-.post-tags {
+/* ==================== Aside ==================== */
+.aside-content {
+  width: 280px;
+  flex-shrink: 0;
   display: flex;
-  gap: 0.4rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.post-tag {
+.card-widget {
+  background: #fff;
+  border: 1px solid #e4e6e8;
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+/* Card Info */
+.card-info {
+  text-align: center;
+}
+
+.avatar-img img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.author-info-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #303133;
+  margin: 0.75rem 0 0.25rem;
+}
+
+.author-info-description {
+  font-size: 0.8rem;
+  color: #909399;
+  margin-bottom: 1rem;
+}
+
+.site-data {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid #e4e6e8;
+  border-bottom: 1px solid #e4e6e8;
+}
+
+.data-item {
+  text-align: center;
+}
+
+.data-item .headline {
   font-size: 0.75rem;
-  padding: 0.15rem 0.5rem;
-  border-radius: 2px;
-  color: var(--vp-c-text-3);
-  background: var(--vp-c-bg-soft);
+  color: #909399;
+}
+
+.data-item .length-num {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #303133;
+}
+
+/* Card Tags */
+.item-headline {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #303133;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e4e6e8;
+}
+
+.card-tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: #606266;
+  background: #f5f7fa;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.tag-item:hover {
+  color: #409eff;
+  background: #ecf5ff;
+}
+
+.tag-item.active {
+  color: #fff;
+  background: #409eff;
+}
+
+.tag-count {
+  font-size: 0.7rem;
+  color: #909399;
+}
+
+.tag-item.active .tag-count {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Card Recent */
+.aside-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.aside-list-item {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f2f3f5;
+  cursor: pointer;
+}
+
+.aside-list-item:last-child {
+  border-bottom: none;
+}
+
+.aside-list-item .title {
+  font-size: 0.85rem;
+  color: #303133;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.2s;
+}
+
+.aside-list-item:hover .title {
+  color: #409eff;
+}
+
+.aside-list-item time {
+  font-size: 0.75rem;
+  color: #909399;
 }
 
 /* ==================== Empty ==================== */
@@ -354,44 +447,49 @@ onBeforeUnmount(() => {
 
 .empty-text {
   font-size: 0.9rem;
-  color: var(--vp-c-text-3);
+  color: #909399;
   margin-bottom: 1rem;
 }
 
 .empty-btn {
   padding: 0.5rem 1rem;
   border-radius: 4px;
-  border: 1px solid var(--vp-c-border);
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-2);
+  border: 1px solid #dcdfe6;
+  background: #fff;
+  color: #606266;
   font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .empty-btn:hover {
-  border-color: var(--vp-c-brand-1);
-  color: var(--vp-c-brand-1);
+  border-color: #409eff;
+  color: #409eff;
 }
 
 /* ==================== Responsive ==================== */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
   .archive-layout {
     flex-direction: column;
-    padding: 1rem;
   }
-  .tag-sidebar {
+  .aside-content {
     width: 100%;
-    position: static;
-  }
-  .tag-nav {
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 0.5rem;
   }
-  .tag-nav-item {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.8rem;
+  .card-widget {
+    flex: 1;
+    min-width: 280px;
+  }
+}
+
+@media (max-width: 640px) {
+  .post-card {
+    flex-direction: column !important;
+  }
+  .post-cover {
+    width: 100%;
+    height: 160px;
   }
 }
 </style>

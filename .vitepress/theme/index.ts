@@ -16,6 +16,8 @@ import ViewCount from './components/ViewCount.vue'
 import Projects from './components/Projects.vue'
 import ScrollRestore from './components/ScrollRestore.vue'
 import SeoHead from './components/SeoHead.vue'
+import CategoriesPage from './components/CategoriesPage.vue'
+import TagsPage from './components/TagsPage.vue'
 // import TranslationLink from './components/TranslationLink.vue'
 import LastUpdated from './components/LastUpdated.vue'
 import ReadingProgress from './components/ReadingProgress.vue'
@@ -77,8 +79,7 @@ export default {
     app.component('BackToTop', BackToTop)
     app.component('Projects', Projects)
     app.component('ViewCount', ViewCount)
-    app.component('KeyboardShortcuts', KeyboardShortcuts)
-    app.component('ScrollRestore', ScrollRestore)
-    app.component('SeoHead', SeoHead)
+    app.component('CategoriesPage', CategoriesPage)
+    app.component('TagsPage', TagsPage)
   },
 }

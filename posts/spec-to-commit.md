@@ -1,7 +1,7 @@
 ---
 title: 我的 AI 编码工作流——从 spec 到 commit 的完整闭环
 date: 2026-06-23
-tags: [AI, 工作流, 工程化, 经验谈]
+tags: [AI, 工作流, 工程化, 经验]
 description: 把 SDD、OpenSpec、AI 工具、编码判断力串成一条线。从需求到代码，每一步做什么、为什么、怎么落地。
 ---
 

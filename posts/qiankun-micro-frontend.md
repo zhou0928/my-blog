@@ -2,7 +2,7 @@
 title: "qiankun 微前端实战：老项目不动，新功能用 Vue 3 怎么搞？"
 description: 从零到一搞懂 qiankun 微前端，包含核心概念、快速上手、任意老项目接入方案和生产部署指南
 date: 2026-06-30
-tags: [qiankun, 微前端, Vue 3, 前端架构, 老项目改造]
+tags: [微前端, Vue, 架构, 老项目改造]
 ---
 
 # qiankun 微前端实战：老项目不动，新功能用 Vue 3 怎么搞？

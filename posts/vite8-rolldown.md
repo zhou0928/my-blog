@@ -1,7 +1,7 @@
 ---
 title: Vite 8 迁移实战：从双构建器到 Rolldown 原生
 date: 2026-06-23
-tags: [工程化, Vite, 构建工具]
+tags: [工程化, Vite]
 description: Vite 8 用 Rolldown 统一了 esbuild + Rollup 的双构建器模式，实现 10-30x 构建加速。本文讲清楚架构变化、迁移步骤和踩坑经验。
 ---
 

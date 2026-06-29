@@ -2,7 +2,7 @@
 title: "Spec Coding：AI 编程的正确打开方式"
 description: 从 Vibe Coding 到 Spec Coding，为什么先写规范再让 AI 写代码才是正道
 date: 2026-06-30
-tags: [AI 编程, Spec, 工程化, Vibe Coding]
+tags: [AI, 工程化]
 ---
 
 # Spec Coding：AI 编程的正确打开方式

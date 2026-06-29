@@ -1,7 +1,7 @@
 ---
 title: 前端 SEO 全链路优化：从基础标签到 AI 搜索时代
 date: 2026-06-23
-tags: [前端, SEO, 性能]
+tags: [前端, SEO, 性能优化]
 description: 从 TDK 标签、语义化 HTML、SSR/SSG 到结构化数据和 AI 搜索优化，一套完整的前端 SEO 实践指南。
 ---
 

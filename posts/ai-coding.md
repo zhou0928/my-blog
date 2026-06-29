@@ -1,7 +1,7 @@
 ---
 title: AI 编程实战：Cursor、Claude Code 与 Agent 模式的经验总结
 date: 2026-06-22
-tags: [AI, 前端, 效率]
+tags: [AI, 前端, 工作流]
 description: 深度使用 Cursor、Claude Code、Copilot 大半年后，聊聊各种 AI 编程工具的适用场景、工作流和避坑指南。
 ---
 

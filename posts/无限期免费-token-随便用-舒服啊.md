@@ -1,7 +1,7 @@
 ---
 title: "无限期免费，Token 随便用，舒服啊！"
 date: 2026-06-25
-tags: [AI, 工具]
+tags: [AI]
 description: "实测 Agnes AI 三款免费全模态模型，Agnes-2.0-Flash 文本、Agnes-Image-2.1-Flash 图片、Agnes-Video-2.0 视频"
 source: juejin
 source_url: "https://juejin.cn/post/7654102171461402662"

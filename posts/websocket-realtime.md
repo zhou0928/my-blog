@@ -1,7 +1,7 @@
 ---
 title: 工单系统 WebSocket 实时消息推送方案
 date: 2026-06-24
-tags: [工单系统, WebSocket, 架构]
+tags: [工单系统, 架构]
 description: 在 oneLineCar 工单系统中从轮询迁移到 WebSocket 实时推送的完整方案，涵盖重连、心跳、消息确认和离线队列。
 ---
 

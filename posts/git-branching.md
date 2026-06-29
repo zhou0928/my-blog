@@ -1,7 +1,7 @@
 ---
 title: Git 分支策略：Git Flow vs Trunk Based
 date: 2026-06-26
-tags: [Git, 工程化]
+tags: [工程化]
 description: 两种主流 Git 分支策略的对比分析，以及我们团队从 Git Flow 迁移到 Trunk Based 的经验。
 ---
 

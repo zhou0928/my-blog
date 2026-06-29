@@ -1,7 +1,7 @@
 ---
 title: Vite 插件开发入门
 date: 2026-06-25
-tags: [Vite, 前端]
+tags: [前端]
 description: Vite 插件开发入门教程，从简单到复杂，手把手教你写一个自定义 Vite 插件。
 ---
 

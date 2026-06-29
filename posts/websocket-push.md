@@ -1,7 +1,7 @@
 ---
 title: 工单系统 WebSocket 实时消息推送方案
 date: 2026-06-24
-tags: [工单系统, WebSocket, 前端]
+tags: [工单系统, 前端]
 description: oneLineCar 工单系统中 WebSocket 实时消息推送的完整方案，包含心跳检测、断线重连、消息确认机制。
 ---
 

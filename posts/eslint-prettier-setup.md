@@ -1,7 +1,7 @@
 ---
 title: ESLint + Prettier + Husky 配置全流程
 date: 2026-06-26
-tags: [工程化, 工具]
+tags: [工程化]
 description: 2026 年前端项目代码规范配置的完整流程，一行命令搞定 ESLint + Prettier + Husky + lint-staged。
 ---
 

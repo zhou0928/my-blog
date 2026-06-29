@@ -1,7 +1,7 @@
 ---
 title: Docker + Nginx 前端部署实战
 date: 2026-06-26
-tags: [Docker, 工程化, 前端]
+tags: [工程化, 前端]
 description: 前端项目 Docker 化部署的完整流程，包含多阶段构建、Nginx 配置、HTTPS 证书。
 ---
 

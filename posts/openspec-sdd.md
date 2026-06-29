@@ -1,7 +1,7 @@
 ---
 title: OpenSpec 入门：用规范驱动 AI 编码
 date: 2026-06-23
-tags: [AI, 工程化, 工具]
+tags: [AI, 工程化]
 description: OpenSpec 是增长最快的开源 SDD 框架（55K+ stars），让 AI 编码从"黑盒"变"白盒"。本文从实战出发，讲清楚理念、上手流程、前端场景和避坑经验。
 ---
 

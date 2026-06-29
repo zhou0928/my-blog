@@ -1,7 +1,7 @@
 ---
 title: Vue 3 + TypeScript 项目从零搭建模板
 date: 2026-06-25
-tags: [Vue, TypeScript, 前端]
+tags: [Vue, 前端]
 description: 2026 年 Vue 3 + TypeScript 项目的标准搭建模板，包含 Vite、ESLint、Prettier、Husky 全套配置。
 ---
 

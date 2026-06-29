@@ -1,7 +1,7 @@
 ---
 title: Hello, World — 我的博客开张了
 date: 2026-06-18
-tags: [杂谈, 前端]
+tags: [经验, 前端]
 description: 从零搭建了一个科幻风的个人博客，聊聊为什么是现在、为什么是 VitePress。
 cover:
 ---

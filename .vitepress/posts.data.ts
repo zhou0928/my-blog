@@ -32,7 +32,7 @@ function countWords(text: string): number {
   return chinese + english
 }
 
-export default createContentLoader('posts/*.md', {
+export default createContentLoader('posts/**/*.md', {
   includeSrc: true,
   render: false,
   excerpt: 'cursor',

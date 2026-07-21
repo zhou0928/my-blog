@@ -22,12 +22,15 @@ import TagsPage from './components/TagsPage.vue'
 import LastUpdated from './components/LastUpdated.vue'
 import ReadingProgress from './components/ReadingProgress.vue'
 import OgPerArticle from './components/OgPerArticle.vue'
+import Donate from './components/Donate.vue'
 import ThemePersist from './components/ThemePersist.vue'
 import ErrorMonitor from './components/ErrorMonitor.vue'
 import { initCursorEffects } from './cursor-effects'
 import { initVisualEffects } from './visual-effects'
+import { initCodeFavoriteButtons } from './code-favorites'
 import { initMediumZoom } from './medium-zoom'
 import './styles/custom.css'
+import './styles/code-favorites.css'
 
 let effectsInitialized = false
 
@@ -45,6 +48,7 @@ export default {
       onMounted(() => {
         initCursorEffects()
         initVisualEffects()
+        initCodeFavoriteButtons()
         initMediumZoom()
         registerSW()
       })
@@ -67,6 +71,7 @@ export default {
       'doc-after': () => h('div', null, [
         h(LastUpdated),
         // h(EmailSubscribe),
+        h(Donate),
         h(RelatedPosts),
         h(GiscusComments),
       ]),

@@ -4,18 +4,35 @@ import { inBrowser } from 'vitepress'
 
 const views = ref<number | null>(null)
 
-onMounted(() => {
+// TODO: 注册 Umami Cloud (https://umami.is) 后填入 Website ID
+const UMAMI_WEBSITE_ID = '38552e62-796d-44dd-ba7b-9685dd57c1dd'
+const UMAMI_API_URL = 'https://analytics.umami.is'
+
+async function fetchUmamiViews(): Promise<number | null> {
+  if (!UMAMI_WEBSITE_ID) return null
+  try {
+    const start = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString()
+    const res = await fetch(
+      `${UMAMI_API_URL}/api/websites/${UMAMI_WEBSITE_ID}/pageviews?start_at=${start}&end_at=${new Date().toISOString()}&url=${window.location.pathname}`
+    )
+    const data = await res.json()
+    return data?.pageviews?.[0]?.y ?? data?.pageviews ?? null
+  } catch {
+    return null
+  }
+}
+
+onMounted(async () => {
   if (!inBrowser) return
 
-  // Umami 统计 — 替换 UMAMI_WEBSITE_ID 为你的 Umami Website ID
-  // 方式1: Umami Cloud API (需要 Umami Cloud 或自建)
-  // const UMAMI_WEBSITE_ID = 'your-website-id'
-  // fetch(`https://analytics.umami.is/api/website/${UMAMI_WEBSITE_ID}/pageviews`)
-  //   .then(r => r.json())
-  //   .then(data => { views.value = data?.pageviews || 0 })
-  //   .catch(() => {})
+  // 优先尝试 Umami API
+  const umamiViews = await fetchUmamiViews()
+  if (umamiViews !== null) {
+    views.value = umamiViews
+    return
+  }
 
-  // 方式2: 简单计数器 (localStorage 模拟)
+  // 降级到 localStorage 计数
   const key = 'blog_views_' + window.location.pathname
   const count = parseInt(localStorage.getItem(key) || '0') + 1
   localStorage.setItem(key, count.toString())

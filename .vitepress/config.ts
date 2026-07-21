@@ -45,7 +45,8 @@ export default defineConfig({
     ['meta', { name: 'twitter:description', content: '工单系统 · 前端工程化 · Vue 生态 · 个人技术博客' }],
     ['meta', { name: 'twitter:image', content: `${SITE_URL}/og-default.svg` }],
     // Google Analytics
-    // ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX' }],
+    // Umami Analytics
+    ['script', { defer: '', src: 'https://cloud.umami.is/script.js', 'data-website-id': '38552e62-796d-44dd-ba7b-9685dd57c1dd' }],    // ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX' }],
     // ['script', {}, `window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', 'G-XXXXXXXXXX');`],
     // JSON-LD Blog Schema
     ['script', { type: 'application/ld+json' }, JSON.stringify({
@@ -76,6 +77,8 @@ export default defineConfig({
           { text: '项目', link: '/projects' },
           { text: '简历', link: '/resume' },
           { text: '关于', link: '/about' },
+          { text: '留言板', link: '/guestbook' },
+          { text: '收藏', link: '/favorites' },
         ],
         search: {
           provider: 'local',

@@ -2,16 +2,22 @@
  * fetch-juejin-hot.ts
  *
  * 从掘金拉取前端相关热门文章，生成博客文章草稿。
+ * 使用 puppeteer-core + 本地 Chrome 获取文章全文。
  *
  * 用法：
  *   node --experimental-strip-types scripts/fetch-juejin-hot.ts
  *
- * 依赖：Node.js 18+（内置 fetch）
+ * 依赖：Node.js 18+（内置 fetch）、puppeteer-core、本地 Chrome
  */
 
-import { writeFileSync, existsSync, readFileSync } from 'node:fs'
+import { writeFileSync, existsSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import puppeteer from 'puppeteer-core'
+
+const CHROME_PATH = process.env.CHROME_PATH
+  || (process.platform === 'linux' ? '/usr/bin/google-chrome' : null)
+  || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const POSTS_DIR = resolve(__dirname, '..', 'posts')
@@ -39,8 +45,8 @@ const RULES = {
     '性能优化', '工程化', '浏览器', 'dom', '小程序', 'flutter',
     'ai', 'cursor', 'claude', 'copilot', 'agent', 'rag',
     'docker', 'nginx', 'git', 'ci', 'cd', 'monorepo',
-    'pinia', 'vuex', 'sass', 'tailwind', 'sass', 'less',
-    'typescript', 'esbuild', 'bun', 'deno', 'deno',
+    'pinia', 'vuex', 'sass', 'tailwind', 'less',
+    'esbuild', 'bun', 'deno',
   ],
   // 标题最小长度（太短的可能是水文）
   minTitleLength: 8,
@@ -103,7 +109,7 @@ async function fetchHotPosts(): Promise<JuejinPost[]> {
             title: info.title || '',
             brief_content: info.brief_content || '',
             author_user_info: { user_name: author.user_name || 'unknown' },
-            tags: (info.tag_ids || []).map((id: number) => ({ tag_name: String(id) })),
+            tags: item.item_info?.tags || (info.tag_ids || []).map((id: number) => ({ tag_name: String(id) })),
             ctime: info.ctime || '',
             view_count: parseInt(info.view_count) || 0,
             digg_count: parseInt(info.digg_count) || 0,
@@ -177,10 +183,76 @@ function formatDate(date: Date): string {
   return `${y}-${m}-${d}`
 }
 
-function generateMarkdown(post: JuejinPost): string {
+/**
+ * 用 headless Chrome 爬取掘金文章全文。
+ * 掘金页面是 SPA，纯 HTTP 拿不到正文，必须走浏览器渲染。
+ * 失败时返回空字符串，由调用方 fallback 到 brief_content。
+ */
+async function fetchFullContent(articleId: string): Promise<string> {
+  const url = `https://juejin.cn/post/${articleId}`
+  console.log(`[puppeteer] 正在爬取全文: ${url}`)
+
+  let browser
+  try {
+    browser = await puppeteer.launch({
+      executablePath: CHROME_PATH,
+      headless: true,
+      args: ['--no-sandbox', '--disable-gpu'],
+    })
+
+    const page = await browser.newPage()
+    await page.setUserAgent(
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
+    )
+    await page.setViewport({ width: 1920, height: 1080 })
+
+    // 导航到文章页，等待 .article-viewer 渲染
+    await page.goto(url, { waitUntil: 'networkidle0', timeout: 30_000 })
+    await page.waitForSelector('.article-viewer', { timeout: 15_000 })
+
+    // 提取文章正文 HTML
+    const html = await page.$eval('.article-viewer', (el: Element) => el.innerHTML)
+
+    // 转成纯文本（保留段落结构）
+    const text = html
+      // 先剔除 style/script 块及其内容
+      .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+      .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+      .replace(/<h[1-6][^>]*>/g, '\n\n')
+      .replace(/<\/h[1-6]>/g, '\n')
+      .replace(/<p[^>]*>/g, '\n')
+      .replace(/<\/p>/g, '\n')
+      .replace(/<br\s*\/?>/g, '\n')
+      .replace(/<li[^>]*>/g, '\n- ')
+      .replace(/<\/li>/g, '')
+      .replace(/<pre><code[^>]*>/g, '\n```\n')
+      .replace(/<\/code><\/pre>/g, '\n```\n')
+      .replace(/<code[^>]*>/g, '`')
+      .replace(/<\/code>/g, '`')
+      .replace(/<[^>]+>/g, '')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim()
+
+    console.log(`[puppeteer] 爬取成功: ${text.length} 字符`)
+    return text
+  } catch (err) {
+    console.warn(`[puppeteer] 爬取失败:`, (err as Error).message)
+    return ''
+  } finally {
+    if (browser) await browser.close()
+  }
+}
+
+function generateMarkdown(post: JuejinPost, fullContent?: string): string {
   const today = formatDate(new Date())
   const tags = post.tags.slice(0, 3).map(t => t.tag_name)
   const slug = generateSlug(post.title)
+  const content = fullContent || post.brief_content
+  const isFull = !!fullContent
 
   return `---
 title: "${post.title.replace(/"/g, '\\"')}"
@@ -191,17 +263,16 @@ source: juejin
 source_url: "https://juejin.cn/post/${post.article_id}"
 author: "${post.author_user_info.user_name}"
 draft: false
+${isFull ? '' : 'unfinished: true'}
 ---
 
 # ${post.title}
 
 > 本文转载自掘金，作者：${post.author_user_info.user_name}。原文链接：[点击查看](https://juejin.cn/post/${post.article_id})
 
-${post.brief_content}
+${content}
 
----
-
-*本文为自动转载草稿，请编辑后发布。*
+${isFull ? '' : '\n---\n\n*本文为自动转载草稿，内容仅为摘要，请编辑后发布。*'}
 `
 }
 
@@ -250,8 +321,17 @@ try {
     process.exit(0)
   }
 
+  // 尝试获取全文（失败则 fallback 到 brief_content）
+  console.log(`[juejin] 正在获取文章全文...`)
+  const fullContent = await fetchFullContent(selected.article_id)
+  if (fullContent) {
+    console.log(`[juejin] 全文获取成功: ${fullContent.length} 字符`)
+  } else {
+    console.log(`[juejin] 全文获取失败，使用摘要作为内容`)
+  }
+
   // 生成 markdown
-  const markdown = generateMarkdown(selected)
+  const markdown = generateMarkdown(selected, fullContent)
   writeFileSync(outPath, markdown)
   console.log(`[juejin] 已生成: posts/${slug}.md`)
 

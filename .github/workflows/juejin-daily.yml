@@ -13,7 +13,7 @@ jobs:
   fetch-and-post:
     runs-on: ubuntu-latest
     env:
-      NODE_VERSION: '22'
+      NODE_VERSION: '24'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,7 +23,15 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
+      - name: Install Chrome
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 'stable'
+
       - name: Fetch and generate post
+        env:
+          CHROME_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
         run: node --experimental-strip-types scripts/fetch-juejin-hot.ts
 
       - name: Generate RSS

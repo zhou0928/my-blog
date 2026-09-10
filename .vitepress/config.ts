@@ -75,6 +75,7 @@ export default defineConfig({
           { text: '分类', link: '/categories' },
           { text: '标签', link: '/tags' },
           { text: '项目', link: '/projects' },
+          { text: '笔记', link: '/notes/' },
           { text: '简历', link: '/resume' },
           { text: '关于', link: '/about' },
           { text: '留言板', link: '/guestbook' },
